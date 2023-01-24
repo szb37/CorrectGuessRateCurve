@@ -1,0 +1,5 @@
+study,scale,guesser,respondent,cgr,cgr_trial_id,contrast,type,est,se,df,t,p,p_adj
+,,,,,,ACACvsACPL,fixCondition,-0.2092994,0.07706119,1996,-2.716016,0.006664261,0.03368055
+,,,,,,PLACvsPLPL,fixCondition,-0.1145519,0.07695488,1996,-1.488559,0.1367614,0.4445905
+,,,,,,ACACvsPLAC,fixGuess,4.932728,0.07761314,1996,63.55532,0,4.36E-11
+,,,,,,ACPLvsPLPL,fixGuess,5.027476,0.07639816,1996,65.80623,0,4.36E-11

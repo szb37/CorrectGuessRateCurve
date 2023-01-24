@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,strata,est,se,df,lower_CI,upper_CI,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPL,19.71429,1.616647,46.0,16.46014,22.96843,0.5,0,off_off_0,0
+mock,scale1,self,self,ACPL,19.86667,1.10438,46.0,17.64367,22.08967,0.5,0,off_off_0,0
+mock,scale1,self,self,PLAC,17.6,1.352584,46.0,14.87739,20.32261,0.5,0,off_off_0,0
+mock,scale1,self,self,ACAC,21.0,1.008156,46.0,18.97069,23.02931,0.5,0,off_off_0,0
+mock,scale1,self,self,PLPL,16.42857,1.335044,46.0,13.74127,19.11588,0.5,1,off_off_0,0
+mock,scale1,self,self,ACPL,20.6,0.9120087,46.0,18.76422,22.43578,0.5,1,off_off_0,0
+mock,scale1,self,self,PLAC,21.3,1.116978,46.0,19.05164,23.54836,0.5,1,off_off_0,0
+mock,scale1,self,self,ACAC,20.16667,0.8325462,46.0,18.49084,21.8425,0.5,1,off_off_0,0
+mock,scale1,self,self,PLPL,18.14286,1.355498,46.0,15.41438,20.87133,0.5,2,off_off_0,0
+mock,scale1,self,self,ACPL,20.06667,0.9259816,46.0,18.20276,21.93057,0.5,2,off_off_0,0
+mock,scale1,self,self,PLAC,19.9,1.134091,46.0,17.61719,22.18281,0.5,2,off_off_0,0
+mock,scale1,self,self,ACAC,19.05556,0.8453017,46.0,17.35405,20.75706,0.5,2,off_off_0,0
+mock,scale1,self,self,PLPL,17.85714,1.385112,46.0,15.06906,20.64523,0.5,3,off_off_0,0
+mock,scale1,self,self,ACPL,20.2,0.9462116,46.0,18.29537,22.10463,0.5,3,off_off_0,0
+mock,scale1,self,self,PLAC,22.1,1.158868,46.0,19.76732,24.43268,0.5,3,off_off_0,0
+mock,scale1,self,self,ACAC,21.72222,0.863769,46.0,19.98355,23.4609,0.5,3,off_off_0,0

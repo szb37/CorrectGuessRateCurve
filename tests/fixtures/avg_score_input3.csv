@@ -1,0 +1,10 @@
+collection_id,src_subject_id,visit,score,rel
+2145,1001,2,,father
+2145,1001,2,4,mother
+2145,1001,2,3,other
+2145,1001,2,4,child
+2145,1002,2,5,father
+2145,1002,2,6,mother
+2145,1002,2,,other
+2145,1002,2,,other
+2145,1002,2,,child

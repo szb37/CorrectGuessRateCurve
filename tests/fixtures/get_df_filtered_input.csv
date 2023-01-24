@@ -1,0 +1,11 @@
+study,scale,respondent,guesser,cgr,cgr_trial_id,condition,guess,delta_score
+a,foo,self,self,0,0,PL,PL,0
+b,foo,self,self,0,0,MD,PL,1
+a,tadaa,self,self,0,0,PL,MD,2
+a,foo,ext,self,0,0,MD,MD,3
+a,foo,self,ext,0,0,PL,PL,4
+a,foo,self,self,1,0,MD,PL,5
+a,foo,self,self,0,1,PL,MD,6
+a,foo,self,self,1,1,PL,MD,7
+b,foo,self,self,0,0,MD,MD,8
+c,foo,self,self,0,0,PL,PL,9

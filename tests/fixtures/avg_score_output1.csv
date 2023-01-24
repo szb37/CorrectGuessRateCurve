@@ -1,0 +1,10 @@
+collection_id,src_subject_id,asstyp,bdi_tot,relationship,bdi_tot_avg
+2145,1001,1,1,father,1
+2145,1002,1,2,mother,2
+2145,1003,1,3,child,3
+2145,1004,1,3,comb,3.5
+2145,1004,1,5,child,5
+2145,1005,2,6,father,6
+2145,1005,2,7,mother,7
+2145,1005,2,8,child,8
+2145,1006,1,5,comb,6

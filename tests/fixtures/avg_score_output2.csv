@@ -1,0 +1,9 @@
+collection_id,src_subject_id,visit,score,rel,score_avg
+2145,1001,2,1,comb,2
+2145,1001,2,4,child,4
+2145,1002,2,5,comb,5.25
+2145,1002,2,9,child,9
+2145,1003,1,1,father,1
+2145,1003,1,2,mother,2
+2145,1003,1,3,other,3
+2145,1003,1,4,child,4
