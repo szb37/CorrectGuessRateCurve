@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,0.8325926,1.218322,116.0,0.6833931,0.4957212,0.9032343,0.5,0,on_off_m3,26
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-0.8147186,1.065064,116.0,-0.7649481,0.4458559,0.8700424,0.5,0,on_off_m3,26
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-6.002424,1.163856,116.0,-5.15736,1.043567e-06,6.183929e-06,0.5,0,on_off_m3,26
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.649735,1.124326,116.0,-6.803843,4.717062e-10,2.825044e-09,0.5,0,on_off_m3,26
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,0.642963,1.077344,116.0,0.5968037,0.5518015,0.932851,0.5,1,on_off_m3,26
+mock,scale1,self,self,ACPLvsACAC,fixCondition,1.519481,0.9418205,116.0,1.613344,0.109387,0.3751801,0.5,1,on_off_m3,26
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-8.410909,1.029181,116.0,-8.172431,4.233829e-13,2.579825e-12,0.5,1,on_off_m3,26
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.534392,0.9942248,116.0,-7.578157,9.358546e-12,5.614165e-11,0.5,1,on_off_m3,26
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-1.491852,1.155322,116.0,-1.291287,0.1991715,0.5703182,0.5,2,on_off_m3,26
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-2.257143,1.009989,116.0,-2.234819,0.02734442,0.1199918,0.5,2,on_off_m3,26
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-7.64,1.103672,116.0,-6.922344,2.614714e-10,1.566324e-09,0.5,2,on_off_m3,26
+mock,scale1,self,self,PLACvsACAC,fixGuess,-8.405291,1.066186,116.0,-7.88351,1.922425e-12,1.156619e-11,0.5,2,on_off_m3,26
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,0.4755556,1.26803,116.0,0.3750348,0.7083194,0.9819298,0.5,3,on_off_m3,26
+mock,scale1,self,self,ACPLvsACAC,fixCondition,1.908225,1.10852,116.0,1.721418,0.08784088,0.3173163,0.5,3,on_off_m3,26
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-9.473939,1.211342,116.0,-7.821025,2.661561e-12,1.59972e-11,0.5,3,on_off_m3,26
+mock,scale1,self,self,PLACvsACAC,fixGuess,-8.04127,1.170199,116.0,-6.871709,3.366082e-10,2.016226e-09,0.5,3,on_off_m3,26

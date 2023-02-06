@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,0.1063218,1.226188,116.0,0.08670923,0.9310521,0.999765,0.5,0,on_off_m3,23
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-1.78853,1.088752,116.0,-1.642734,0.1031461,0.3589478,0.5,0,on_off_m3,23
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-5.199234,1.108741,116.0,-4.689312,7.540774e-06,4.428022e-05,0.5,0,on_off_m3,23
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.094086,1.208144,116.0,-5.871888,4.188605e-08,2.499658e-07,0.5,0,on_off_m3,23
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-1.139368,1.228544,116.0,-0.927413,0.3556378,0.7902257,0.5,1,on_off_m3,23
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-0.7625448,1.090844,116.0,-0.6990409,0.4859257,0.8972556,0.5,1,on_off_m3,23
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-9.458812,1.110872,116.0,-8.514766,6.93257e-14,4.575229e-13,0.5,1,on_off_m3,23
+mock,scale1,self,self,PLACvsACAC,fixGuess,-9.081989,1.210465,116.0,-7.502891,1.378424e-11,8.267065e-11,0.5,1,on_off_m3,23
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,0.5172414,1.043465,116.0,0.4956958,0.6210469,0.9598999,0.5,2,on_off_m3,23
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-0.7894265,0.9265099,116.0,-0.8520433,0.3959457,0.8293365,0.5,2,on_off_m3,23
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-6.177203,0.9435201,116.0,-6.546975,1.671295e-09,1.000304e-08,0.5,2,on_off_m3,23
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.483871,1.02811,116.0,-7.279251,4.324094e-11,2.591961e-10,0.5,2,on_off_m3,23
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,1.241379,1.132664,116.0,1.095982,0.2753568,0.6926967,0.5,3,on_off_m3,23
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-0.1666667,1.005711,116.0,-0.1657203,0.8686656,0.998372,0.5,3,on_off_m3,23
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-6.591954,1.024175,116.0,-6.436355,2.863729e-09,1.713428e-08,0.5,3,on_off_m3,23
+mock,scale1,self,self,PLACvsACAC,fixGuess,-8.0,1.115996,116.0,-7.168484,7.58467e-11,4.545524e-10,0.5,3,on_off_m3,23

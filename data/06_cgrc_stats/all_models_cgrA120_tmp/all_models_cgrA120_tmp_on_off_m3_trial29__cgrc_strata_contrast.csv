@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,2.192593,1.259659,116.0,1.740624,0.08440115,0.3075809,0.5,0,on_off_m3,29
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-0.6995671,1.101201,116.0,-0.6352765,0.5264993,0.9204236,0.5,0,on_off_m3,29
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-4.157576,1.203345,116.0,-3.455015,0.000769418,0.004228073,0.5,0,on_off_m3,29
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.049735,1.162474,116.0,-6.064426,1.699185e-08,1.01513e-07,0.5,0,on_off_m3,29
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,1.524444,1.332984,116.0,1.143633,0.2551304,0.6633631,0.5,1,on_off_m3,29
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-2.233766,1.165302,116.0,-1.916899,0.05771063,0.2266567,0.5,1,on_off_m3,29
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-2.829091,1.273392,116.0,-2.221697,0.02824434,0.1234433,0.5,1,on_off_m3,29
+mock,scale1,self,self,PLACvsACAC,fixGuess,-6.587302,1.230141,116.0,-5.354914,4.386687e-07,2.606157e-06,0.5,1,on_off_m3,29
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,1.385185,1.382219,116.0,1.002146,0.3183591,0.7484466,0.5,2,on_off_m3,29
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-1.085714,1.208344,116.0,-0.8985143,0.3707727,0.8056122,0.5,2,on_off_m3,29
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-3.8,1.320426,116.0,-2.877859,0.004767566,0.02429538,0.5,2,on_off_m3,29
+mock,scale1,self,self,PLACvsACAC,fixGuess,-6.270899,1.275578,116.0,-4.916123,2.932126e-06,1.730443e-05,0.5,2,on_off_m3,29
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,3.536296,1.303633,116.0,2.712647,0.007691393,0.03801677,0.5,3,on_off_m3,29
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-1.24329,1.139644,116.0,-1.090946,0.2775573,0.6957626,0.5,3,on_off_m3,29
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-4.002424,1.245353,116.0,-3.213887,0.001695975,0.009076916,0.5,3,on_off_m3,29
+mock,scale1,self,self,PLACvsACAC,fixGuess,-8.782011,1.203055,116.0,-7.299758,3.89559e-11,2.335191e-10,0.5,3,on_off_m3,29

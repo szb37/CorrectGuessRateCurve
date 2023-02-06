@@ -114,12 +114,12 @@ class Controllers():
                 )
 
         # Get summary table
-        summary_df = ToyModelsAnalyis.get_model_family_summary(
-            model_family_name=model_family_name,
-            analysis_name=analysis_name,
-            cgrc_param_set=cgrc_param_set,
-        )
-        print('\n', summary_df.to_string(index=False))
+        #summary_df = ToyModelsAnalyis.get_model_family_summary(
+        #    model_family_name=model_family_name,
+        #    analysis_name=analysis_name,
+        #    cgrc_param_set=cgrc_param_set,
+        #)
+        #print('\n', summary_df.to_string(index=False))
 
 
 class ToyModelsAnalyis():
@@ -232,7 +232,7 @@ class ToyModelsDataGenerator():
     ''' Functions to get simulated toy model data '''
 
     @staticmethod
-    def get_pseudodata(output_dir, output_prefix, model_specs, n_datapoints, model_name=None, trial_id=None, model_type='mum', min_strata_size=4, round_digits=0):
+    def get_pseudodata(output_dir, output_prefix, model_specs, n_datapoints, model_name=None, trial_id=None, min_strata_size=4, round_digits=0):
         ''' High level function to generate pseudo-experimental toy model data
             Args:
                 output_dir (str): subfolder name where results will be saved
@@ -241,7 +241,6 @@ class ToyModelsDataGenerator():
                 n_datapoints (int): number of datapoints in each trial
                 model_name (str): name of model
                 trial_id (int): id of current simulations
-                model_type (str, optional): must be 'mum' or 'bum', corresponding to bengin and malicious unblinding model; currently only using 'mum'
                 min_strata_size (int, optional): the minimum sample size of each strata
                 round_digits (int, optional): generated scores rounded to
         '''
@@ -252,19 +251,26 @@ class ToyModelsDataGenerator():
         assert Helpers.is_valid_model_specs(model_specs)
         assert isinstance(n_datapoints, int)
         assert isinstance(trial_id, int)
-        assert model_type in ['mum', 'bum']
         assert (min_strata_size is None) or (isinstance(min_strata_size, int))
         assert isinstance(round_digits, int)
 
         df = Helpers.get_TrialDatadDf(n_datapoints)
 
+        #import pdb; pdb.set_trace()
+
         if min_strata_size is not None:
             df = Helpers.enforce_min_strata_size(df, min_strata_size)
+
+        #import pdb; pdb.set_trace()
+
+        conditions = []
+        guesses = []
+        scores = []
+        delta_scores = []
 
         for idx, row in df.iterrows():
 
             condition, guess, score = ToyModelsDataGenerator.get_pseudodatapoint(
-                model_type=model_type,
                 oc_nh=model_specs['oc_nh'],
                 gs_nh=model_specs['gs_nh'],
                 se=model_specs['se'],
@@ -276,10 +282,21 @@ class ToyModelsDataGenerator():
                 forced_guess=row.guess,
             )
 
-            row.condition = condition
-            row.guess = guess
-            row.score = round(score, round_digits)
-            row.delta_score = round(score, round_digits)
+            conditions.append(condition)
+            guesses.append(guess)
+            scores.append(round(score, round_digits))
+            delta_scores.append(round(score, round_digits))
+
+        df['condition'] = conditions
+        df['guess'] = guesses
+        df['score'] = scores
+        df['delta_score'] = delta_scores
+
+
+        #row.condition = condition
+        #row.guess = guess
+        #row.score = round(score, round_digits)
+        #row.delta_score = round(score, round_digits)
 
         if model_name is not None:
             df['model_name'] = model_name
@@ -295,46 +312,8 @@ class ToyModelsDataGenerator():
         return df
 
     @staticmethod
-    def get_pseudodatapoint(oc_nh, gs_nh, se, dte, pte, ate, oc2gs, model_type='mum', forced_condition=None, forced_guess=None):
-        ''' Generate pseudo-experimental toy model datapoint
-            Args:
-                oc_nh (tuple): (mean, std) of the outcomes's natural history (in terms of change score)
-                gs_nh (tuple): (mean, std) of treatment guess's natural history
-                se (tuple): (mean, std) of treatment allocation's contribution to treatment guess probability
-                dte (tuple): (mean, std) of treatment's contribution to outcomes
-                pte (tuple): (mean, std) of placebo guess's contribution to guess
-                ate (tuple): (mean, std) of active guess's contribution to guess
-                oc2gs (tuple): (mean, std) of outcome's contribution to guess
-                model_type (str, optional): must be 'mum' or 'bum', corresponding to bengin and malicious unblinding model; currently only using 'mum'
-                forced_condition (bool, optional): force treatment to be active/placebo
-                forced_guess (bool, optional): force guess to be active/placebo
-        '''
-
-        assert isinstance(oc_nh, tuple)
-        assert isinstance(gs_nh, tuple)
-        assert isinstance(se, tuple)
-        assert isinstance(dte, tuple)
-        assert isinstance(pte, tuple)
-        assert isinstance(ate, tuple)
-        assert isinstance(oc2gs, tuple)
-        assert model_type in ['mum', 'bum']
-        assert forced_guess in [None, 'PL', 'AC']
-        assert forced_condition in [None, 'PL', 'AC']
-
-        if model_type == 'mum':
-            condition, guess, score = ToyModelsDataGenerator.get_mum_pseudodatapoint(
-                oc_nh, gs_nh, se, dte, pte, ate, oc2gs, forced_condition, forced_guess)
-        elif model_type == 'bum':
-            condition, guess, score = ToyModelsDataGenerator.get_bum_pseudodatapoint(
-                oc_nh, gs_nh, se, dte, pte, ate, oc2gs, forced_condition, forced_guess)
-        else:
-            assert False
-
-        return condition, guess, score
-
-    @staticmethod
-    def get_mum_pseudodatapoint(oc_nh, gs_nh, se, dte, pte, ate, oc2gs, forced_condition=None, forced_guess=None):
-        ''' Generate pseudo-experimental toy model datapoint using MUM (malicious unblinding model)
+    def get_pseudodatapoint(oc_nh, gs_nh, se, dte, pte, ate, oc2gs, forced_condition=None, forced_guess=None):
+        ''' Generate toy model datapoint
             Args:
                 oc_nh (tuple): (mean, std) of the outcomes's natural history (in terms of change score)
                 gs_nh (tuple): (mean, std) of treatment guess's natural history
@@ -401,71 +380,6 @@ class ToyModelsDataGenerator():
             score += random.gauss(ate[0], ate[1])
         elif guess == 'PL':
             score += random.gauss(pte[0], pte[1])
-        else:
-            assert False
-
-        return condition, guess, score
-
-    @staticmethod
-    def get_bum_pseudodatapoint(oc_nh, gs_nh, se, dte, pte, ate, oc2gs, forced_condition=None, forced_guess=None):
-        ''' Generate pseudo-experimental toy model datapoint using BUM (benign unblinding model)
-            Args:
-                oc_nh (tuple): (mean, std) of the outcomes's natural history (in terms of change score)
-                gs_nh (tuple): (mean, std) of treatment guess's natural history
-                se (tuple): (mean, std) of treatment allocation's contribution to treatment guess probability
-                dte (tuple): (mean, std) of treatment's contribution to outcomes
-                pte (tuple): (mean, std) of placebo guess's contribution to guess
-                ate (tuple): (mean, std) of active guess's contribution to guess
-                oc2gs (tuple): (mean, std) of outcome's contribution to guess
-                forced_condition (bool, optional): force treatment to be active/placebo
-                forced_guess (bool, optional): force guess to be active/placebo
-        '''
-
-        assert isinstance(oc_nh, tuple)
-        assert isinstance(gs_nh, tuple)
-        assert isinstance(se, tuple)
-        assert isinstance(dte, tuple)
-        assert isinstance(pte, tuple)
-        assert isinstance(ate, tuple)
-        assert isinstance(oc2gs, tuple)
-        assert forced_guess in [None, 'PL', 'AC']
-        assert forced_condition in [None, 'PL', 'AC']
-
-        # get condition
-        if forced_condition == 'PL':
-            condition = 'PL'
-        elif forced_condition == 'AC':
-            condition = 'AC'
-        elif forced_condition is None:
-            condition = random.choice(['PL', 'AC'])
-        else:
-            assert False
-
-        # get outcome
-        score = random.gauss(oc_nh[0], oc_nh[1])
-        if condition == 'AC':
-            score += random.gauss(dte[0], dte[1])
-
-        # get guess; if roll>=0.5, then guess is active
-        roll = random.gauss(gs_nh[0], gs_nh[1])
-        roll = min(1, roll)
-        roll = max(0, roll)
-
-        if condition == 'AC':
-            roll += random.gauss(se[0], se[1])
-
-        # if outcome is better than natural hitory, then, Oc contributes to guess
-        if score >= oc_nh[0]:
-            roll += random.gauss(oc2gs[0], oc2gs[1])
-
-        if (forced_guess is None) and (roll >= 0.5):
-            guess = 'AC'
-        elif (forced_guess is None) and (roll < 0.5):
-            guess = 'PL'
-        elif forced_guess == 'PL':
-            guess = 'PL'
-        elif forced_guess == 'AC':
-            guess = 'AC'
         else:
             assert False
 

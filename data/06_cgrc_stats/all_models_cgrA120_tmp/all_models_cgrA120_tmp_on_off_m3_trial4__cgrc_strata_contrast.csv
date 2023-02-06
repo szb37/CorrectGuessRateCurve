@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-0.3076923,1.242669,116.0,-0.2476061,0.804877,0.99464,0.5,0,on_off_m3,4
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-1.352941,1.086682,116.0,-1.24502,0.2156337,0.5996386,0.5,0,on_off_m3,4
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-6.233032,1.167284,116.0,-5.339773,4.69094e-07,2.786422e-06,0.5,0,on_off_m3,4
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.278281,1.167284,116.0,-6.235227,7.545661e-09,4.511425e-08,0.5,0,on_off_m3,4
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-1.423077,1.121935,116.0,-1.268413,0.2071901,0.5848154,0.5,1,on_off_m3,4
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-2.735294,0.9811035,116.0,-2.787977,0.006199798,0.03109188,0.5,1,on_off_m3,4
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-6.357466,1.053874,116.0,-6.032471,1.975558e-08,1.180049e-07,0.5,1,on_off_m3,4
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.669683,1.053874,116.0,-7.277608,4.36038e-11,2.613705e-10,0.5,1,on_off_m3,4
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-1.692308,1.189245,116.0,-1.42301,0.157417,0.4876543,0.5,2,on_off_m3,4
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-1.058824,1.039964,116.0,-1.018134,0.3107329,0.7391777,0.5,2,on_off_m3,4
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-6.199095,1.117101,116.0,-5.54927,1.838194e-07,1.094283e-06,0.5,2,on_off_m3,4
+mock,scale1,self,self,PLACvsACAC,fixGuess,-5.565611,1.117101,116.0,-4.982191,2.215856e-06,1.309337e-05,0.5,2,on_off_m3,4
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-0.7307692,1.196696,116.0,-0.6106559,0.542622,0.9285122,0.5,3,on_off_m3,4
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-0.3529412,1.04648,116.0,-0.3372651,0.7365265,0.9867228,0.5,3,on_off_m3,4
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-7.798643,1.1241,116.0,-6.937679,2.421816e-10,1.450812e-09,0.5,3,on_off_m3,4
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.420814,1.1241,116.0,-6.601562,1.279459e-09,7.658976e-09,0.5,3,on_off_m3,4

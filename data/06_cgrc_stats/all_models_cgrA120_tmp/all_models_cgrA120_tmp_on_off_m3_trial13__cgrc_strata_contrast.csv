@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-4.623656,1.316561,116.0,-3.511918,0.00063483,0.003507169,0.5,0,on_off_m3,13
+mock,scale1,self,self,ACPLvsACAC,fixCondition,1.80725,1.142229,116.0,1.582214,0.1163235,0.3927485,0.5,0,on_off_m3,13
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-8.649297,1.120897,116.0,-7.716405,4.581245e-12,2.750677e-11,0.5,0,on_off_m3,13
+mock,scale1,self,self,PLACvsACAC,fixGuess,-2.218391,1.334769,116.0,-1.662003,0.0992123,0.3485009,0.5,0,on_off_m3,13
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-3.834101,1.271203,116.0,-3.016121,0.003146568,0.01639348,0.5,1,on_off_m3,13
+mock,scale1,self,self,ACPLvsACAC,fixCondition,1.40672,1.102876,116.0,1.275501,0.2046804,0.5803226,0.5,1,on_off_m3,13
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-9.3689,1.08228,116.0,-8.656635,3.260171e-14,2.380318e-13,0.5,1,on_off_m3,13
+mock,scale1,self,self,PLACvsACAC,fixGuess,-4.128079,1.288783,116.0,-3.203082,0.001755468,0.009382756,0.5,1,on_off_m3,13
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-1.910906,1.276982,116.0,-1.496423,0.1372593,0.4429586,0.5,2,on_off_m3,13
+mock,scale1,self,self,ACPLvsACAC,fixCondition,2.236958,1.107891,116.0,2.019115,0.04578094,0.1869276,0.5,2,on_off_m3,13
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-8.899917,1.0872,116.0,-8.186087,3.940284e-13,2.403522e-12,0.5,2,on_off_m3,13
+mock,scale1,self,self,PLACvsACAC,fixGuess,-4.752053,1.294643,116.0,-3.67055,0.0003672318,0.002056021,0.5,2,on_off_m3,13
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-2.431644,1.188335,116.0,-2.046261,0.04299126,0.1772643,0.5,3,on_off_m3,13
+mock,scale1,self,self,ACPLvsACAC,fixCondition,3.028294,1.030981,116.0,2.937292,0.003994462,0.02055755,0.5,3,on_off_m3,13
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-10.9115,1.011727,116.0,-10.78502,3.321293e-19,2.764455e-14,0.5,3,on_off_m3,13
+mock,scale1,self,self,PLACvsACAC,fixGuess,-5.45156,1.20477,116.0,-4.524981,1.469798e-05,8.591661e-05,0.5,3,on_off_m3,13

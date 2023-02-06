@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-2.677143,1.057063,116.0,-2.532623,0.01265729,0.06016813,0.5,0,on_off_m3,0
+mock,scale1,self,self,ACPLvsACAC,fixCondition,0.06607143,0.9395946,116.0,0.07031908,0.9440608,0.9998745,0.5,0,on_off_m3,0
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-7.985714,0.9740233,116.0,-8.198689,3.687388e-13,2.251532e-12,0.5,0,on_off_m3,0
+mock,scale1,self,self,PLACvsACAC,fixGuess,-5.2425,1.025427,116.0,-5.112507,1.267274e-06,7.504509e-06,0.5,0,on_off_m3,0
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-0.28,1.111619,116.0,-0.2518849,0.8015758,0.9943619,0.5,1,on_off_m3,0
+mock,scale1,self,self,ACPLvsACAC,fixCondition,0.6973214,0.9880874,116.0,0.7057285,0.4817719,0.894643,0.5,1,on_off_m3,0
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-7.228571,1.024293,116.0,-7.057132,1.330265e-10,7.970803e-10,0.5,1,on_off_m3,0
+mock,scale1,self,self,PLACvsACAC,fixGuess,-6.25125,1.078349,116.0,-5.797055,5.924989e-08,3.534152e-07,0.5,1,on_off_m3,0
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-1.531429,0.9864896,116.0,-1.552402,0.1232902,0.409913,0.5,2,on_off_m3,0
+mock,scale1,self,self,ACPLvsACAC,fixCondition,0.3401786,0.8768635,116.0,0.3879493,0.6987646,0.9800727,0.5,2,on_off_m3,0
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-7.942857,0.9089936,116.0,-8.738078,2.111917e-14,1.674216e-13,0.5,2,on_off_m3,0
+mock,scale1,self,self,PLACvsACAC,fixGuess,-6.07125,0.956965,116.0,-6.344276,4.469869e-09,2.673577e-08,0.5,2,on_off_m3,0
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-0.6728571,1.047267,116.0,-0.6424889,0.5218236,0.917963,0.5,3,on_off_m3,0
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-0.06696429,0.9308865,116.0,-0.07193604,0.9427767,0.9998657,0.5,3,on_off_m3,0
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-8.107143,0.9649961,116.0,-8.401218,1.265715e-13,7.985834e-13,0.5,3,on_off_m3,0
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.50125,1.015923,116.0,-7.38368,2.538973e-11,1.522248e-10,0.5,3,on_off_m3,0

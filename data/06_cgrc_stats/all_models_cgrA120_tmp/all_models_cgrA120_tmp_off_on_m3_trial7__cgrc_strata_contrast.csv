@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-6.7657,1.134261,116.0,-5.964855,2.71416e-08,1.620641e-07,0.5,0,off_on_m3,7
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-7.595238,1.259051,116.0,-6.032509,1.975209e-08,1.17984e-07,0.5,0,off_on_m3,7
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-0.007936508,1.453827,116.0,-0.005459045,0.9956537,0.9999999,0.5,0,off_on_m3,7
+mock,scale1,self,self,PLACvsACAC,fixGuess,-0.8374741,0.8707147,116.0,-0.9618238,0.3381388,0.7713239,0.5,0,off_on_m3,7
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-6.388889,1.247783,116.0,-5.120193,1.225877e-06,7.260217e-06,0.5,1,off_on_m3,7
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-7.380952,1.385063,116.0,-5.328965,4.920635e-07,2.922485e-06,0.5,1,off_on_m3,7
+mock,scale1,self,self,PLPLvsACPL,fixGuess,0.7539683,1.599333,116.0,0.4714266,0.6382216,0.9651998,0.5,1,off_on_m3,7
+mock,scale1,self,self,PLACvsACAC,fixGuess,-0.2380952,0.9578599,116.0,-0.24857,0.804133,0.9945781,0.5,1,off_on_m3,7
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-5.635266,1.424013,116.0,-3.957314,0.0001310121,0.0007476429,0.5,2,off_on_m3,7
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-8.309524,1.580682,116.0,-5.256924,6.75786e-07,4.010053e-06,0.5,2,off_on_m3,7
+mock,scale1,self,self,PLPLvsACPL,fixGuess,0.7777778,1.825214,116.0,0.4261296,0.6708031,0.9739005,0.5,2,off_on_m3,7
+mock,scale1,self,self,PLACvsACAC,fixGuess,-1.89648,1.093143,116.0,-1.734888,0.08541665,0.3104702,0.5,2,off_on_m3,7
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-5.927536,1.216852,116.0,-4.871206,3.542722e-06,2.08893e-05,0.5,3,off_on_m3,7
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-6.761905,1.350729,116.0,-5.006115,2.001067e-06,1.18292e-05,0.5,3,off_on_m3,7
+mock,scale1,self,self,PLPLvsACPL,fixGuess,1.690476,1.559687,116.0,1.083856,0.2806764,0.7000673,0.5,3,off_on_m3,7
+mock,scale1,self,self,PLACvsACAC,fixGuess,0.8561077,0.9341156,116.0,0.91649,0.3613114,0.7960957,0.5,3,off_on_m3,7

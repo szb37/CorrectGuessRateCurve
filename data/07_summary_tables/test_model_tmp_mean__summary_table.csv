@@ -1,0 +1,2 @@
+model,n_trials,n_patients,cgrc_param_set,cgr,avg_trt_p,sig_trt_rate,avg_trt_es,cgradj_avg_trt_p,cgradj_sig_trt_rate,cgradj_avg_trt_es
+off_off_0,8,80,1,0.498,0.531,0.0,-0.237,0.354,0.0,-0.529

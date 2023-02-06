@@ -1,0 +1,5 @@
+study,scale,guesser,respondent,strata,est,se,df,lower_CI,upper_CI
+sbmd,PANAS,self,self,PLPL,10.95098,0.9257515,229.0,9.126901,12.77506
+sbmd,PANAS,self,self,ACPL,12.59091,1.40951,229.0,9.813642,15.36818
+sbmd,PANAS,self,self,PLAC,18.35897,1.497139,229.0,15.40904,21.3089
+sbmd,PANAS,self,self,ACAC,19.5625,1.349503,229.0,16.90347,22.22153

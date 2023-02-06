@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-6.729167,1.069415,116.0,-6.292382,5.737591e-09,3.431185e-08,0.5,0,off_on_m3,9
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-7.345238,1.266522,116.0,-5.799535,5.857502e-08,3.493956e-07,0.5,0,off_on_m3,9
+mock,scale1,self,self,PLPLvsACPL,fixGuess,0.5833333,1.441999,116.0,0.4045311,0.6865671,0.9775191,0.5,0,off_on_m3,9
+mock,scale1,self,self,PLACvsACAC,fixGuess,-0.0327381,0.8175364,116.0,-0.04004482,0.9681262,0.9999768,0.5,0,off_on_m3,9
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-6.090278,1.241632,116.0,-4.905058,3.072297e-06,1.812776e-05,0.5,1,off_on_m3,9
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-4.642857,1.470481,116.0,-3.157373,0.002029295,0.01078334,0.5,1,off_on_m3,9
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-2.111111,1.674217,116.0,-1.260955,0.2098554,0.5895428,0.5,1,off_on_m3,9
+mock,scale1,self,self,PLACvsACAC,fixGuess,-0.6636905,0.9491916,116.0,-0.6992166,0.4858164,0.8971874,0.5,1,off_on_m3,9
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-5.041667,1.128276,116.0,-4.468469,1.842685e-05,0.0001075231,0.5,2,off_on_m3,9
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-7.154762,1.336232,116.0,-5.35443,4.396108e-07,2.611739e-06,0.5,2,off_on_m3,9
+mock,scale1,self,self,PLPLvsACPL,fixGuess,2.25,1.521367,116.0,1.478933,0.1418687,0.4534803,0.5,2,off_on_m3,9
+mock,scale1,self,self,PLACvsACAC,fixGuess,0.1369048,0.8625341,116.0,0.1587239,0.8741624,0.9985684,0.5,2,off_on_m3,9
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-5.111111,1.103314,116.0,-4.632509,9.513061e-06,5.57793e-05,0.5,3,off_on_m3,9
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-5.25,1.306669,116.0,-4.01785,0.0001047023,0.0005994972,0.5,3,off_on_m3,9
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-0.6944444,1.487708,116.0,-0.4667881,0.641527,0.9661615,0.5,3,off_on_m3,9
+mock,scale1,self,self,PLACvsACAC,fixGuess,-0.8333333,0.8434513,116.0,-0.9880041,0.325207,0.7565542,0.5,3,off_on_m3,9

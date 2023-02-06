@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-5.657863,1.518001,116.0,-3.72718,0.0003008472,0.001691522,0.5,0,off_on_m3,1
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-10.73362,1.82217,116.0,-5.890568,3.839924e-08,2.29184e-07,0.5,0,off_on_m3,1
+mock,scale1,self,self,PLPLvsACPL,fixGuess,4.572193,2.0868,116.0,2.191007,0.03045054,0.1318165,0.5,0,off_on_m3,1
+mock,scale1,self,self,PLACvsACAC,fixGuess,-0.5035596,1.126897,116.0,-0.446855,0.6558129,0.9701092,0.5,0,off_on_m3,1
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-4.506603,1.37535,116.0,-3.276696,0.001385731,0.007472332,0.5,1,off_on_m3,1
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-8.443975,1.650935,116.0,-5.114662,1.255531e-06,7.435215e-06,0.5,1,off_on_m3,1
+mock,scale1,self,self,PLPLvsACPL,fixGuess,3.320856,1.890697,116.0,1.756419,0.08165589,0.2997054,0.5,1,off_on_m3,1
+mock,scale1,self,self,PLACvsACAC,fixGuess,-0.6165164,1.020999,116.0,-0.6038364,0.5471315,0.9306673,0.5,1,off_on_m3,1
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-5.962785,1.227532,116.0,-4.857541,3.751835e-06,2.211611e-05,0.5,2,off_on_m3,1
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-11.50529,1.473498,116.0,-7.808145,2.845913e-12,1.710299e-11,0.5,2,off_on_m3,1
+mock,scale1,self,self,PLPLvsACPL,fixGuess,4.860963,1.687491,116.0,2.880586,0.004729282,0.0241115,0.5,2,off_on_m3,1
+mock,scale1,self,self,PLACvsACAC,fixGuess,-0.6815377,0.9112654,116.0,-0.7479026,0.4560325,0.8773893,0.5,2,off_on_m3,1
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-6.321729,1.263982,116.0,-5.00144,2.041381e-06,1.206652e-05,0.5,3,off_on_m3,1
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-9.012685,1.517252,116.0,-5.940139,3.046999e-08,1.819124e-07,0.5,3,off_on_m3,1
+mock,scale1,self,self,PLPLvsACPL,fixGuess,2.336898,1.737599,116.0,1.344901,0.1812808,0.5364278,0.5,3,off_on_m3,1
+mock,scale1,self,self,PLACvsACAC,fixGuess,-0.3540579,0.9383243,116.0,-0.37733,0.7066178,0.9816081,0.5,3,off_on_m3,1

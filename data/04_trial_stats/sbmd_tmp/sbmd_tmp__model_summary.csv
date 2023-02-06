@@ -1,0 +1,3 @@
+study,scale,guesser,respondent,model_type,df1,df2,f,adjr2,p
+sbmd,PANAS,self,self,without_guess,1.0,231.0,5.909012959038499,0.020721089914326196,0.015825931438907287
+sbmd,PANAS,self,self,with_guess,3.0,229.0,12.370948086059386,0.12818939406428076,1.5768840143444293e-07

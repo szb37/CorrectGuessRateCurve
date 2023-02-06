@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-4.244246,1.538423,116.0,-2.758829,0.006742505,0.03362835,0.5,0,off_on_m3,10
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-8.995017,1.667816,116.0,-5.393292,3.699303e-07,2.198734e-06,0.5,0,off_on_m3,10
+mock,scale1,self,self,PLPLvsACPL,fixGuess,2.432773,1.956146,116.0,1.243656,0.2161335,0.6005022,0.5,0,off_on_m3,10
+mock,scale1,self,self,PLACvsACAC,fixGuess,-2.317998,1.149716,116.0,-2.016148,0.04609502,0.1880062,0.5,0,off_on_m3,10
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-4.409207,1.41627,116.0,-3.113254,0.002330789,0.01231286,0.5,1,off_on_m3,10
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-6.368771,1.535388,116.0,-4.147987,6.417834e-05,0.0003698509,0.5,1,off_on_m3,10
+mock,scale1,self,self,PLPLvsACPL,fixGuess,1.621849,1.800825,116.0,0.9006144,0.3696593,0.8045098,0.5,1,off_on_m3,10
+mock,scale1,self,self,PLACvsACAC,fixGuess,-0.3377149,1.058427,116.0,-0.3190724,0.7502455,0.9887064,0.5,1,off_on_m3,10
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-3.966752,1.437657,116.0,-2.759178,0.006735761,0.03359695,0.5,2,off_on_m3,10
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-5.684385,1.558575,116.0,-3.647169,0.0003985005,0.002227009,0.5,2,off_on_m3,10
+mock,scale1,self,self,PLPLvsACPL,fixGuess,0.7226891,1.82802,116.0,0.3953399,0.6933181,0.9789583,0.5,2,off_on_m3,10
+mock,scale1,self,self,PLACvsACAC,fixGuess,-0.9949444,1.074411,116.0,-0.9260373,0.3563492,0.7909685,0.5,2,off_on_m3,10
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-0.6445013,1.655549,116.0,-0.3892976,0.6977698,0.9798722,0.5,3,off_on_m3,10
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-7.189369,1.794793,116.0,-4.005682,0.0001095479,0.000626832,0.5,3,off_on_m3,10
+mock,scale1,self,self,PLPLvsACPL,fixGuess,3.672269,2.105075,116.0,1.744484,0.08372341,0.3056454,0.5,3,off_on_m3,10
+mock,scale1,self,self,PLACvsACAC,fixGuess,-2.872599,1.237249,116.0,-2.321763,0.02199088,0.09899556,0.5,3,off_on_m3,10

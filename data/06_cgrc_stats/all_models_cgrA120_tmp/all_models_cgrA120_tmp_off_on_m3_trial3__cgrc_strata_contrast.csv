@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-8.9875,1.048089,116.0,-8.575127,5.030593e-14,3.418377e-13,0.5,0,off_on_m3,3
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-3.031818,1.076598,116.0,-2.816109,0.005714097,0.02880436,0.5,0,off_on_m3,3
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-3.5875,1.294121,116.0,-2.772152,0.006489294,0.03244741,0.5,0,off_on_m3,3
+mock,scale1,self,self,PLACvsACAC,fixGuess,2.368182,0.7634175,116.0,3.10208,0.002413485,0.01273024,0.5,0,off_on_m3,3
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-9.122222,1.205952,116.0,-7.564331,1.004941e-11,6.028322e-11,0.5,1,off_on_m3,3
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-3.05,1.238755,116.0,-2.462149,0.01528101,0.07140971,0.5,1,off_on_m3,3
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-4.7,1.489041,116.0,-3.156394,0.002035572,0.01081532,0.5,1,off_on_m3,3
+mock,scale1,self,self,PLACvsACAC,fixGuess,1.372222,0.8784032,116.0,1.562178,0.1209701,0.4042491,0.5,1,off_on_m3,3
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-7.501389,1.238005,116.0,-6.059257,1.741161e-08,1.04018e-07,0.5,2,off_on_m3,3
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-2.2,1.271679,116.0,-1.729996,0.08629072,0.3129469,0.5,2,off_on_m3,3
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-3.6125,1.528618,116.0,-2.363246,0.01977913,0.09007116,0.5,2,off_on_m3,3
+mock,scale1,self,self,PLACvsACAC,fixGuess,1.688889,0.9017498,116.0,1.872902,0.06359931,0.2453955,0.5,2,off_on_m3,3
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-7.018056,1.082273,116.0,-6.484552,2.265889e-09,1.355933e-08,0.5,3,off_on_m3,3
+mock,scale1,self,self,ACPLvsACAC,fixCondition,-3.837879,1.111712,116.0,-3.452225,0.0007766639,0.004266739,0.5,3,off_on_m3,3
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-2.929167,1.336329,116.0,-2.19195,0.03038054,0.1315527,0.5,3,off_on_m3,3
+mock,scale1,self,self,PLACvsACAC,fixGuess,0.2510101,0.7883164,116.0,0.3184129,0.7507443,0.9887744,0.5,3,off_on_m3,3

@@ -1,0 +1,5 @@
+study,scale,guesser,respondent,strata,est,se,df,lower_CI,upper_CI,model_name,trial_id
+mock,scale1,self,self,PLPL,19.16129,0.7511867,116.0,17.67347,20.64911,on_off_m3,7
+mock,scale1,self,self,ACPL,27.08108,0.6875873,116.0,25.71923,28.44293,on_off_m3,7
+mock,scale1,self,self,PLAC,18.19048,0.9126812,116.0,16.3828,19.99816,on_off_m3,7
+mock,scale1,self,self,ACAC,26.03226,0.7511867,116.0,24.54444,27.52008,on_off_m3,7

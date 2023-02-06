@@ -1,0 +1,17 @@
+study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id,model_name,trial_id
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,0.4891304,1.162837,116.0,0.4206353,0.6747997,0.9748528,0.5,0,on_off_m3,11
+mock,scale1,self,self,ACPLvsACAC,fixCondition,0.3631757,0.997529,116.0,0.3640753,0.7164645,0.9834172,0.5,0,on_off_m3,11
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-6.925676,1.035032,116.0,-6.691269,8.231768e-10,4.92874e-09,0.5,0,on_off_m3,11
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.05163,1.129586,116.0,-6.242668,7.281736e-09,4.353761e-08,0.5,0,on_off_m3,11
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,0.8214286,1.200743,116.0,0.6841004,0.4952762,0.9029681,0.5,1,on_off_m3,11
+mock,scale1,self,self,ACPLvsACAC,fixCondition,1.717905,1.030046,116.0,1.667795,0.09805376,0.3453916,0.5,1,on_off_m3,11
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-6.583977,1.068771,116.0,-6.160326,1.078582e-08,6.446601e-08,0.5,1,on_off_m3,11
+mock,scale1,self,self,PLACvsACAC,fixGuess,-5.6875,1.166407,116.0,-4.876084,3.470862e-06,2.046762e-05,0.5,1,on_off_m3,11
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,0.5496894,0.9799211,116.0,0.5609528,0.5759117,0.9433696,0.5,2,on_off_m3,11
+mock,scale1,self,self,ACPLvsACAC,fixCondition,1.130068,0.840616,116.0,1.344333,0.1814639,0.5367859,0.5,2,on_off_m3,11
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-8.496139,0.8722194,116.0,-9.740827,9.591277e-17,4.052314e-14,0.5,2,on_off_m3,11
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.915761,0.9519001,116.0,-8.315747,1.988973e-13,1.233458e-12,0.5,2,on_off_m3,11
+mock,scale1,self,self,PLPLvsPLAC,fixCondition,-0.06677019,1.128902,116.0,-0.05914614,0.9529375,0.9999253,0.5,3,on_off_m3,11
+mock,scale1,self,self,ACPLvsACAC,fixCondition,0.2584459,0.9684178,116.0,0.2668744,0.7900397,0.9933141,0.5,3,on_off_m3,11
+mock,scale1,self,self,PLPLvsACPL,fixGuess,-7.838803,1.004826,116.0,-7.801155,2.951208e-12,1.773415e-11,0.5,3,on_off_m3,11
+mock,scale1,self,self,PLACvsACAC,fixGuess,-7.513587,1.096621,116.0,-6.851581,3.720891e-10,2.22866e-09,0.5,3,on_off_m3,11
