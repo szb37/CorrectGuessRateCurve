@@ -17,26 +17,22 @@ The following parameters are all random normal variables defining the toy models
 Model families: off_off, on_off, off_on, on_on
 
 
+Refactored parameters
 
+    adjust params:
+        p_se: (Bernuilli) probability of AC guess after AC trt
+        aeb: AEB's contribution to outcomes; score space
 
-mu_TRT, sigma_TRT, mu_SE, sigma_SE
+    fixed params:
+        oc_nh: Outcomes's natural history; score space
+        dte: Treatment's contribution to outcomes; score space
+        p_fse: probability of AC guess after PL trt
 
-    oc_nh: Outcomes's natural history; score space
-    gs_nh: Guess's natural history; probability space
-    se: Treatment's contribution to guess; probability space
-    dte: Treatment's contribution to outcomes; score space
-    pte: Placebo guess's contribution to guess; score space
-    ate: Active guess's contribution to guess; score space
-    dte: Treatment's contribution to outcomes; score space
-    gs2oc: Guess's contribution to outcome; score space
-    oc2gs: Outcome's contribution to guess; probability space
-
-
-
-
-
+model_definition = {
+name
+params
+}
 """
-
 
 """ Models with direct drug effect OFF and placebo leak OFF """
 off_off_0 = {

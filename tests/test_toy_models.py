@@ -222,8 +222,8 @@ class HelpersUnitTests(unittest.TestCase):
 
         n = 50
         df = toy_models.Helpers.get_TrialDatadDf(n)
-        self.assertEqual(df.shape, (50, 11))
+        self.assertEqual(df.shape, (50, 9))
 
         n = 30
         df = toy_models.Helpers.get_TrialDatadDf(n)
-        self.assertEqual(df.shape, (30, 11))
+        self.assertEqual(df.shape, (30, 9))

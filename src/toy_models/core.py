@@ -127,7 +127,7 @@ class ToyModelsAnalyis():
 
     @staticmethod
     def get_model_family_summary(analysis_name, model_family_name, cgrc_param_set):
-        ''' Construct summary table for moel family
+        ''' Construct summary table for model family
             Args:
                 analysis_name (str): model_family_name+postfix
                 model_family_name (str): name of model family (i.e. list of model definitions, see model_defs)
@@ -415,14 +415,10 @@ class Helpers():
         df.study = 'mock'
         df.scale = 'scale1'
         df.tp = 'wk8'
-        df.respondent = 'self'
-        df.guesser = 'self'
         df.baseline = 0
         df.score = None
         df.delta_score = None
         df.guess = None
-
-        df.add_univalue_columns({'guesser': 'self', 'respondent': 'self'})
 
         df['baseline'] = df['baseline'].astype('object')
         df['subject_id'] = df['subject_id'].astype('object')
@@ -494,8 +490,7 @@ class Helpers():
         else:
             assert False
 
-        master_df.add_univalue_columns(
-            {'respondent': None, 'guesser': None, 'model_name': None, 'trial_id': None})
+        master_df.add_univalue_columns({'model_name': None, 'trial_id': None})
 
         for fpath in [fpath for fpath in os.listdir(target_dir) if (df_type in fpath)]:
             df = pd.read_csv(os.path.join(target_dir, fpath))

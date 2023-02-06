@@ -36,7 +36,4 @@ trial_cgrs = {
     'mock': 0.7,
 }
 
-
-guessers = ['self']
-respondents = ['self']
 estimator = 'mean'

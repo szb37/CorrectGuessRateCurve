@@ -62,19 +62,15 @@ class Controllers():
 
         for study, scales in study_scales.items():
             print('Create strata plots - study:{}'.format(study))
-            for scale, respondent, guesser in product(scales, constants.respondents, constants.guessers):
+            for scale in scales:
 
                 strata_summary_filtered = strata_summary.loc[
                     (strata_summary.study == study) &
-                    (strata_summary.scale == scale) &
-                    (strata_summary.respondent == respondent) &
-                    (strata_summary.guesser == guesser)]
+                    (strata_summary.scale == scale)]
 
                 strata_contrast_filtered = strata_contrast.loc[
                     (strata_contrast.study == study) &
-                    (strata_contrast.scale == scale) &
-                    (strata_contrast.respondent == respondent) &
-                    (strata_contrast.guesser == guesser)]
+                    (strata_contrast.scale == scale)]
 
                 if strata_summary_filtered.shape[0] == 0:
                     assert strata_contrast_filtered.shape[0] == 0
@@ -87,16 +83,14 @@ class Controllers():
 
                 Drawer.draw_strata_plot(
                     ax=ax,
-                    title='Study:{}; scale:{}; res:{}'.format(
-                        study, scale, respondent),
+                    title='Study:{}; scale:{}'.format(study, scale),
                     strata_summary=strata_summary_filtered,
                     strata_contrast=strata_contrast_filtered,
                     p_variant=p_variant,
                     is_p_color=is_p_color,
                 )
 
-                fname = analysis_name+'__'+study.upper()+'_'+scale.upper()+'_G'+guesser + \
-                    'R'+respondent+'__strata_plot'
+                fname = analysis_name+'__'+study.upper()+'_'+scale.upper()+'__strata_plot'
                 Helpers.save_plot(
                     fig=fig,
                     output_dir=folders.strata_plots,
@@ -141,14 +135,11 @@ class Controllers():
             else:
                 assert False
 
-            for scale, respondent, guesser in product(scales, constants.respondents, constants.guessers):
+            for scale in scale:
 
                 cgrc_model_comps_filtered = cgrc_model_comps.loc[
                     (cgrc_model_comps.study == study) &
-                    (cgrc_model_comps.scale == scale) &
-                    (cgrc_model_comps.guesser == guesser) &
-                    (cgrc_model_comps.respondent == respondent)
-                ]
+                    (cgrc_model_comps.scale == scale)]
 
                 if cgrc_model_comps_filtered.shape[0] == 0:
                     continue
@@ -159,7 +150,6 @@ class Controllers():
 
                 Drawer.draw_vsCGR_condition_p(
                     ax=ax1,
-                    # 'Study:{}; scale:{}; res:{}'.format(study, scale, respondent),
                     title=None,
                     cgrc_model_comps=cgrc_model_comps_filtered,
                     cgr=original_cgr,
@@ -168,7 +158,6 @@ class Controllers():
 
                 Drawer.draw_vsCGR_effect_size(
                     ax=ax2,
-                    # 'Study:{}; scale:{}; res:{}'.format(study, scale, respondent),
                     title=None,
                     cgrc_model_comps=cgrc_model_comps_filtered,
                     cgr=original_cgr,
@@ -208,11 +197,9 @@ class Controllers():
         assert isinstance(save_figure, bool)
 
         cgrc_model_comps = pd.read_csv(os.path.join(input_dir, input_fname))
-        studies, scales, respondents, guessers = miscs.get_study_scales(
-            input_df=cgrc_model_comps,
-            study_scales=study_scales)
+        studies, scales, = miscs.get_study_scales(input_df=cgrc_model_comps, study_scales=study_scales)
 
-        for study, scale, respondent, guesser in product(studies, scales, respondents, guessers):
+        for study, scale in product(studies, scales):
 
             if guesser == 'ext':
                 continue
@@ -226,10 +213,7 @@ class Controllers():
 
             cgrc_model_comps_filtered = cgrc_model_comps.loc[
                 (cgrc_model_comps.study == study) &
-                (cgrc_model_comps.scale == scale) &
-                (cgrc_model_comps.guesser == guesser) &
-                (cgrc_model_comps.respondent == respondent)
-            ]
+                (cgrc_model_comps.scale == scale)]
 
             if cgrc_model_comps_filtered.shape[0] == 0:
                 continue
@@ -281,10 +265,10 @@ class Drawer():
             ax (matplotlib.axes._subplots.AxesSubplot): axes to be drawn on
             title (str): plot title, if any
             strata_summary (pd.core.frame.DataFrame): summary_df dataframe whose rows have already
-                been filtered for study, scale, respondent and guesser
+                been filtered for study and scale
                 # TODO: convert object to src.dataframe_classes.ModelSummaryDf
             strata_contrast (pd.core.frame.DataFrame): contrast_df dataframe whose rows have already
-                been filtered for study, scale, respondent and guesser
+                been filtered for study and scale
                 # TODO: convert object to src.dataframe_classes.ContrastSummaryDf
             p_variant (str, optional): must be 'p' or 'p_adj';
                 if p (default), then, raw p-value is used for strata comparisons
@@ -382,7 +366,7 @@ class Drawer():
             ax (matplotlib.axes._subplots.AxesSubplot): axes to be drawn on
             title (str): plot title, if any
             cgrc_model_comps (pd.core.frame.DataFrame): model_components_df dataframe; rows
-                already filtered for study, scale, respondent and guesser
+                already filtered for study and scale
                 # TODO: convert object to src.dataframe_classes.ModelComponentsDf
             cgr (float): correct guess rate
             add_legend (bool, optional): add plot legend or not
@@ -431,7 +415,7 @@ class Drawer():
             ax (matplotlib.axes._subplots.AxesSubplot): axes to be drawn on
             title (str): plot title, if any
             cgrc_model_comps (pd.core.frame.DataFrame): cgrc_model_comps dataframe; rows
-                already filtered for study, scale, respondent and guesser
+                already filtered for study, scale
                 # TODO: convert object to src.dataframe_classes.CGRCurveDf
             cgr (float): correct guess rate
             add_legend (bool, optional): add plot legend or not
@@ -616,12 +600,10 @@ class Helpers():
 
     @staticmethod
     def is_df_filtered(df):
-        """ Checks if values of study, scale, respondent and guesser are unque in dataframe """
+        """ Checks if values of study, scale are unque in dataframe """
 
         assert len(df.study.unique().tolist()) == 1
         assert len(df.scale.unique().tolist()) == 1
-        assert len(df.respondent.unique().tolist()) == 1
-        assert len(df.guesser.unique().tolist()) == 1
         return True
 
     @staticmethod

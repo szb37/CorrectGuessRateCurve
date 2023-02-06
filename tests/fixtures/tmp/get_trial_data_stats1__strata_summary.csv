@@ -1,2 +1,2 @@
-study,scale,guesser,respondent,strata,est,se,df,lower_CI,upper_CI,cgr,cgr_trial_id
-tads,bdi,self,self,tadaa,4.0,5.0,6.0,7.0,8.0,0.0,0
+study,scale,strata,est,se,df,lower_CI,upper_CI,cgr,cgr_trial_id
+tads,bdi,tadaa,4.0,5.0,6.0,7.0,8.0,0.0,0

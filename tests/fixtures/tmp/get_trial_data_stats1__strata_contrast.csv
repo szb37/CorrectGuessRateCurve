@@ -1,2 +1,2 @@
-study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id
-tads,bdi,self,self,tadaa,tadaaa,10.0,20.0,30.0,40.0,50.0,60.0,0.0,0
+study,scale,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id
+tads,bdi,tadaa,tadaaa,10.0,20.0,30.0,40.0,50.0,60.0,0.0,0

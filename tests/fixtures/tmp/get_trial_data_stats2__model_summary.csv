@@ -1,3 +1,3 @@
-study,scale,guesser,respondent,model_type,df1,df2,f,adjr2,p,cgr,cgr_trial_id
-tads,bdi,self,self,test_type,1.0,2.0,3.0,4.0,5.0,0.0,0
-tads,rads,ext,ext,test_type,5.0,6.0,7.0,8.0,9.0,0.0,0
+study,scale,model_type,df1,df2,f,adjr2,p,cgr,cgr_trial_id
+tads,bdi,test_type,1.0,2.0,3.0,4.0,5.0,0.0,0
+tads,rads,test_type,5.0,6.0,7.0,8.0,9.0,0.0,0

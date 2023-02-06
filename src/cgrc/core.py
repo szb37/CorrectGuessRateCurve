@@ -320,22 +320,14 @@ class CorrectGuessRateCurve():
         cgr_values = [round(el, 5) for el in cgrc_parameters['cgr_values']]
 
         trial_data_df = pd.read_csv(os.path.join(input_dir, input_fname))
-        studies, scales, respondents, guessers = miscs.get_study_scales(
-            input_df=trial_data_df,
-            study_scales=study_scales)
+        studies, scales = miscs.get_study_scales(input_df=trial_data_df, study_scales=study_scales)
 
         master_cgrc_df = df_class.CGRCurveDf()
-        master_cgrc_df.add_univalue_columns({'respondent': None})
 
-        for study, scale, respondent, guesser in product(studies, scales, respondents, guessers):
+        for study, scale in product(studies, scales):
 
-            if guesser == 'ext':
-                return  # CGRC only makes sense for guessing by patients
 
-            df_filtered = trial_data_df.loc[
-                (trial_data_df.guesser == guesser) &
-                (trial_data_df.respondent == respondent) &
-                (trial_data_df.scale == scale)]
+            df_filtered = trial_data_df.loc[(trial_data_df.scale == scale)]
 
             if study != 'all':
                 df_filtered = df_filtered.loc[(df_filtered.study == study)]
@@ -376,7 +368,6 @@ class CorrectGuessRateCurve():
                 cgrc_datapoint_df.cgr_trial_id = cgr_trial_id
                 cgrc_datapoint_df.study = study
                 cgrc_datapoint_df.scale = scale
-                cgrc_datapoint_df['respondent'] = respondent
 
                 master_cgrc_df = pd.concat(
                     [master_cgrc_df, cgrc_datapoint_df], sort=False)

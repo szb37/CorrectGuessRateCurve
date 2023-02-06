@@ -65,27 +65,25 @@ class Controllers():
         input_trial_data_fpath = os.path.join(
             input_dir, input_fname).replace('\\', '/')
         trial_data_df = pd.read_csv(input_trial_data_fpath)
-        studies, scales, respondents, guessers = miscs.get_study_scales(
-            input_df=trial_data_df,
-            study_scales=study_scales)
+        studies, scales = miscs.get_study_scales(input_df=trial_data_df, study_scales=study_scales)
 
         # Read dataframe into R and set baseline to be PL
         Helpers.load_df_into_R_space(input_trial_data_fpath)
         desc = 'Get trial stats ({})'.format(input_fname)
 
-        for study, scale, respondent, guesser in tqdmproduct(studies, scales, respondents, guessers, desc=desc, disable=False):
+        for study, scale in tqdmproduct(studies, scales, desc=desc, disable=False):
 
-            Helpers.get_df_filtered(study, scale, respondent, guesser)
+            Helpers.get_df_filtered(study, scale)
 
             try:
                 all_dfs = StatsCore.get_stats(
-                    try_covs=try_covs, add_cgrc_columns=False)
+                    try_covs=try_covs, add_cgrc_columns=False
+                )
                 all_dfs = Helpers.add_metadata_process_trialdata(
                     all_dfs=all_dfs,
                     study=study,
                     scale=scale,
-                    guesser=guesser,
-                    respondent=respondent)
+                )
             except NoSelectedRows:
                 continue
             finally:
@@ -160,9 +158,7 @@ class Controllers():
         cgrc_data_df = pd.read_csv(input_fpath)
         cgr_trial_ids = cgrc_data_df.cgr_trial_id.unique().tolist()
         cgrs = cgrc_data_df.cgr.unique().tolist()
-        studies, scales, respondents, guessers = miscs.get_study_scales(
-            input_df=cgrc_data_df,
-            study_scales=study_scales)
+        studies, scales = miscs.get_study_scales(input_df=cgrc_data_df, study_scales=study_scales)
 
         # Initalize output
         master_model_summary_df = df_class.ModelSummaryDf()
@@ -180,22 +176,21 @@ class Controllers():
 
         desc = 'Get CGRC stats ({})'.format(input_fname)
 
-        for study, scale, respondent, guesser, cgr, cgr_trial_id, in tqdmproduct(studies, scales, respondents, guessers, cgrs, cgr_trial_ids, desc=desc, disable=False):
+        for study, scale, cgr, cgr_trial_id, in tqdmproduct(studies, scales, cgrs, cgr_trial_ids, desc=desc, disable=False):
 
-            Helpers.get_df_filtered(
-                study, scale, respondent, guesser, cgr, cgr_trial_id)
+            Helpers.get_df_filtered(study, scale, cgr, cgr_trial_id)
 
             try:
                 all_dfs = StatsCore.get_stats(
-                    try_covs=try_covs, add_cgrc_columns=True)
+                    try_covs=try_covs, add_cgrc_columns=True
+                )
                 all_dfs = Helpers.add_metadata_process_cgrc(
                     all_dfs=all_dfs,
                     study=study,
                     scale=scale,
                     cgr=cgr,
                     cgr_trial_id=cgr_trial_id,
-                    guesser=guesser,
-                    respondent=respondent)
+                )
             except NoSelectedRows:
                 continue
             finally:
@@ -307,7 +302,6 @@ class StatsCore():
             model_summary_fromR['study'] = [None]
             model_summary_fromR['scale'] = [None]
             model_summary_fromR['model_type'] = [model_type]
-            model_summary_fromR['guesser'] = [None]
             model_summary = pd.concat(
                 [model_summary, pd.DataFrame.from_dict(model_summary_fromR)], sort=False)
 
@@ -323,7 +317,6 @@ class StatsCore():
 
                 model_components_fromR['study'] = [None]
                 model_components_fromR['scale'] = [None]
-                model_components_fromR['guesser'] = [None]
                 model_components_fromR['model_type'] = [model_type]
                 model_components_fromR['component'] = [comp]
                 model_components = pd.concat(
@@ -404,7 +397,6 @@ class StatsCore():
                 'adj_p')
             starata_contrast_fromR['study'] = [None, None]
             starata_contrast_fromR['scale'] = [None, None]
-            starata_contrast_fromR['guesser'] = [None, None]
             strata_contrast = pd.concat(
                 [strata_contrast, pd.DataFrame.from_dict(starata_contrast_fromR)], sort=False)
 
@@ -425,7 +417,6 @@ class StatsCore():
                 'upper.CL')
             starata_summary_fromR['study'] = [None, None, None, None]
             starata_summary_fromR['scale'] = [None, None, None, None]
-            starata_summary_fromR['guesser'] = [None, None, None, None]
             starata_summary_fromR['strata'] = [
                 starata_summary_fromR['condition'][0] +
                 starata_summary_fromR['guess'][0],
@@ -492,36 +483,33 @@ class Helpers():
         return json.loads(rjson[0])
 
     @staticmethod
-    def get_df_filtered(study, scale, respondent, guesser, cgr=None, cgr_trial_id=None):
+    def get_df_filtered(study, scale, cgr=None, cgr_trial_id=None):
         """ Selects subset of R dataframe.
             It is assumed that 'df' exists in R global space and it is an instance of the XYZ
-            dataframe types. This functions filters df by study, scale, cgr, cgr_trial_id, respondent and guesser.
+            dataframe types. This functions filters df by study, scale, cgr and cgr_trial_id
             Nothing is returned, but df_filtered is created in R global space.
 
             Args:
                 study (str): name of the study. If 'all', then
                 scale (str): name of the scale.
-                respondent (str): who responded to questionnaire, must be either 'self' or 'ext'
-                guesser (str): who guessed treatment, must be either 'self' or 'ext'
                 cgr (float, optional): break blind ratio, ignored if None
                 cgr_trial_id (int, optional): trial index if bbc_engine DF is the input, ignored if None
         """
 
         if (study in ['all', 'sbmd']) and (cgr is None) and (cgr_trial_id is None):
-            filter_string = 'df_filtered = filter(df, scale=="{}" & respondent=="{}" & guesser=="{}")'.format(
-                scale, respondent, guesser)
+            filter_string = 'df_filtered = filter(df, scale=="{}")'.format(scale)
 
         elif (study in ['all', 'sbmd']) and (cgr is not None) and (cgr_trial_id is not None):
-            filter_string = 'df_filtered = filter(df, scale=="{}" & cgr=={} & cgr_trial_id=={} & respondent=="{}" & guesser=="{}")'.format(
-                scale, cgr, cgr_trial_id, respondent, guesser)
+            filter_string = 'df_filtered = filter(df, scale=="{}" & cgr=={} & cgr_trial_id=={})'.format(
+                scale, cgr, cgr_trial_id)
 
         elif (study not in ['all', 'sbmd']) and (cgr is None) and (cgr_trial_id is None):
-            filter_string = 'df_filtered = filter(df, study=="{}" & scale=="{}" & respondent=="{}" & guesser=="{}")'.format(
-                study, scale, respondent, guesser)
+            filter_string = 'df_filtered = filter(df, study=="{}" & scale=="{}")'.format(
+                study, scale)
 
         elif (study not in ['all', 'sbmd']) and (cgr is not None) and (cgr_trial_id is not None):
-            filter_string = 'df_filtered = filter(df, study=="{}" & scale=="{}" & cgr=={} & cgr_trial_id=={} & respondent=="{}" & guesser=="{}")'.format(
-                study, scale, cgr, cgr_trial_id, respondent, guesser)
+            filter_string = 'df_filtered = filter(df, study=="{}" & scale=="{}" & cgr=={} & cgr_trial_id=={})'.format(
+                study, scale, cgr, cgr_trial_id)
 
         else:
             assert False  # Invalid input
@@ -664,62 +652,47 @@ class Helpers():
         return tukey_contrasts
 
     @staticmethod
-    def add_metadata_process_trialdata(all_dfs, study, scale, guesser, respondent):
+    def add_metadata_process_trialdata(all_dfs, study, scale):
         """ Add metadata to model_summary, model_components, strata_summary, strata_contrast """
 
         all_dfs['model_summary'].study = study
         all_dfs['model_summary'].scale = scale
-        all_dfs['model_summary'].guesser = guesser
-        all_dfs['model_summary'].respondent = respondent
 
         all_dfs['model_components'].study = study
         all_dfs['model_components'].scale = scale
-        all_dfs['model_components'].guesser = guesser
-        all_dfs['model_components'].respondent = respondent
 
         all_dfs['strata_summary'].study = study
         all_dfs['strata_summary'].scale = scale
-        all_dfs['strata_summary'].guesser = guesser
-        all_dfs['strata_summary'].respondent = respondent
 
         all_dfs['strata_contrast'].study = study
         all_dfs['strata_contrast'].scale = scale
-        all_dfs['strata_contrast'].guesser = guesser
-        all_dfs['strata_contrast'].respondent = respondent
+
 
         return all_dfs
 
     @staticmethod
-    def add_metadata_process_cgrc(all_dfs, study, scale, guesser, respondent, cgr, cgr_trial_id):
+    def add_metadata_process_cgrc(all_dfs, study, scale, cgr, cgr_trial_id):
         """ Add metadata to model_summary, model_components, strata_summary, strata_contrast """
 
         all_dfs['model_summary'].study = study
         all_dfs['model_summary'].scale = scale
         all_dfs['model_summary'].cgr = cgr
         all_dfs['model_summary'].cgr_trial_id = cgr_trial_id
-        all_dfs['model_summary'].guesser = guesser
-        all_dfs['model_summary'].respondent = respondent
 
         all_dfs['model_components'].study = study
         all_dfs['model_components'].scale = scale
         all_dfs['model_components'].cgr = cgr
         all_dfs['model_components'].cgr_trial_id = cgr_trial_id
-        all_dfs['model_components'].guesser = guesser
-        all_dfs['model_components'].respondent = respondent
 
         all_dfs['strata_summary'].study = study
         all_dfs['strata_summary'].scale = scale
         all_dfs['strata_summary'].cgr = cgr
         all_dfs['strata_summary'].cgr_trial_id = cgr_trial_id
-        all_dfs['strata_summary'].guesser = guesser
-        all_dfs['strata_summary'].respondent = respondent
 
         all_dfs['strata_contrast'].study = study
         all_dfs['strata_contrast'].scale = scale
         all_dfs['strata_contrast'].cgr = cgr
         all_dfs['strata_contrast'].cgr_trial_id = cgr_trial_id
-        all_dfs['strata_contrast'].respondent = respondent
-        all_dfs['strata_contrast'].guesser = guesser
 
         return all_dfs
 

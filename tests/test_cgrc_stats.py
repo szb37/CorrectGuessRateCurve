@@ -22,8 +22,6 @@ class StatsUnitTests(unittest.TestCase):
     model_summary = model_summary.append({
         'study': 'test',
         'scale': 'foo',
-        'guesser': 'foo',
-        'respondent': 'foo',
         'cgr': 50,
         'cgr_trial_id': 50,
         'model_type': 'test_type',
@@ -39,8 +37,6 @@ class StatsUnitTests(unittest.TestCase):
     model_components = model_components.append({
         'study': 'test',
         'scale': 'foo',
-        'guesser': 'foo',
-        'respondent': 'foo',
         'cgr': 50,
         'cgr_trial_id': 50,
         'model_type': 'test_type',
@@ -56,8 +52,6 @@ class StatsUnitTests(unittest.TestCase):
     strata_summary = strata_summary.append({
         'study': 'test',
         'scale': 'foo',
-        'guesser': 'foo',
-        'respondent': 'foo',
         'cgr': 40,
         'cgr_trial_id': 50,
         'strata': 'tadaa',
@@ -73,8 +67,6 @@ class StatsUnitTests(unittest.TestCase):
     strata_contrast = strata_contrast.append({
         'study': 'test',
         'scale': 'foo',
-        'guesser': 'foo',
-        'respondent': 'foo',
         'cgr': 60,
         'cgr_trial_id': 50,
         'contrast': 'tadaa',
@@ -99,8 +91,6 @@ class StatsUnitTests(unittest.TestCase):
     model_summary2 = model_summary2.append({
         'study': 'test',
         'scale': 'foo',
-        'guesser': 'foo',
-        'respondent': 'foo',
         'cgr': 50,
         'cgr_trial_id': 50,
         'model_type': 'test_type',
@@ -116,8 +106,6 @@ class StatsUnitTests(unittest.TestCase):
     model_components2 = model_components2.append({
         'study': 'test',
         'scale': 'foo',
-        'guesser': 'foo',
-        'respondent': 'foo',
         'cgr': 50,
         'cgr_trial_id': 50,
         'model_type': 'test_type',
@@ -133,8 +121,6 @@ class StatsUnitTests(unittest.TestCase):
     strata_summary2 = strata_summary2.append({
         'study': 'test',
         'scale': 'foo',
-        'guesser': 'foo',
-        'respondent': 'foo',
         'cgr': 40,
         'cgr_trial_id': 50,
         'strata': 'tadaa',
@@ -150,8 +136,6 @@ class StatsUnitTests(unittest.TestCase):
     strata_contrast2 = strata_contrast2.append({
         'study': 'test',
         'scale': 'foo',
-        'guesser': 'foo',
-        'respondent': 'foo',
         'cgr': 60,
         'cgr_trial_id': 50,
         'contrast': 'tadaa',
@@ -173,82 +157,55 @@ class StatsUnitTests(unittest.TestCase):
 
     def test_get_df_filtered(self):
 
-        input_fpath = os.path.join(
-            folders.fixtures, 'get_df_filtered_input.csv').replace('\\', '/')
+        input_fpath = os.path.join(folders.fixtures, 'get_df_filtered_input.csv').replace('\\', '/')
         stats.Helpers.load_df_into_R_space(input_fpath)
 
-        stats.Helpers.get_df_filtered(
-            study='a', scale='foo', respondent='self', guesser='self')
+        stats.Helpers.get_df_filtered(study='a', scale='foo')
         temp = stats.Helpers.r2pyjson('df_filtered')
-        self.assertEqual(temp['delta_score'], [0, 5, 6, 7])
+        self.assertEqual(temp['delta_score'], [0, 3, 4, 5, 6, 7])
 
-        stats.Helpers.get_df_filtered(
-            study='b', scale='foo', respondent='self', guesser='self')
+        stats.Helpers.get_df_filtered(study='b', scale='foo')
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [1, 8])
 
-        stats.Helpers.get_df_filtered(
-            study='a', scale='tadaa', respondent='self', guesser='self')
+        stats.Helpers.get_df_filtered(study='a', scale='tadaa')
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [2])
 
-        stats.Helpers.get_df_filtered(
-            study='a', scale='foo', respondent='ext', guesser='self')
+        stats.Helpers.get_df_filtered(study='a', scale='foo', cgr=0, cgr_trial_id=0)
         temp = stats.Helpers.r2pyjson('df_filtered')
-        self.assertEqual(temp['delta_score'], [3])
+        self.assertEqual(temp['delta_score'], [0, 3, 4])
 
-        stats.Helpers.get_df_filtered(
-            study='a', scale='foo', respondent='self', guesser='ext')
-        temp = stats.Helpers.r2pyjson('df_filtered')
-        self.assertEqual(temp['delta_score'], [4])
-
-        stats.Helpers.get_df_filtered(
-            study='a', scale='foo', respondent='self', guesser='self', cgr=0, cgr_trial_id=0)
-        temp = stats.Helpers.r2pyjson('df_filtered')
-        self.assertEqual(temp['delta_score'], [0])
-
-        stats.Helpers.get_df_filtered(
-            study='a', scale='foo', respondent='self', guesser='self', cgr=1, cgr_trial_id=0)
+        stats.Helpers.get_df_filtered(study='a', scale='foo', cgr=1, cgr_trial_id=0)
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [5])
 
-        stats.Helpers.get_df_filtered(
-            study='a', scale='foo', respondent='self', guesser='self', cgr=0, cgr_trial_id=1)
+        stats.Helpers.get_df_filtered(study='a', scale='foo', cgr=0, cgr_trial_id=1)
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [6])
 
-        stats.Helpers.get_df_filtered(
-            study='a', scale='foo', respondent='self', guesser='self', cgr=1, cgr_trial_id=1)
+        stats.Helpers.get_df_filtered(study='a', scale='foo', cgr=1, cgr_trial_id=1)
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [7])
 
-        stats.Helpers.get_df_filtered(
-            study='all', scale='foo', respondent='self', guesser='self')
+        stats.Helpers.get_df_filtered(study='all', scale='foo')
         temp = stats.Helpers.r2pyjson('df_filtered')
-        self.assertEqual(temp['delta_score'], [0, 1, 5, 6, 7, 8, 9])
+        self.assertEqual(temp['delta_score'], [0, 1, 3, 4, 5, 6, 7, 8, 9])
 
-        stats.Helpers.get_df_filtered(
-            study='all', scale='tadaa', respondent='self', guesser='self')
+        stats.Helpers.get_df_filtered(study='all', scale='tadaa')
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [2])
 
-        stats.Helpers.get_df_filtered(
-            study='all', scale='nonexistent', respondent='self', guesser='self')
+        stats.Helpers.get_df_filtered(study='all', scale='nonexistent')
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [])
 
     @mock.patch.object(stats.StatsCore, 'get_stats')
-    def test_get_processed_stats_SingleDfConcatanate(self, mock_get_stats):
+    def test_get_trial_stats_SingleDf(self, mock_get_stats):
+        """ Single df is 'concatanated' """
 
-        # Case where single df is concatanated
         mock_get_stats.side_effect = [
             StatsUnitTests.all_dfs,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
             stats.NoSelectedRows,
         ]
 
@@ -270,41 +227,39 @@ class StatsUnitTests(unittest.TestCase):
             folders.tmp_dir, 'get_trial_data_stats1__strata_contrast.csv'))
 
         # The +2s correspond to the GRC columns
-        self.assertEqual(output_model_summary.shape, (1, 10+2))
+        self.assertEqual(output_model_summary.shape, (1, 10))
         self.assertEqual(output_model_summary.f[0], 3)
         self.assertEqual(output_model_summary.adjr2[0], 4)
         self.assertEqual(output_model_summary.p[0], 5)
 
-        self.assertEqual(output_model_components.shape, (1, 10+2))
+        self.assertEqual(output_model_components.shape, (1, 10))
         self.assertEqual(output_model_components.se[0], 2)
         self.assertEqual(output_model_components.t[0], 3)
         self.assertEqual(output_model_components.p[0], 4)
 
-        self.assertEqual(output_strata_summary.shape, (1, 10+2))
+        self.assertEqual(output_strata_summary.shape, (1, 10))
         self.assertEqual(output_strata_summary.est[0], 4)
         self.assertEqual(output_strata_summary.se[0], 5)
         self.assertEqual(output_strata_summary.df[0], 6)
 
-        self.assertEqual(output_strata_contrast.shape, (1, 12+2))
+        self.assertEqual(output_strata_contrast.shape, (1, 12))
         self.assertEqual(output_strata_contrast.est[0], 10)
         self.assertEqual(output_strata_contrast.se[0], 20)
         self.assertEqual(output_strata_contrast.df[0], 30)
         self.assertEqual(output_strata_contrast.p_adj[0], 60)
 
-    @mock.patch('src.constants.respondents', ['self', 'ext'])
-    @mock.patch('src.constants.guessers', ['self', 'ext'])
     @mock.patch.object(stats.StatsCore, 'get_stats')
-    def test_get_processed_stats_MulitDfConcatanate(self, mock_get_stats):
+    def test_get_trial_stats_MultiDf(self, mock_get_stats):
 
         mock_get_stats.side_effect = [
             StatsUnitTests.all_dfs,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
             StatsUnitTests.all_dfs2,
+            stats.NoSelectedRows,
+            stats.NoSelectedRows,
+            stats.NoSelectedRows,
+            stats.NoSelectedRows,
+            stats.NoSelectedRows,
+            stats.NoSelectedRows,
         ]
 
         stats.Controllers.get_trial_stats(
@@ -325,7 +280,7 @@ class StatsUnitTests(unittest.TestCase):
             folders.tmp_dir, 'get_trial_data_stats2__strata_contrast.csv'))
 
         # The +2s correspond to the GRC columns
-        self.assertEqual(output_model_summary.shape, (2, 10+2))
+        self.assertEqual(output_model_summary.shape, (2, 10))
         self.assertEqual(output_model_summary.f[0], 3)
         self.assertEqual(output_model_summary.adjr2[0], 4)
         self.assertEqual(output_model_summary.p[0], 5)
@@ -333,7 +288,7 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_model_summary.adjr2[1], 8)
         self.assertEqual(output_model_summary.p[1], 9)
 
-        self.assertEqual(output_model_components.shape, (2, 10+2))
+        self.assertEqual(output_model_components.shape, (2, 10))
         self.assertEqual(output_model_components.se[0], 2)
         self.assertEqual(output_model_components.t[0], 3)
         self.assertEqual(output_model_components.p[0], 4)
@@ -341,7 +296,7 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_model_components.t[1], 6)
         self.assertEqual(output_model_components.p[1], 7)
 
-        self.assertEqual(output_strata_summary.shape, (2, 10+2))
+        self.assertEqual(output_strata_summary.shape, (2, 10))
         self.assertEqual(output_strata_summary.est[0], 4)
         self.assertEqual(output_strata_summary.se[0], 5)
         self.assertEqual(output_strata_summary.df[0], 6)
@@ -349,7 +304,7 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_strata_summary.se[1], 2)
         self.assertEqual(output_strata_summary.df[1], 3)
 
-        self.assertEqual(output_strata_contrast.shape, (2, 12+2))
+        self.assertEqual(output_strata_contrast.shape, (2, 12))
         self.assertEqual(output_strata_contrast.est[0], 10)
         self.assertEqual(output_strata_contrast.se[0], 20)
         self.assertEqual(output_strata_contrast.df[0], 30)
@@ -360,7 +315,7 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_strata_contrast.p_adj[1], 6)
 
     @mock.patch.object(stats.StatsCore, 'get_stats')
-    def test_get_CGRC_stats_SingleDfConcatanate(self, mock_get_stats):
+    def test_get_CGRC_stats_SingleDf(self, mock_get_stats):
 
         mock_get_stats.side_effect = [
             StatsUnitTests.all_dfs,
@@ -390,39 +345,39 @@ class StatsUnitTests(unittest.TestCase):
         output_strata_contrast = pd.read_csv(os.path.join(
             folders.tmp_dir, 'get_CGRC_stats1__cgrc_strata_contrast.csv'))
 
-        self.assertEqual(output_model_summary.shape, (1, 12))
+        self.assertEqual(output_model_summary.shape, (1, 10))
         self.assertEqual(output_model_summary.f[0], 3)
         self.assertEqual(output_model_summary.adjr2[0], 4)
         self.assertEqual(output_model_summary.p[0], 5)
 
-        self.assertEqual(output_model_components.shape, (1, 12))
+        self.assertEqual(output_model_components.shape, (1, 10))
         self.assertEqual(output_model_components.se[0], 2)
         self.assertEqual(output_model_components.t[0], 3)
         self.assertEqual(output_model_components.p[0], 4)
 
-        self.assertEqual(output_strata_summary.shape, (1, 12))
+        self.assertEqual(output_strata_summary.shape, (1, 10))
         self.assertEqual(output_strata_summary.est[0], 4)
         self.assertEqual(output_strata_summary.se[0], 5)
         self.assertEqual(output_strata_summary.df[0], 6)
 
-        self.assertEqual(output_strata_contrast.shape, (1, 14))
+        self.assertEqual(output_strata_contrast.shape, (1, 12))
         self.assertEqual(output_strata_contrast.est[0], 10)
         self.assertEqual(output_strata_contrast.se[0], 20)
         self.assertEqual(output_strata_contrast.df[0], 30)
         self.assertEqual(output_strata_contrast.p_adj[0], 60)
 
-    @mock.patch('src.constants.respondents', ['self', 'ext'])
-    @mock.patch('src.constants.guessers', ['self', 'ext'])
+    #@mock.patch('src.constants.respondents', ['self', 'ext'])
+    #@mock.patch('src.constants.guessers', ['self', 'ext'])
     @mock.patch.object(stats.StatsCore, 'get_stats')
-    def test_get_CGRC_stats_MultiDfConcatanate(self, mock_get_stats):
+    def test_get_CGRC_stats_MultiDf(self, mock_get_stats):
 
         mock_get_stats.side_effect = [
             StatsUnitTests.all_dfs,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
-            stats.NoSelectedRows,
             StatsUnitTests.all_dfs2,
+            stats.NoSelectedRows,
+            stats.NoSelectedRows,
+            stats.NoSelectedRows,
+            stats.NoSelectedRows,
             stats.NoSelectedRows,
             stats.NoSelectedRows,
         ]
@@ -444,7 +399,7 @@ class StatsUnitTests(unittest.TestCase):
         output_strata_contrast = pd.read_csv(os.path.join(
             folders.tmp_dir, 'get_CGRC_stats2__cgrc_strata_contrast.csv'))
 
-        self.assertEqual(output_model_summary.shape, (2, 12))
+        self.assertEqual(output_model_summary.shape, (2, 10))
         self.assertEqual(output_model_summary.f[0], 3)
         self.assertEqual(output_model_summary.adjr2[0], 4)
         self.assertEqual(output_model_summary.p[0], 5)
@@ -452,7 +407,7 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_model_summary.adjr2[1], 8)
         self.assertEqual(output_model_summary.p[1], 9)
 
-        self.assertEqual(output_model_components.shape, (2, 12))
+        self.assertEqual(output_model_components.shape, (2, 10))
         self.assertEqual(output_model_components.se[0], 2)
         self.assertEqual(output_model_components.t[0], 3)
         self.assertEqual(output_model_components.p[0], 4)
@@ -460,7 +415,7 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_model_components.t[1], 6)
         self.assertEqual(output_model_components.p[1], 7)
 
-        self.assertEqual(output_strata_summary.shape, (2, 12))
+        self.assertEqual(output_strata_summary.shape, (2, 10))
         self.assertEqual(output_strata_summary.est[0], 4)
         self.assertEqual(output_strata_summary.se[0], 5)
         self.assertEqual(output_strata_summary.df[0], 6)
@@ -468,7 +423,7 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_strata_summary.se[1], 2)
         self.assertEqual(output_strata_summary.df[1], 3)
 
-        self.assertEqual(output_strata_contrast.shape, (2, 14))
+        self.assertEqual(output_strata_contrast.shape, (2, 12))
         self.assertEqual(output_strata_contrast.est[0], 10)
         self.assertEqual(output_strata_contrast.se[0], 20)
         self.assertEqual(output_strata_contrast.df[0], 30)
@@ -496,10 +451,8 @@ class StatsIntegrationTests(unittest.TestCase):
             folders.fixtures, 'get_stats_data_output1_model_summary.csv'))
 
         # Drop empty columns
-        model_components.drop(
-            ['study', 'scale', 'guesser', 'respondent'], axis=1, inplace=True)
-        model_summary.drop(['study', 'scale', 'guesser',
-                           'respondent'], axis=1, inplace=True)
+        model_components.drop(['study', 'scale'], axis=1, inplace=True)
+        model_summary.drop(['study', 'scale'], axis=1, inplace=True)
         ref_components.drop(['study', 'scale', 'guesser', 'respondent',
                             'cgr', 'cgr_trial_id'], axis=1, inplace=True)
         ref_summary.drop(['study', 'scale', 'guesser', 'respondent',
@@ -510,27 +463,19 @@ class StatsIntegrationTests(unittest.TestCase):
 
     def test_get_strata_stats1(self):
 
-        r('df_filtered=read.csv("'+folders.fixtures.replace('\\', '/') +
-          '//get_stats_data_input1.csv")')
-        strata_summary, strata_contrast = stats.StatsCore.get_strata_stats(
-            try_covs=[], add_cgrc_columns=False)
+        r('df_filtered=read.csv("'+folders.fixtures.replace('\\', '/') + '//get_stats_data_input1.csv")')
+        strata_summary, strata_contrast = stats.StatsCore.get_strata_stats(try_covs=[], add_cgrc_columns=False)
 
         # Reference outputs are manually checked against R output (codebase/tests/stats_calc_reference.r)
         # If new pseudodata is generated, check references again
-        ref_summary = pd.read_csv(os.path.join(
-            folders.fixtures, 'get_stats_data_output1_strata_summary.csv'))
-        ref_contrast = pd.read_csv(os.path.join(
-            folders.fixtures, 'get_stats_data_output1_strata_contrasts.csv'))
+        ref_summary = pd.read_csv(os.path.join(folders.fixtures, 'get_stats_data_output1_strata_summary.csv'))
+        ref_contrast = pd.read_csv(os.path.join(folders.fixtures, 'get_stats_data_output1_strata_contrasts.csv'))
 
         # Drop empty columns
-        strata_summary.drop(['study', 'scale', 'guesser',
-                            'respondent'], axis=1, inplace=True)
-        strata_contrast.drop(
-            ['study', 'scale', 'guesser', 'respondent'], axis=1, inplace=True)
-        ref_summary.drop(['study', 'scale', 'guesser', 'respondent',
-                         'cgr', 'cgr_trial_id'], axis=1, inplace=True)
-        ref_contrast.drop(['study', 'scale', 'guesser', 'respondent',
-                          'cgr', 'cgr_trial_id'], axis=1, inplace=True)
+        strata_summary.drop(['study', 'scale'], axis=1, inplace=True)
+        strata_contrast.drop(['study', 'scale'], axis=1, inplace=True)
+        ref_summary.drop(['study', 'scale', 'cgr', 'cgr_trial_id'], axis=1, inplace=True)
+        ref_contrast.drop(['study', 'scale', 'cgr', 'cgr_trial_id'], axis=1, inplace=True)
 
         strata_summary.df = strata_summary.df.astype('int64')
         strata_contrast.df = strata_contrast.df.astype('int64')

@@ -462,7 +462,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
             folders.tmp_dir, analysis_name+'__cgrc_model_summary.csv'))
 
         self.assertTrue(all([df2 in [296, 298] for df2 in df.df2.tolist()]))
-        self.assertTrue(df.shape == (10, 12))
+        self.assertTrue(df.shape == (10, 10))
         self.assertTrue(all([abs(p) < 0.01 for p in df.p.tolist()]))
         temp = df.loc[(df.cgr.isin([0.25, 0.5, 0.75])) &
                       (df.model_type == 'with_guess')]
@@ -472,7 +472,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
         # Check strata summary
         df = pd.read_csv(os.path.join(
             folders.tmp_dir, analysis_name+'__cgrc_strata_summary.csv'))
-        self.assertTrue(df.shape == (12, 12))
+        self.assertTrue(df.shape == (12, 10))
         temp = df.loc[(df.strata == 'PLPL')]
         self.assertTrue(all([abs(est-10) < 1 for est in temp.est.tolist()]))
         temp = df.loc[(df.strata == 'ACPL')]
@@ -486,7 +486,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
         df = pd.read_csv(os.path.join(
             folders.tmp_dir, analysis_name+'__cgrc_strata_contrast.csv'))
 
-        self.assertTrue(df.shape == (12, 14))
+        self.assertTrue(df.shape == (12, 12))
         self.assertTrue(all([abs(p) < 0.001 for p in df.p.tolist()]))
         self.assertTrue(all([df == 296 for df in df.df.tolist()]))
 

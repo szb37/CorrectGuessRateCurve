@@ -64,15 +64,10 @@ class TrialDataDf(pd.DataFrame, MyDataframes):
         assert all([not (math.isnan(delta_score) or delta_score is None) for delta_score in self.delta_score.to_list()])
         assert all([not (math.isnan(baseline) or baseline is None) for baseline in self.baseline.to_list()])
 
-
-
-
         # Check whether all combinations of subject_id/study/scale/tp are unique by checking if
         # n of rows change after duplicate removal
         temp = copy.deepcopy(self)
         cols_to_keep = ['study', 'subject_id', 'scale', 'tp']
-        [cols_to_keep.append(col) for col in ['guesser',
-                                              'respondent'] if col in self.columns]
         temp = temp.loc[:, cols_to_keep]
 
         n_before = temp.shape[0]
@@ -101,12 +96,6 @@ class CGRCurveDf(pd.DataFrame, MyDataframes):
         self['score'] = self['score'].astype('float')
         self['delta_score'] = self['delta_score'].astype('float')
 
-        if 'guesser' in self.columns:
-            self['guesser'] = self['guesser'].astype('str')
-
-        if 'respondent' in self.columns:
-            self['respondent'] = self['respondent'].astype('str')
-
         if 'model_id' in self.columns:
             self['model_id'] = self['model_id'].astype('int')
 
@@ -123,7 +112,7 @@ class ModelSummaryDf(pd.DataFrame, MyDataframes):
 
     def __init__(self):
         super(ModelSummaryDf, self).__init__(columns=[
-            'study', 'scale', 'guesser', 'respondent', 'model_type', 'df1', 'df2', 'f', 'adjr2', 'p'])
+            'study', 'scale', 'model_type', 'df1', 'df2', 'f', 'adjr2', 'p'])
 
     def set_column_types(self):
         """ Set column types """
@@ -143,12 +132,6 @@ class ModelSummaryDf(pd.DataFrame, MyDataframes):
         if 'cgr_trial_id' in self.columns:
             self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
 
-        if 'guesser' in self.columns:
-            self['guesser'] = self['guesser'].astype('str')
-
-        if 'respondent' in self.columns:
-            self['respondent'] = self['respondent'].astype('str')
-
         if 'model_id' in self.columns:
             self['model_id'] = self['model_id'].astype('int')
 
@@ -164,7 +147,7 @@ class ModelComponentsDf(pd.DataFrame, MyDataframes):
 
     def __init__(self):
         super(ModelComponentsDf, self).__init__(columns=[
-            'study', 'scale', 'guesser', 'respondent', 'model_type', 'component', 'est', 'se', 't', 'p'])
+            'study', 'scale', 'model_type', 'component', 'est', 'se', 't', 'p'])
 
     def set_column_types(self):
         """ Set column types """
@@ -184,12 +167,6 @@ class ModelComponentsDf(pd.DataFrame, MyDataframes):
         if 'cgr_trial_id' in self.columns:
             self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
 
-        if 'guesser' in self.columns:
-            self['guesser'] = self['guesser'].astype('str')
-
-        if 'respondent' in self.columns:
-            self['respondent'] = self['respondent'].astype('str')
-
         if 'model_id' in self.columns:
             self['model_id'] = self['model_id'].astype('int')
 
@@ -205,7 +182,7 @@ class StrataSummaryDf(pd.DataFrame, MyDataframes):
 
     def __init__(self):
         super(StrataSummaryDf, self).__init__(columns=[
-            'study', 'scale', 'guesser', 'respondent', 'strata', 'est', 'se', 'df', 'lower_CI', 'upper_CI'])
+            'study', 'scale', 'strata', 'est', 'se', 'df', 'lower_CI', 'upper_CI'])
 
     def set_column_types(self):
         """ Set column types """
@@ -225,12 +202,6 @@ class StrataSummaryDf(pd.DataFrame, MyDataframes):
         if 'cgr_trial_id' in self.columns:
             self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
 
-        if 'guesser' in self.columns:
-            self['guesser'] = self['guesser'].astype('str')
-
-        if 'respondent' in self.columns:
-            self['respondent'] = self['respondent'].astype('str')
-
         if 'model_id' in self.columns:
             self['model_id'] = self['model_id'].astype('int')
 
@@ -246,14 +217,13 @@ class StrataContrastDf(pd.DataFrame, MyDataframes):
 
     def __init__(self):
         super(StrataContrastDf, self).__init__(columns=[
-            'study', 'scale', 'guesser', 'respondent', 'contrast', 'type', 'est', 'se', 'df', 't', 'p', 'p_adj'])
+            'study', 'scale', 'contrast', 'type', 'est', 'se', 'df', 't', 'p', 'p_adj'])
 
     def set_column_types(self):
         """ Set column types """
 
         self['study'] = self['study'].astype('str')
         self['scale'] = self['scale'].astype('str')
-        self['guesser'] = self['guesser'].astype('str')
         self['type'] = self['type'].astype('str')
         self['est'] = self['est'].astype('float')
         self['se'] = self['se'].astype('float')
@@ -267,12 +237,6 @@ class StrataContrastDf(pd.DataFrame, MyDataframes):
 
         if 'cgr_trial_id' in self.columns:
             self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
-
-        if 'guesser' in self.columns:
-            self['guesser'] = self['guesser'].astype('str')
-
-        if 'respondent' in self.columns:
-            self['respondent'] = self['respondent'].astype('str')
 
         if 'model_id' in self.columns:
             self['model_id'] = self['model_id'].astype('int')

@@ -36,9 +36,6 @@ def get_study_scales(input_df, study_scales):
     assert (isinstance(study_scales, dict) or (study_scales is None))
     assert (isinstance(input_df, pd.DataFrame) or (input_df is None))
 
-    respondents = constants.respondents
-    guessers = constants.guessers
-
     if study_scales is None:
         studies = input_df.study.unique().tolist()
         scales = input_df.scale.unique().tolist()
@@ -46,7 +43,7 @@ def get_study_scales(input_df, study_scales):
         studies = list(study_scales.keys())
         scales = list(study_scales.values())[0]
 
-    return studies, scales, respondents, guessers
+    return studies, scales
 
 
 def create_analysis_dirs(analysis_name, trial_data_subdir=False, incl_cgrc_plots_dir=True):
