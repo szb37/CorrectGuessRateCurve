@@ -23,8 +23,8 @@ import os
 class Controllers():
 
     @staticmethod
-    def run_cgrc_trial(trial_name, postfix, cgrc_param_set, study_scales=None, add_columns=None, save_figs=True):
-        ''' Run the whole CGRC pipeline on a trial
+    def run_cgrc_trial(trial_name, postfix, cgrc_param_set, study_scales=None, save_figs=True):
+        ''' Run CGRC pipeline on a TrialDataDf
             Args:
                 trial_name (str): name of trial
                 cgrc_param_set (int): which paramter set used, see cgrc_parameters within constants
@@ -36,7 +36,6 @@ class Controllers():
         assert isinstance(postfix, str)
         assert isinstance(cgrc_param_set, int)
         assert (isinstance(study_scales, dict) or (study_scales is None))
-        assert (isinstance(add_columns, dict)) or (add_columns is None)
 
         cgrc_parameters = constants.cgrc_parameters[cgrc_param_set]
         analysis_name = trial_name + '_{}'.format(postfix)
@@ -374,8 +373,7 @@ class CorrectGuessRateCurve():
                 del cgrc_datapoint_df, sample_sizes
 
         master_cgrc_df.__class__ = df_class.CGRCurveDf
-        master_cgrc_df.add_univalue_columns({'guesser': 'self'})
-        master_cgrc_df.add_univalue_columns(add_columns)
+        master_cgrc_df.add_columns(add_columns)
         master_cgrc_df.set_column_types()
 
         master_cgrc_df.to_csv(os.path.join(

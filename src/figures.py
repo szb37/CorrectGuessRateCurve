@@ -201,9 +201,6 @@ class Controllers():
 
         for study, scale in product(studies, scales):
 
-            if guesser == 'ext':
-                continue
-
             if cgr_type == 'all':
                 original_cgr = constants.trial_cgrs[study]
             elif cgr_type == 'active':

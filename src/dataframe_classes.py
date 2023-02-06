@@ -10,7 +10,7 @@ import copy
 import abc
 
 
-class MyDataframes(metaclass=abc.ABCMeta):
+class CGRCDataFrame(metaclass=abc.ABCMeta):
     ''' ABC of CGRC related DFs '''
 
     @abc.abstractmethod
@@ -21,25 +21,27 @@ class MyDataframes(metaclass=abc.ABCMeta):
     def check_assumptions(self):
         pass
 
-    def add_univalue_columns(self, add_columns):
-        """ Add columns with a fixed value """
+    def add_columns(self, add_columns):
+        """ Add columns with a fixed value
+            Args:
+                add_columns (dict): keys are the new column names, values are the value of the column
+        """
+
+        assert (isinstance(add_columns, dict) or (add_columns is None))
 
         if add_columns is None:
             return
 
-        assert isinstance(add_columns, dict)
-
         for col, value in add_columns.items():
-            assert isinstance(col, str)
             self[col] = value
 
 
-class TrialDataDf(pd.DataFrame, MyDataframes):
+class TrialDataDf(pd.DataFrame, CGRCDataFrame):
     ''' Minimal set of columns for CGRC analysis '''
 
     def __init__(self):
         super(TrialDataDf, self).__init__(columns=[
-            'study', 'subject_id', 'scale', 'tp', 'condition', 'guess','baseline', 'score', 'delta_score',
+            'study', 'subject_id', 'scale', 'tp', 'condition', 'guess', 'baseline', 'score', 'delta_score',
         ])
 
     def set_column_types(self):
@@ -76,7 +78,7 @@ class TrialDataDf(pd.DataFrame, MyDataframes):
         assert n_before == n_after
 
 
-class CGRCurveDf(pd.DataFrame, MyDataframes):
+class CGRCurveDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding CGRC data '''
 
     def __init__(self):
@@ -107,7 +109,7 @@ class CGRCurveDf(pd.DataFrame, MyDataframes):
         pass
 
 
-class ModelSummaryDf(pd.DataFrame, MyDataframes):
+class ModelSummaryDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding model summary output '''
 
     def __init__(self):
@@ -142,7 +144,7 @@ class ModelSummaryDf(pd.DataFrame, MyDataframes):
     def check_assumptions(self):
         pass
 
-class ModelComponentsDf(pd.DataFrame, MyDataframes):
+class ModelComponentsDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding model components output '''
 
     def __init__(self):
@@ -177,7 +179,7 @@ class ModelComponentsDf(pd.DataFrame, MyDataframes):
     def check_assumptions(self):
         pass
 
-class StrataSummaryDf(pd.DataFrame, MyDataframes):
+class StrataSummaryDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding model output by strata '''
 
     def __init__(self):
@@ -212,7 +214,7 @@ class StrataSummaryDf(pd.DataFrame, MyDataframes):
     def check_assumptions(self):
         pass
 
-class StrataContrastDf(pd.DataFrame, MyDataframes):
+class StrataContrastDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding model output by strata '''
 
     def __init__(self):
@@ -248,7 +250,7 @@ class StrataContrastDf(pd.DataFrame, MyDataframes):
     def check_assumptions(self):
         pass
 
-class ModelFamilyResultsDf(pd.DataFrame, MyDataframes):
+class ModelFamilyResultsDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding toy models data '''
 
     def __init__(self):

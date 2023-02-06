@@ -481,16 +481,16 @@ class Helpers():
             master_df = df_class.StrataContrastDf()
         elif df_type == '__cgrc_model_components':
             master_df = df_class.ModelComponentsDf()
-            master_df.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
+            master_df.add_columns({'cgr': None, 'cgr_trial_id': None})
         elif df_type == '__cgrc_strata_contrast':
             master_df = df_class.StrataContrastDf()
-            master_df.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
+            master_df.add_columns({'cgr': None, 'cgr_trial_id': None})
         elif df_type == '__trial_data':
             master_df = df_class.TrialDataDf()
         else:
             assert False
 
-        master_df.add_univalue_columns({'model_name': None, 'trial_id': None})
+        master_df.add_columns({'model_name': None, 'trial_id': None})
 
         for fpath in [fpath for fpath in os.listdir(target_dir) if (df_type in fpath)]:
             df = pd.read_csv(os.path.join(target_dir, fpath))

@@ -108,10 +108,10 @@ class Controllers():
         master_model_summary_df.__class__ = df_class.ModelSummaryDf
 
         # if add_columns is not None:
-        master_strata_summary_df.add_univalue_columns(add_columns)
-        master_strata_contrast_df.add_univalue_columns(add_columns)
-        master_model_components_df.add_univalue_columns(add_columns)
-        master_model_summary_df.add_univalue_columns(add_columns)
+        master_strata_summary_df.add_columns(add_columns)
+        master_strata_contrast_df.add_columns(add_columns)
+        master_model_components_df.add_columns(add_columns)
+        master_model_summary_df.add_columns(add_columns)
 
         master_strata_summary_df.set_column_types()
         master_strata_contrast_df.set_column_types()
@@ -162,16 +162,16 @@ class Controllers():
 
         # Initalize output
         master_model_summary_df = df_class.ModelSummaryDf()
-        master_model_summary_df.add_univalue_columns(
+        master_model_summary_df.add_columns(
             {'cgr': None, 'cgr_trial_id': None})
         master_model_components_df = df_class.ModelComponentsDf()
-        master_model_components_df.add_univalue_columns(
+        master_model_components_df.add_columns(
             {'cgr': None, 'cgr_trial_id': None})
         master_strata_summary_df = df_class.StrataSummaryDf()
-        master_strata_summary_df.add_univalue_columns(
+        master_strata_summary_df.add_columns(
             {'cgr': None, 'cgr_trial_id': None})
         master_strata_contrast_df = df_class.StrataContrastDf()
-        master_strata_contrast_df.add_univalue_columns(
+        master_strata_contrast_df.add_columns(
             {'cgr': None, 'cgr_trial_id': None})
 
         desc = 'Get CGRC stats ({})'.format(input_fname)
@@ -214,10 +214,10 @@ class Controllers():
         master_model_components_df.__class__ = df_class.ModelComponentsDf
         master_model_summary_df.__class__ = df_class.ModelSummaryDf
 
-        master_strata_summary_df.add_univalue_columns(add_columns)
-        master_strata_contrast_df.add_univalue_columns(add_columns)
-        master_model_components_df.add_univalue_columns(add_columns)
-        master_model_summary_df.add_univalue_columns(add_columns)
+        master_strata_summary_df.add_columns(add_columns)
+        master_strata_contrast_df.add_columns(add_columns)
+        master_model_components_df.add_columns(add_columns)
+        master_model_summary_df.add_columns(add_columns)
 
         master_strata_summary_df.set_column_types()
         master_strata_contrast_df.set_column_types()
@@ -286,9 +286,9 @@ class StatsCore():
         model_summary = df_class.ModelSummaryDf()
         model_components = df_class.ModelComponentsDf()
         if add_cgrc_columns:
-            model_summary.add_univalue_columns(
+            model_summary.add_columns(
                 {'cgr': None, 'cgr_trial_id': None})
-            model_components.add_univalue_columns(
+            model_components.add_columns(
                 {'cgr': None, 'cgr_trial_id': None})
 
         r("without_guess=lm(formula='delta_score~condition', df_filtered)")
@@ -349,9 +349,9 @@ class StatsCore():
         strata_contrast = df_class.StrataContrastDf()
 
         if add_cgrc_columns:
-            strata_summary.add_univalue_columns(
+            strata_summary.add_columns(
                 {'cgr': None, 'cgr_trial_id': None})
-            strata_contrast.add_univalue_columns(
+            strata_contrast.add_columns(
                 {'cgr': None, 'cgr_trial_id': None})
 
         py_df_filtered = Helpers.r2pyjson('df_filtered')

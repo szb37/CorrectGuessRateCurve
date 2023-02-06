@@ -18,7 +18,7 @@ class StatsUnitTests(unittest.TestCase):
 
     # Define mock dataframes
     model_summary = df_class.ModelSummaryDf()
-    model_summary.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
+    model_summary.add_columns({'cgr': None, 'cgr_trial_id': None})
     model_summary = model_summary.append({
         'study': 'test',
         'scale': 'foo',
@@ -33,7 +33,7 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     model_components = df_class.ModelComponentsDf()
-    model_components.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
+    model_components.add_columns({'cgr': None, 'cgr_trial_id': None})
     model_components = model_components.append({
         'study': 'test',
         'scale': 'foo',
@@ -48,7 +48,7 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     strata_summary = df_class.StrataSummaryDf()
-    strata_summary.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
+    strata_summary.add_columns({'cgr': None, 'cgr_trial_id': None})
     strata_summary = strata_summary.append({
         'study': 'test',
         'scale': 'foo',
@@ -63,7 +63,7 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     strata_contrast = df_class.StrataContrastDf()
-    strata_contrast.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
+    strata_contrast.add_columns({'cgr': None, 'cgr_trial_id': None})
     strata_contrast = strata_contrast.append({
         'study': 'test',
         'scale': 'foo',
@@ -87,7 +87,7 @@ class StatsUnitTests(unittest.TestCase):
     }
 
     model_summary2 = df_class.ModelSummaryDf()
-    model_summary2.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
+    model_summary2.add_columns({'cgr': None, 'cgr_trial_id': None})
     model_summary2 = model_summary2.append({
         'study': 'test',
         'scale': 'foo',
@@ -102,7 +102,7 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     model_components2 = df_class.ModelComponentsDf()
-    model_components2.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
+    model_components2.add_columns({'cgr': None, 'cgr_trial_id': None})
     model_components2 = model_components2.append({
         'study': 'test',
         'scale': 'foo',
@@ -117,7 +117,7 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     strata_summary2 = df_class.StrataSummaryDf()
-    strata_summary2.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
+    strata_summary2.add_columns({'cgr': None, 'cgr_trial_id': None})
     strata_summary2 = strata_summary2.append({
         'study': 'test',
         'scale': 'foo',
@@ -132,7 +132,7 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     strata_contrast2 = df_class.StrataContrastDf()
-    strata_contrast2.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
+    strata_contrast2.add_columns({'cgr': None, 'cgr_trial_id': None})
     strata_contrast2 = strata_contrast2.append({
         'study': 'test',
         'scale': 'foo',
@@ -366,8 +366,6 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_strata_contrast.df[0], 30)
         self.assertEqual(output_strata_contrast.p_adj[0], 60)
 
-    #@mock.patch('src.constants.respondents', ['self', 'ext'])
-    #@mock.patch('src.constants.guessers', ['self', 'ext'])
     @mock.patch.object(stats.StatsCore, 'get_stats')
     def test_get_CGRC_stats_MultiDf(self, mock_get_stats):
 
