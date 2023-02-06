@@ -11,7 +11,7 @@ subanalysis_name: {model_family}_cgrc{cgrc_param_set}_{model_name}_trial{trial_i
 from tqdm.contrib.itertools import product as tqdmproduct
 import src.toy_models.model_defs as model_defs
 from statistics import mean, median
-import src.my_dataframes as mydfs
+import src.dataframe_classes as df_class
 import src.constants as constants
 import src.folders as folders
 import src.figures as figures
@@ -138,7 +138,7 @@ class ToyModelsAnalyis():
         assert isinstance(model_family_name, str)
         assert isinstance(cgrc_param_set, int)
 
-        df = mydfs.ModelFamilyResultsDf()
+        df = df_class.ModelFamilyResultsDf()
 
         trial_data = Helpers.get_concateneted_df_type(
             target_dir=os.path.join(folders.data_trial_data, analysis_name),
@@ -220,7 +220,7 @@ class ToyModelsAnalyis():
 
             df = df.append(row, ignore_index=True)
 
-        df.__class__ = mydfs.ModelFamilyResultsDf
+        df.__class__ = df_class.ModelFamilyResultsDf
         df.set_column_types()
         df.to_csv(os.path.join(folders.data_summary_tables, analysis_name +
                   '_{}__summary_table.csv'.format(constants.estimator)), index=False)
@@ -304,7 +304,7 @@ class ToyModelsDataGenerator():
         if trial_id is not None:
             df['trial_id'] = trial_id
 
-        df.__class__ = mydfs.TrialDataDf
+        df.__class__ = df_class.TrialDataDf
         df.set_column_types()
         df.to_csv(os.path.join(output_dir, output_prefix +
                   '__trial_data.csv'), index=False)
@@ -400,7 +400,7 @@ class Helpers():
         assert isinstance(n, int)
         assert isinstance(equal_sample_per_condition, bool)
 
-        df = mydfs.TrialDataDf()
+        df = df_class.TrialDataDf()
 
         if equal_sample_per_condition:
             n_pl = round(n/2)
@@ -480,17 +480,17 @@ class Helpers():
 
         # Get all trial stats
         if df_type == '__model_components':
-            master_df = mydfs.ModelComponentsDf()
+            master_df = df_class.ModelComponentsDf()
         elif df_type == '__strata_contrast':
-            master_df = mydfs.StrataContrastDf()
+            master_df = df_class.StrataContrastDf()
         elif df_type == '__cgrc_model_components':
-            master_df = mydfs.ModelComponentsDf()
+            master_df = df_class.ModelComponentsDf()
             master_df.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
         elif df_type == '__cgrc_strata_contrast':
-            master_df = mydfs.StrataContrastDf()
+            master_df = df_class.StrataContrastDf()
             master_df.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
         elif df_type == '__trial_data':
-            master_df = mydfs.TrialDataDf()
+            master_df = df_class.TrialDataDf()
         else:
             assert False
 
@@ -502,15 +502,15 @@ class Helpers():
             master_df = pd.concat([master_df, df], sort=False)
 
         if df_type == '__model_components':
-            master_df.__class__ = mydfs.ModelComponentsDf
+            master_df.__class__ = df_class.ModelComponentsDf
         elif df_type == '__strata_contrast':
-            master_df.__class__ = mydfs.StrataContrastDf
+            master_df.__class__ = df_class.StrataContrastDf
         elif df_type == '__cgrc_model_components':
-            master_df.__class__ = mydfs.ModelComponentsDf
+            master_df.__class__ = df_class.ModelComponentsDf
         elif df_type == '__cgrc_strata_contrast':
-            master_df.__class__ = mydfs.StrataContrastDf
+            master_df.__class__ = df_class.StrataContrastDf
         elif df_type == '__trial_data':
-            master_df.__class__ = mydfs.TrialDataDf
+            master_df.__class__ = df_class.TrialDataDf
         else:
             assert False
 

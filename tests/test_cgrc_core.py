@@ -8,7 +8,7 @@ TODO: seperate clearly stored reference result CSVs from generated files
 
 import src.cgrc.core as cgrc
 import src.cgrc.stats as stats
-import src.my_dataframes as mydfs
+import src.dataframe_classes as df_class
 import src.constants as constants
 import src.folders as folders
 from numpy import linspace as linspace

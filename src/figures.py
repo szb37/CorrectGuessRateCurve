@@ -282,10 +282,10 @@ class Drawer():
             title (str): plot title, if any
             strata_summary (pd.core.frame.DataFrame): summary_df dataframe whose rows have already
                 been filtered for study, scale, respondent and guesser
-                # TODO: convert object to src.my_dataframes.ModelSummaryDf
+                # TODO: convert object to src.dataframe_classes.ModelSummaryDf
             strata_contrast (pd.core.frame.DataFrame): contrast_df dataframe whose rows have already
                 been filtered for study, scale, respondent and guesser
-                # TODO: convert object to src.my_dataframes.ContrastSummaryDf
+                # TODO: convert object to src.dataframe_classes.ContrastSummaryDf
             p_variant (str, optional): must be 'p' or 'p_adj';
                 if p (default), then, raw p-value is used for strata comparisons
                 if p_adj, then, the Tukey adjusted p-value is used for strata comparisons
@@ -383,7 +383,7 @@ class Drawer():
             title (str): plot title, if any
             cgrc_model_comps (pd.core.frame.DataFrame): model_components_df dataframe; rows
                 already filtered for study, scale, respondent and guesser
-                # TODO: convert object to src.my_dataframes.ModelComponentsDf
+                # TODO: convert object to src.dataframe_classes.ModelComponentsDf
             cgr (float): correct guess rate
             add_legend (bool, optional): add plot legend or not
         """
@@ -432,7 +432,7 @@ class Drawer():
             title (str): plot title, if any
             cgrc_model_comps (pd.core.frame.DataFrame): cgrc_model_comps dataframe; rows
                 already filtered for study, scale, respondent and guesser
-                # TODO: convert object to src.my_dataframes.CGRCurveDf
+                # TODO: convert object to src.dataframe_classes.CGRCurveDf
             cgr (float): correct guess rate
             add_legend (bool, optional): add plot legend or not
         """

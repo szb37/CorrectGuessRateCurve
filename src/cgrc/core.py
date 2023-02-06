@@ -7,7 +7,7 @@
 from tqdm.contrib.itertools import product as tqdmproduct
 from sklearn.neighbors import KernelDensity
 from itertools import product as product
-import src.my_dataframes as mydfs
+import src.dataframe_classes as df_class
 import src.constants as constants
 import src.folders as folders
 import src.figures as figures
@@ -324,7 +324,7 @@ class CorrectGuessRateCurve():
             input_df=trial_data_df,
             study_scales=study_scales)
 
-        master_cgrc_df = mydfs.CGRCurveDf()
+        master_cgrc_df = df_class.CGRCurveDf()
         master_cgrc_df.add_univalue_columns({'respondent': None})
 
         for study, scale, respondent, guesser in product(studies, scales, respondents, guessers):
@@ -382,7 +382,7 @@ class CorrectGuessRateCurve():
                     [master_cgrc_df, cgrc_datapoint_df], sort=False)
                 del cgrc_datapoint_df, sample_sizes
 
-        master_cgrc_df.__class__ = mydfs.CGRCurveDf
+        master_cgrc_df.__class__ = df_class.CGRCurveDf
         master_cgrc_df.add_univalue_columns({'guesser': 'self'})
         master_cgrc_df.add_univalue_columns(add_columns)
         master_cgrc_df.set_column_types()
@@ -403,10 +403,10 @@ class CorrectGuessRateCurve():
         assert isinstance(sample_sizes, dict)
         assert isinstance(kdes, dict)
 
-        plpl_df = mydfs.CGRCurveDf()
-        acpl_df = mydfs.CGRCurveDf()
-        plac_df = mydfs.CGRCurveDf()
-        acac_df = mydfs.CGRCurveDf()
+        plpl_df = df_class.CGRCurveDf()
+        acpl_df = df_class.CGRCurveDf()
+        plac_df = df_class.CGRCurveDf()
+        acac_df = df_class.CGRCurveDf()
 
         plpl_scores = [round(score) for score in kdes['PLPL'].sample(
             sample_sizes['PLPL']).reshape(1, -1).tolist()[0]]
@@ -454,10 +454,10 @@ class CorrectGuessRateCurve():
         acac_scores = [random.choice(df_filtered.loc[(df_filtered.condition == 'AC') & (
             df_filtered.guess == 'AC')].score.tolist()) for idx in range(sample_sizes['ACAC'])]
 
-        plpl_df = mydfs.CGRCurveDf()
-        acpl_df = mydfs.CGRCurveDf()
-        plac_df = mydfs.CGRCurveDf()
-        acac_df = mydfs.CGRCurveDf()
+        plpl_df = df_class.CGRCurveDf()
+        acpl_df = df_class.CGRCurveDf()
+        plac_df = df_class.CGRCurveDf()
+        acac_df = df_class.CGRCurveDf()
 
         plpl_df.delta_score = plpl_scores
         acpl_df.delta_score = acpl_scores

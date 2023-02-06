@@ -5,7 +5,7 @@
 """
 
 import src.toy_models.core as toy_models
-import src.my_dataframes as mydfs
+import src.dataframe_classes as df_class
 import src.folders as folders
 from statistics import mean
 import unittest

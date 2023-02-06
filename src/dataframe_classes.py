@@ -113,6 +113,10 @@ class CGRCurveDf(pd.DataFrame, MyDataframes):
         if 'trial_id' in self.columns:
             self['trial_id'] = self['trial_id'].astype('int')
 
+    # needs implementation
+    def check_assumptions(self):
+        pass
+
 
 class ModelSummaryDf(pd.DataFrame, MyDataframes):
     ''' DataFrame for holding model summary output '''
@@ -151,6 +155,9 @@ class ModelSummaryDf(pd.DataFrame, MyDataframes):
         if 'trial_id' in self.columns:
             self['trial_id'] = self['trial_id'].astype('int')
 
+    # needs implementation
+    def check_assumptions(self):
+        pass
 
 class ModelComponentsDf(pd.DataFrame, MyDataframes):
     ''' DataFrame for holding model components output '''
@@ -189,6 +196,9 @@ class ModelComponentsDf(pd.DataFrame, MyDataframes):
         if 'trial_id' in self.columns:
             self['trial_id'] = self['trial_id'].astype('int')
 
+    # needs implementation
+    def check_assumptions(self):
+        pass
 
 class StrataSummaryDf(pd.DataFrame, MyDataframes):
     ''' DataFrame for holding model output by strata '''
@@ -227,6 +237,9 @@ class StrataSummaryDf(pd.DataFrame, MyDataframes):
         if 'trial_id' in self.columns:
             self['trial_id'] = self['trial_id'].astype('int')
 
+    # needs implementation
+    def check_assumptions(self):
+        pass
 
 class StrataContrastDf(pd.DataFrame, MyDataframes):
     ''' DataFrame for holding model output by strata '''
@@ -267,6 +280,9 @@ class StrataContrastDf(pd.DataFrame, MyDataframes):
         if 'trial_id' in self.columns:
             self['trial_id'] = self['trial_id'].astype('int')
 
+    # needs implementation
+    def check_assumptions(self):
+        pass
 
 class ModelFamilyResultsDf(pd.DataFrame, MyDataframes):
     ''' DataFrame for holding toy models data '''
@@ -312,3 +328,7 @@ class ModelFamilyResultsDf(pd.DataFrame, MyDataframes):
         if 'cgradj_avg_trt_es' in self.columns:
             self['cgradj_avg_trt_es'] = self['cgradj_avg_trt_es'].astype(
                 'float')
+
+    # needs implementation
+    def check_assumptions(self):
+        pass

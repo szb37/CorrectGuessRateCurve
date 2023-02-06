@@ -5,7 +5,7 @@
 """
 
 import src.folders as folders
-import src.my_dataframes as mydfs
+import src.dataframe_classes as df_class
 import src.cgrc.stats as stats
 from rpy2.robjects import r
 from unittest import mock
@@ -17,7 +17,7 @@ import os
 class StatsUnitTests(unittest.TestCase):
 
     # Define mock dataframes
-    model_summary = mydfs.ModelSummaryDf()
+    model_summary = df_class.ModelSummaryDf()
     model_summary.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
     model_summary = model_summary.append({
         'study': 'test',
@@ -34,7 +34,7 @@ class StatsUnitTests(unittest.TestCase):
         'p': 5},
         ignore_index=True)
 
-    model_components = mydfs.ModelComponentsDf()
+    model_components = df_class.ModelComponentsDf()
     model_components.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
     model_components = model_components.append({
         'study': 'test',
@@ -51,7 +51,7 @@ class StatsUnitTests(unittest.TestCase):
         'p': 4},
         ignore_index=True)
 
-    strata_summary = mydfs.StrataSummaryDf()
+    strata_summary = df_class.StrataSummaryDf()
     strata_summary.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
     strata_summary = strata_summary.append({
         'study': 'test',
@@ -68,7 +68,7 @@ class StatsUnitTests(unittest.TestCase):
         'upper_CI': 8},
         ignore_index=True)
 
-    strata_contrast = mydfs.StrataContrastDf()
+    strata_contrast = df_class.StrataContrastDf()
     strata_contrast.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
     strata_contrast = strata_contrast.append({
         'study': 'test',
@@ -94,7 +94,7 @@ class StatsUnitTests(unittest.TestCase):
         'strata_contrast': strata_contrast
     }
 
-    model_summary2 = mydfs.ModelSummaryDf()
+    model_summary2 = df_class.ModelSummaryDf()
     model_summary2.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
     model_summary2 = model_summary2.append({
         'study': 'test',
@@ -111,7 +111,7 @@ class StatsUnitTests(unittest.TestCase):
         'p': 9},
         ignore_index=True)
 
-    model_components2 = mydfs.ModelComponentsDf()
+    model_components2 = df_class.ModelComponentsDf()
     model_components2.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
     model_components2 = model_components2.append({
         'study': 'test',
@@ -128,7 +128,7 @@ class StatsUnitTests(unittest.TestCase):
         'p': 7},
         ignore_index=True)
 
-    strata_summary2 = mydfs.StrataSummaryDf()
+    strata_summary2 = df_class.StrataSummaryDf()
     strata_summary2.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
     strata_summary2 = strata_summary2.append({
         'study': 'test',
@@ -145,7 +145,7 @@ class StatsUnitTests(unittest.TestCase):
         'upper_CI': 5},
         ignore_index=True)
 
-    strata_contrast2 = mydfs.StrataContrastDf()
+    strata_contrast2 = df_class.StrataContrastDf()
     strata_contrast2.add_univalue_columns({'cgr': None, 'cgr_trial_id': None})
     strata_contrast2 = strata_contrast2.append({
         'study': 'test',

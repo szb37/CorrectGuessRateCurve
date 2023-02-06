@@ -12,11 +12,10 @@ TODO:
 - move all R related code to r files and call them when appropiate from python
 """
 
-import src.cgrc.covariate_selector as covariate_selector
 from tqdm.contrib.itertools import product as tqdmproduct
 import src.constants as constants
 import src.miscs as miscs
-import src.my_dataframes as mydfs
+import src.dataframe_classes as df_class
 from itertools import product as product
 from rpy2.robjects import r
 import pandas as pd
@@ -57,10 +56,10 @@ class Controllers():
         assert isinstance(try_covs, list)
 
         # Initalize output
-        master_model_summary_df = mydfs.ModelSummaryDf()
-        master_model_components_df = mydfs.ModelComponentsDf()
-        master_strata_summary_df = mydfs.StrataSummaryDf()
-        master_strata_contrast_df = mydfs.StrataContrastDf()
+        master_model_summary_df = df_class.ModelSummaryDf()
+        master_model_components_df = df_class.ModelComponentsDf()
+        master_strata_summary_df = df_class.StrataSummaryDf()
+        master_strata_contrast_df = df_class.StrataContrastDf()
 
         # Get study_scales from trial_data input
         input_trial_data_fpath = os.path.join(
@@ -105,10 +104,10 @@ class Controllers():
         # Clear R global namespace and save results
         r('rm(list = ls())')
 
-        master_strata_summary_df.__class__ = mydfs.StrataSummaryDf
-        master_strata_contrast_df.__class__ = mydfs.StrataContrastDf
-        master_model_components_df.__class__ = mydfs.ModelComponentsDf
-        master_model_summary_df.__class__ = mydfs.ModelSummaryDf
+        master_strata_summary_df.__class__ = df_class.StrataSummaryDf
+        master_strata_contrast_df.__class__ = df_class.StrataContrastDf
+        master_model_components_df.__class__ = df_class.ModelComponentsDf
+        master_model_summary_df.__class__ = df_class.ModelSummaryDf
 
         # if add_columns is not None:
         master_strata_summary_df.add_univalue_columns(add_columns)
@@ -166,16 +165,16 @@ class Controllers():
             study_scales=study_scales)
 
         # Initalize output
-        master_model_summary_df = mydfs.ModelSummaryDf()
+        master_model_summary_df = df_class.ModelSummaryDf()
         master_model_summary_df.add_univalue_columns(
             {'cgr': None, 'cgr_trial_id': None})
-        master_model_components_df = mydfs.ModelComponentsDf()
+        master_model_components_df = df_class.ModelComponentsDf()
         master_model_components_df.add_univalue_columns(
             {'cgr': None, 'cgr_trial_id': None})
-        master_strata_summary_df = mydfs.StrataSummaryDf()
+        master_strata_summary_df = df_class.StrataSummaryDf()
         master_strata_summary_df.add_univalue_columns(
             {'cgr': None, 'cgr_trial_id': None})
-        master_strata_contrast_df = mydfs.StrataContrastDf()
+        master_strata_contrast_df = df_class.StrataContrastDf()
         master_strata_contrast_df.add_univalue_columns(
             {'cgr': None, 'cgr_trial_id': None})
 
@@ -215,10 +214,10 @@ class Controllers():
         # Clear R global namespace and save results
         r('rm(list = ls())')
 
-        master_strata_summary_df.__class__ = mydfs.StrataSummaryDf
-        master_strata_contrast_df.__class__ = mydfs.StrataContrastDf
-        master_model_components_df.__class__ = mydfs.ModelComponentsDf
-        master_model_summary_df.__class__ = mydfs.ModelSummaryDf
+        master_strata_summary_df.__class__ = df_class.StrataSummaryDf
+        master_strata_contrast_df.__class__ = df_class.StrataContrastDf
+        master_model_components_df.__class__ = df_class.ModelComponentsDf
+        master_model_summary_df.__class__ = df_class.ModelSummaryDf
 
         master_strata_summary_df.add_univalue_columns(add_columns)
         master_strata_contrast_df.add_univalue_columns(add_columns)
@@ -289,22 +288,16 @@ class StatsCore():
         assert isinstance(try_covs, list)
 
         # Initalize output
-        model_summary = mydfs.ModelSummaryDf()
-        model_components = mydfs.ModelComponentsDf()
+        model_summary = df_class.ModelSummaryDf()
+        model_components = df_class.ModelComponentsDf()
         if add_cgrc_columns:
             model_summary.add_univalue_columns(
                 {'cgr': None, 'cgr_trial_id': None})
             model_components.add_univalue_columns(
                 {'cgr': None, 'cgr_trial_id': None})
 
-        covariate_selector.Controllers.get_adjusted_model(
-            model_name='without_guess',
-            try_covs=try_covs,
-            enforce_covs=['condition'])
-        covariate_selector.Controllers.get_adjusted_model(
-            model_name='with_guess',
-            try_covs=try_covs,
-            enforce_covs=['condition', 'guess', 'condition*guess'])
+        r("without_guess=lm(formula='delta_score~condition', df_filtered)")
+        r("with_guess=lm(formula='delta_score~condition+guess+condition*guess', df_filtered)")
 
         for model_type in ['without_guess', 'with_guess']:
 
@@ -359,8 +352,8 @@ class StatsCore():
         assert isinstance(add_cgrc_columns, bool)
         assert isinstance(try_covs, list)
 
-        strata_summary = mydfs.StrataSummaryDf()
-        strata_contrast = mydfs.StrataContrastDf()
+        strata_summary = df_class.StrataSummaryDf()
+        strata_contrast = df_class.StrataContrastDf()
 
         if add_cgrc_columns:
             strata_summary.add_univalue_columns(
@@ -376,10 +369,8 @@ class StatsCore():
                 return strata_summary, strata_contrast
 
         # Calc strata outputs
-        covariate_selector.Controllers.get_adjusted_model(
-            model_name='with_guess',
-            try_covs=try_covs,
-            enforce_covs=['condition', 'guess', 'condition*guess'])
+        r("with_guess=lm(formula='delta_score~condition+guess+condition*guess', df_filtered)")
+
         # stratas with fixed guess
         r('emmFixGuess = emmeans(with_guess, specs = pairwise ~ condition|guess)')
         # stratas with fixed condition
