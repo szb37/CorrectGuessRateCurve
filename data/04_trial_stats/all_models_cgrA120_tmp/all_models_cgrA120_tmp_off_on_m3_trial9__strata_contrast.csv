@@ -1,5 +1,0 @@
-study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj,model_name,trial_id
-mock,scale1,self,self,PLPLvsPLAC,fixCondition,-3.730769,1.206626,116.0,-3.091901,0.002491172,0.01312153,off_on_m3,9
-mock,scale1,self,self,ACPLvsACAC,fixCondition,-5.466667,1.637489,116.0,-3.338446,0.00113309,0.006152493,off_on_m3,9
-mock,scale1,self,self,PLPLvsACPL,fixGuess,1.826923,1.758945,116.0,1.038647,0.301129,0.7271363,off_on_m3,9
-mock,scale1,self,self,PLACvsACAC,fixGuess,0.09102564,1.021484,116.0,0.08911122,0.9291472,0.999745,off_on_m3,9

@@ -1,5 +1,0 @@
-study,scale,guesser,respondent,contrast,type,est,se,df,t,p,p_adj
-sbmd,PANAS,self,self,PLPLvsPLAC,fixCondition,-7.407994,1.760239,229.0,-4.208515,3.692829e-05,0.0002151418
-sbmd,PANAS,self,self,ACPLvsACAC,fixCondition,-6.971591,1.951378,229.0,-3.572649,0.0004307536,0.002417527
-sbmd,PANAS,self,self,PLPLvsACPL,fixGuess,-1.639929,1.686338,229.0,-0.9724794,0.3318382,0.7652513
-sbmd,PANAS,self,self,PLACvsACAC,fixGuess,-1.203526,2.015586,229.0,-0.5971097,0.5510241,0.9328641

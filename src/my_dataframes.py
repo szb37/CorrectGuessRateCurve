@@ -17,6 +17,10 @@ class MyDataframes(metaclass=abc.ABCMeta):
     def set_column_types(self):
         pass
 
+    @abc.abstractmethod
+    def check_assumptions(self):
+        pass
+
     def add_univalue_columns(self, add_columns):
         """ Add columns with a fixed value """
 
@@ -31,17 +35,11 @@ class MyDataframes(metaclass=abc.ABCMeta):
 
 
 class TrialDataDf(pd.DataFrame, MyDataframes):
-    ''' Minmal set of columns for CGRC analysis '''
+    ''' Minimal set of columns for CGRC analysis '''
 
     def __init__(self):
         super(TrialDataDf, self).__init__(columns=[
-            'study',
-            'subject_id',
-            'scale',
-            'tp',
-            'condition',
-            'guess',
-            'baseline', 'score', 'delta_score',
+            'study', 'subject_id', 'scale', 'tp', 'condition', 'guess','baseline', 'score', 'delta_score',
         ])
 
     def set_column_types(self):
@@ -55,54 +53,19 @@ class TrialDataDf(pd.DataFrame, MyDataframes):
         self['condition'] = self['condition'].astype('str')
         self['guess'] = self['guess'].astype('str')
 
-        if 'age' in self.columns:
-            self['age'] = self['age'].astype('int')
-
-        if 'sex' in self.columns:
-            self['sex'] = self['sex'].astype('str')
-
-        if 'guess_conf' in self.columns:
-            self['guess_conf'] = self['guess_conf'].astype('float')
-
-        if 'why_guess' in self.columns:
-            self['why_guess'] = self['why_guess'].astype('str')
-
-        if 'guesser' in self.columns:
-            self['guesser'] = self['guesser'].astype('str')
-
-        if 'respondent' in self.columns:
-            self['respondent'] = self['respondent'].astype('str')
-
-        if 'model_id' in self.columns:
-            self['model_id'] = self['model_id'].astype('int')
-
-        if 'trial_id' in self.columns:
-            self['trial_id'] = self['trial_id'].astype('int')
-
     def check_assumptions(self):
 
-        # All guess / condition are either 'PL' or 'AC'
-        assert all([condition in ['PL', 'AC']
-                   for condition in self.condition.to_list()])
+        # All conditions / guesses are either 'PL' or 'AC'
+        assert all([condition in ['PL', 'AC'] for condition in self.condition.to_list()])
         assert all([guess in ['PL', 'AC'] for guess in self.guess.to_list()])
 
-        # All guesser, respondent are either 'self' or 'ext'
-        assert all([guesser in ['self', 'ext']
-                   for guesser in self.guesser.to_list()])
-        assert all([respondent in ['self', 'ext']
-                   for respondent in self.respondent.to_list()])
+        # Assert all baseline / scores / delta_scores are numbers
+        assert all([not (math.isnan(score) or score is None) for score in self.score.to_list()])
+        assert all([not (math.isnan(delta_score) or delta_score is None) for delta_score in self.delta_score.to_list()])
+        assert all([not (math.isnan(baseline) or baseline is None) for baseline in self.baseline.to_list()])
 
-        # Assert all scores are numbers
-        assert all([not (math.isnan(score) or score is None)
-                   for score in self.score.to_list()])
 
-        # Assert all delta_scores are numbers
-        assert all([not (math.isnan(delta_score) or delta_score is None)
-                   for delta_score in self.delta_score.to_list()])
 
-        # Assert all baseline scores are numbers
-        assert all([not (math.isnan(baseline) or baseline is None)
-                   for baseline in self.baseline.to_list()])
 
         # Check whether all combinations of subject_id/study/scale/tp are unique by checking if
         # n of rows change after duplicate removal
