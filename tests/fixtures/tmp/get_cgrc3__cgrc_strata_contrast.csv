@@ -1,4 +1,4 @@
-study,scale,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id
+trial,scale,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id
 test,tadaa,PLPLvsPLAC,fixCondition,-39.61248,0.2700317,296.0,-146.6957,1.91621e-278,8.222312e-13,0.25,0
 test,tadaa,ACPLvsACAC,fixCondition,40.41385,0.273049,296.0,148.0095,1.417704e-279,8.222312e-13,0.25,0
 test,tadaa,PLPLvsACPL,fixGuess,-59.85197,0.2703349,296.0,-221.3994,0.0,8.222312e-13,0.25,0

@@ -1,4 +1,4 @@
-study,scale,respondent,guesser,cgr,cgr_trial_id,condition,guess,delta_score
+trial,scale,respondent,guesser,cgr,cgr_trial_id,condition,guess,delta_score
 a,foo,self,self,0,0,PL,PL,0
 b,foo,self,self,0,0,MD,PL,1
 a,tadaa,self,self,0,0,PL,MD,2

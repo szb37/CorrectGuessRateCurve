@@ -1,6 +1,6 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2020, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
 
 Functions to generate faux data for testing purposes
@@ -18,7 +18,7 @@ import os
 def gen_faux_processed_bbc1():
 
     df = pd.DataFrame(columns=[
-        'study', 'subject_id', 'tp', 'scale', 'score', 'delta_score', 'condition', 'guess', 'guess_conf', 'guesser', 'respondent'])
+        'trial', 'subject_id', 'tp', 'scale', 'score', 'delta_score', 'condition', 'guess', 'guess_conf', 'guesser', 'respondent'])
 
     conditions = ['PL', 'AC']
     guesses = ['PL', 'AC']
@@ -38,7 +38,7 @@ def gen_faux_processed_bbc1():
                 assert False
 
             df = df.append({
-                'study': 'test',
+                'trial': 'test',
                 'subject_id': idx,
                 'tp': 'wk8',
                 'scale': 'tadaa',
@@ -57,7 +57,7 @@ def gen_faux_processed_bbc1():
 def gen_faux_processed_bbc2():
 
     df = pd.DataFrame(columns=[
-        'study', 'subject_id', 'tp', 'scale', 'score', 'delta_score', 'condition', 'guess', 'guess_conf', 'guesser', 'respondent'])
+        'trial', 'subject_id', 'tp', 'scale', 'score', 'delta_score', 'condition', 'guess', 'guess_conf', 'guesser', 'respondent'])
 
     conditions = ['PL', 'AC']
     guesses = ['PL', 'AC']
@@ -76,7 +76,7 @@ def gen_faux_processed_bbc2():
                 assert False
 
             df = df.append({
-                'study': 'test',
+                'trial': 'test',
                 'subject_id': idx,
                 'tp': 'wk8',
                 'scale': 'tadaa',
@@ -100,7 +100,7 @@ def gen_faux_processed_bbc2():
                 assert False
 
             df = df.append({
-                'study': 'test',
+                'trial': 'test',
                 'subject_id': idx,
                 'tp': 'wk8',
                 'scale': 'tadaa',
@@ -122,7 +122,7 @@ def gen_faux_get_model_stats1():
 def gen_faux_bbc_1():
 
     df = pd.DataFrame(columns=[
-        'study', 'scale', 'respondent', 'guesser', 'cgr', 'cgr_trial_id', 'condition', 'guess', 'delta_score'])
+        'trial', 'scale', 'respondent', 'guesser', 'cgr', 'cgr_trial_id', 'condition', 'guess', 'delta_score'])
 
     cgrs = np.linspace(0, 1, 15)
     guesser = 'self'
@@ -136,7 +136,7 @@ def gen_faux_bbc_1():
         delta_score = random.gauss(mu=10, sigma=1)
 
         df = df.append({
-            'study':,
+            'trial':,
             'scale':,
             'respondent':,
             'guesser':,

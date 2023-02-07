@@ -1,6 +1,6 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2020, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
 
 The following parameters are all random normal variables defining the toy models (mean, std):

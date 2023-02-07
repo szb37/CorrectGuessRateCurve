@@ -1,6 +1,6 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2020, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
 """
 
@@ -26,7 +26,7 @@ sns.set_style("darkgrid")
 
 class Controllers():
 
-    def plot_strata(analysis_name, strata_summary, strata_contrast, study_scales,
+    def plot_strata(analysis_name, strata_summary, strata_contrast, trial_scales,
                     p_variant='p',
                     is_p_color=True,
                     savePNG=True,
@@ -37,8 +37,8 @@ class Controllers():
             analysis_name (str): analysis_name of output files;
             strata_summary (pandas.DataFrame): strata_summary dataframe
             strata_contrast (pandas.DataFrame): strata_contrast dataframe
-            study_scales (dict): defines combinations of studies/scales for which strata plots will be made
-                E.g. study_scales = {'study2':['scale1', 'scale3']}, will process scales 1 and 3 of study2
+            trial_scales (dict): defines combinations of trials/scales for which strata plots will be made
+                E.g. trial_scales = {'trial2':['scale1', 'scale3']}, will process scales 1 and 3 of trial2
             p_variant (str, optional): must be 'p' or 'p_adj';
                 if p (default), then, raw p-value is used for strata comparisons
                 if p_adj, then, the Tukey adjusted p-value is used for strata comparisons
@@ -50,7 +50,7 @@ class Controllers():
         assert isinstance(analysis_name, str)
         assert isinstance(strata_summary, pd.core.frame.DataFrame)
         assert isinstance(strata_contrast, pd.core.frame.DataFrame)
-        assert isinstance(study_scales, dict)
+        assert isinstance(trial_scales, dict)
         assert p_variant in ['p', 'p_adj']
         assert isinstance(is_p_color, bool)
         assert isinstance(savePNG, bool)
@@ -60,16 +60,16 @@ class Controllers():
         if (savePNG is False) and (saveSVG is False):
             return
 
-        for study, scales in study_scales.items():
-            print('Create strata plots - study:{}'.format(study))
+        for trial, scales in trial_scales.items():
+            print('Create strata plots - trial:{}'.format(trial))
             for scale in scales:
 
                 strata_summary_filtered = strata_summary.loc[
-                    (strata_summary.study == study) &
+                    (strata_summary.trial == trial) &
                     (strata_summary.scale == scale)]
 
                 strata_contrast_filtered = strata_contrast.loc[
-                    (strata_contrast.study == study) &
+                    (strata_contrast.trial == trial) &
                     (strata_contrast.scale == scale)]
 
                 if strata_summary_filtered.shape[0] == 0:
@@ -83,14 +83,14 @@ class Controllers():
 
                 Drawer.draw_strata_plot(
                     ax=ax,
-                    title='Study:{}; scale:{}'.format(study, scale),
+                    title='trial:{}; scale:{}'.format(trial, scale),
                     strata_summary=strata_summary_filtered,
                     strata_contrast=strata_contrast_filtered,
                     p_variant=p_variant,
                     is_p_color=is_p_color,
                 )
 
-                fname = analysis_name+'__'+study.upper()+'_'+scale.upper()+'__strata_plot'
+                fname = analysis_name+'__'+trial.upper()+'_'+scale.upper()+'__strata_plot'
                 Helpers.save_plot(
                     fig=fig,
                     output_dir=folders.strata_plots,
@@ -101,20 +101,20 @@ class Controllers():
                 pyplt.close('all')
                 del fig, ax
 
-    def plot_VScgr_separatex(input_dir, input_fname, output_dir, output_fname, study_scales, cgr_type='all', savePNG=True, saveSVG=False):
+    def plot_VScgr_separatex(input_dir, input_fname, output_dir, output_fname, trial_scales, cgr_type='all', savePNG=True, saveSVG=False):
         """ Creates and saves combined 'CGR vs p' and 'CGR vs Effect' figures
         Args:
             cgrc_model_comps (pandas.DataFrame): model_components BBC dataframe
             analysis_name (str): analysis_name for outputs; images saved in output_dir/analysis_name/;
                 target subfolder is created if it does not exist
-            study_scales (dict): defines combinations of studies/scales for which strata plots will be made
-                E.g. study_scales = {'study2':['scale1', 'scale3']}, will process scales 1 and 3 of study2
+            trial_scales (dict): defines combinations of trials/scales for which strata plots will be made
+                E.g. trial_scales = {'trial2':['scale1', 'scale3']}, will process scales 1 and 3 of trial2
             savePNG (bool, optional): if True, PNG image is saved
             saveSVG (bool, optional): if True, SVG image is saved
             output_dir (str, optional): folder where images are saved
         """
 
-        assert isinstance(study_scales, dict)
+        assert isinstance(trial_scales, dict)
         assert cgr_type in ['all', 'active']
         assert isinstance(savePNG, bool)
         assert isinstance(saveSVG, bool)
@@ -125,20 +125,20 @@ class Controllers():
 
         cgrc_model_comps = pd.read_csv(os.path.join(input_dir, input_fname))
 
-        for study, scales in study_scales.items():
-            print('Create BBC plots - study:{}'.format(study))
+        for trial, scales in trial_scales.items():
+            print('Create BBC plots - trial:{}'.format(trial))
 
             if cgr_type == 'all':
-                original_cgr = constants.trial_cgrs[study]
+                original_cgr = constants.trial_cgrs[trial]
             elif cgr_type == 'active':
-                original_cgr = constants.active_cgrs[study]
+                original_cgr = constants.active_cgrs[trial]
             else:
                 assert False
 
             for scale in scale:
 
                 cgrc_model_comps_filtered = cgrc_model_comps.loc[
-                    (cgrc_model_comps.study == study) &
+                    (cgrc_model_comps.trial == trial) &
                     (cgrc_model_comps.scale == scale)]
 
                 if cgrc_model_comps_filtered.shape[0] == 0:
@@ -168,21 +168,21 @@ class Controllers():
                     fig=fig,
                     output_dir=output_dir,
                     output_fname=output_fname +
-                    '{}_{}__cgrc_plot2'.format(study, scale),
+                    '{}_{}__cgrc_plot2'.format(trial, scale),
                     savePNG=savePNG,
                     saveSVG=saveSVG,
                 )
                 pyplt.close('all')
                 del fig, ax1, ax2
 
-    def plot_VScgr_twinx(input_dir, input_fname, output_dir, output_prefix, study_scales=None, cgr_type='all', save_figure=True):
+    def plot_VScgr_twinx(input_dir, input_fname, output_dir, output_prefix, trial_scales=None, cgr_type='all', save_figure=True):
         """ Creates and saves combined 'CGR vs p' and 'CGR vs Effect' figures with twin axes
         Args:
             cgrc_model_comps (pandas.DataFrame): model_components BBC dataframe
             analysis_name (str): analysis_name for outputs; images saved in output_dir/analysis_name/;
                 target subfolder is created if it does not exist
-            study_scales (dict): defines combinations of studies/scales for which strata plots will be made
-                E.g. study_scales = {'study2':['scale1', 'scale3']}, will process scales 1 and 3 of study2
+            trial_scales (dict): defines combinations of trials/scales for which strata plots will be made
+                E.g. trial_scales = {'trial2':['scale1', 'scale3']}, will process scales 1 and 3 of trial2
             savePNG (bool, optional): if True, PNG image is saved
             saveSVG (bool, optional): if True, SVG image is saved
             output_dir (str, optional): folder where images are saved
@@ -192,24 +192,24 @@ class Controllers():
         assert isinstance(input_fname, str)
         assert isinstance(output_dir, str)
         assert isinstance(output_prefix, str)
-        assert (isinstance(study_scales, dict) or (study_scales is None))
+        assert (isinstance(trial_scales, dict) or (trial_scales is None))
         assert cgr_type in ['all', 'active']
         assert isinstance(save_figure, bool)
 
         cgrc_model_comps = pd.read_csv(os.path.join(input_dir, input_fname))
-        studies, scales, = miscs.get_study_scales(input_df=cgrc_model_comps, study_scales=study_scales)
+        trials, scales, = miscs.get_trial_scales(input_df=cgrc_model_comps, trial_scales=trial_scales)
 
-        for study, scale in product(studies, scales):
+        for trial, scale in product(trials, scales):
 
             if cgr_type == 'all':
-                original_cgr = constants.trial_cgrs[study]
+                original_cgr = constants.trial_cgrs[trial]
             elif cgr_type == 'active':
-                original_cgr = constants.active_cgrs[study]
+                original_cgr = constants.active_cgrs[trial]
             else:
                 assert False
 
             cgrc_model_comps_filtered = cgrc_model_comps.loc[
-                (cgrc_model_comps.study == study) &
+                (cgrc_model_comps.trial == trial) &
                 (cgrc_model_comps.scale == scale)]
 
             if cgrc_model_comps_filtered.shape[0] == 0:
@@ -262,10 +262,10 @@ class Drawer():
             ax (matplotlib.axes._subplots.AxesSubplot): axes to be drawn on
             title (str): plot title, if any
             strata_summary (pd.core.frame.DataFrame): summary_df dataframe whose rows have already
-                been filtered for study and scale
+                been filtered for trial and scale
                 # TODO: convert object to src.dataframe_classes.ModelSummaryDf
             strata_contrast (pd.core.frame.DataFrame): contrast_df dataframe whose rows have already
-                been filtered for study and scale
+                been filtered for trial and scale
                 # TODO: convert object to src.dataframe_classes.ContrastSummaryDf
             p_variant (str, optional): must be 'p' or 'p_adj';
                 if p (default), then, raw p-value is used for strata comparisons
@@ -363,7 +363,7 @@ class Drawer():
             ax (matplotlib.axes._subplots.AxesSubplot): axes to be drawn on
             title (str): plot title, if any
             cgrc_model_comps (pd.core.frame.DataFrame): model_components_df dataframe; rows
-                already filtered for study and scale
+                already filtered for trial and scale
                 # TODO: convert object to src.dataframe_classes.ModelComponentsDf
             cgr (float): correct guess rate
             add_legend (bool, optional): add plot legend or not
@@ -412,7 +412,7 @@ class Drawer():
             ax (matplotlib.axes._subplots.AxesSubplot): axes to be drawn on
             title (str): plot title, if any
             cgrc_model_comps (pd.core.frame.DataFrame): cgrc_model_comps dataframe; rows
-                already filtered for study, scale
+                already filtered for trial, scale
                 # TODO: convert object to src.dataframe_classes.CGRCurveDf
             cgr (float): correct guess rate
             add_legend (bool, optional): add plot legend or not
@@ -597,9 +597,9 @@ class Helpers():
 
     @staticmethod
     def is_df_filtered(df):
-        """ Checks if values of study, scale are unque in dataframe """
+        """ Checks if values of trial, scale are unque in dataframe """
 
-        assert len(df.study.unique().tolist()) == 1
+        assert len(df.trial.unique().tolist()) == 1
         assert len(df.scale.unique().tolist()) == 1
         return True
 

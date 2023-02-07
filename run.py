@@ -1,6 +1,6 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2020, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
 
 Functions that generate CGRC are not optimized, may take a while to run
@@ -42,7 +42,7 @@ if False:  # CGR adjusted outcomes of self-blinding microdose trial - reproduces
     cgrc.Controllers.run_cgrc_trial(
         trial_name='sbmd',
         postfix='cgrA_tmp',
-        study_scales=constants.sbmd_all,
+        trial_scales=constants.sbmd_all,
         cgrc_param_set=1,
         save_figs=False,
     )
@@ -51,7 +51,7 @@ if False:  # CGR curves of self-blinding microdose trial outcomes - reproduces F
     cgrc.Controllers.run_cgrc_trial(
         trial_name='sbmd',
         postfix='cgrC_tmp',
-        study_scales=constants.sbmd_plots,
+        trial_scales=constants.sbmd_plots,
         cgrc_param_set=2,
         save_figs=True,
     )

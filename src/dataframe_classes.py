@@ -1,7 +1,10 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2020, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
+
+import src.dataframe_classes as df_class
+a =  df_class.TrialDataDf()
 """
 
 import pandas as pd
@@ -41,19 +44,24 @@ class TrialDataDf(pd.DataFrame, CGRCDataFrame):
 
     def __init__(self):
         super(TrialDataDf, self).__init__(columns=[
-            'study', 'subject_id', 'scale', 'tp', 'condition', 'guess', 'baseline', 'score', 'delta_score',
-        ])
+            'trial',
+            'subject_id',
+            'scale',
+            'tp',
+            'condition', 'guess',
+            'baseline', 'score','delta_score',])
+        self.set_column_types()
 
     def set_column_types(self):
-        self['study'] = self['study'].astype('str')
+        self['trial'] = self['trial'].astype('str')
         self['subject_id'] = self['subject_id'].astype('int')
         self['scale'] = self['scale'].astype('str')
         self['tp'] = self['tp'].astype('str')
+        self['condition'] = self['condition'].astype('str')
+        self['guess'] = self['guess'].astype('str')
         self['baseline'] = self['baseline'].astype('float')
         self['score'] = self['score'].astype('float')
         self['delta_score'] = self['delta_score'].astype('float')
-        self['condition'] = self['condition'].astype('str')
-        self['guess'] = self['guess'].astype('str')
 
     def check_assumptions(self):
 
@@ -62,36 +70,48 @@ class TrialDataDf(pd.DataFrame, CGRCDataFrame):
         assert all([guess in ['PL', 'AC'] for guess in self.guess.to_list()])
 
         # Assert all baseline / scores / delta_scores are numbers
-        assert all([not (math.isnan(score) or score is None) for score in self.score.to_list()])
-        assert all([not (math.isnan(delta_score) or delta_score is None) for delta_score in self.delta_score.to_list()])
-        assert all([not (math.isnan(baseline) or baseline is None) for baseline in self.baseline.to_list()])
+        assert all([
+            (isinstance(baseline, float) and not math.isnan(baseline))
+            for score in self.baseline.to_list()])
+        assert all([
+            (isinstance(score, float) and not math.isnan(score))
+            for score in self.score.to_list()])
+        assert all([
+            (isinstance(delta_score, float) and not math.isnan(delta_score))
+            for delta_score in self.score.to_list()])
 
-        # Check whether all combinations of subject_id/study/scale/tp are unique by checking if
-        # n of rows change after duplicate removal
-        temp = copy.deepcopy(self)
-        cols_to_keep = ['study', 'subject_id', 'scale', 'tp']
-        temp = temp.loc[:, cols_to_keep]
+        self._def_check_entry_uniqueness()
 
-        n_before = temp.shape[0]
-        temp.drop_duplicates(inplace=True)
-        n_after = temp.shape[0]
-        assert n_before == n_after
+    def _def_check_entry_uniqueness(self):
+        # All combinations of trial/subject_id/scale/tp should be unique
+        temp = copy.deepcopy(self).loc[:, ['trial', 'subject_id', 'scale', 'tp']]
+        assert temp.shape[0] == temp.drop_duplicates(inplace=True).shape[0]
 
 
-class CGRCurveDf(pd.DataFrame, CGRCDataFrame):
+class CGRCurveDf(TrialDataDf):
     ''' DataFrame for holding CGRC data '''
 
     def __init__(self):
-        super(CGRCurveDf, self).__init__(columns=[
-            'study', 'scale', 'cgr', 'cgr_trial_id', 'condition', 'guess', 'baseline', 'score', 'delta_score'])
+        super(TrialDataDf, self).__init__(columns=[
+            'trial',
+            'cgr',
+            'cgr_trial_id',
+            'scale',
+            'tp',
+            'condition',
+            'guess',
+            'baseline',
+            'score',
+            'delta_score'])
+        self.set_column_types()
 
     def set_column_types(self):
-        """ Set column types """
-
-        self['study'] = self['study'].astype('str')
-        self['scale'] = self['scale'].astype('str')
+        self['trial'] = self['trial'].astype('str')
         self['cgr'] = self['cgr'].astype('float')
         self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
+        #self['subject_id'] = self['subject_id'].astype('int')
+        self['scale'] = self['scale'].astype('str')
+        self['tp'] = self['tp'].astype('str')
         self['condition'] = self['condition'].astype('str')
         self['guess'] = self['guess'].astype('str')
         self['baseline'] = self['baseline'].astype('float')
@@ -100,13 +120,14 @@ class CGRCurveDf(pd.DataFrame, CGRCDataFrame):
 
         if 'model_id' in self.columns:
             self['model_id'] = self['model_id'].astype('int')
-
         if 'trial_id' in self.columns:
             self['trial_id'] = self['trial_id'].astype('int')
 
-    # needs implementation
     def check_assumptions(self):
-        pass
+        super(CGRCurveDf, self).check_assumptions()
+        self._def_check_entry_uniqueness()
+
+
 
 
 class ModelSummaryDf(pd.DataFrame, CGRCDataFrame):
@@ -114,12 +135,11 @@ class ModelSummaryDf(pd.DataFrame, CGRCDataFrame):
 
     def __init__(self):
         super(ModelSummaryDf, self).__init__(columns=[
-            'study', 'scale', 'model_type', 'df1', 'df2', 'f', 'adjr2', 'p'])
+            'trial', 'scale', 'model_type', 'df1', 'df2', 'f', 'adjr2', 'p'])
 
     def set_column_types(self):
-        """ Set column types """
 
-        self['study'] = self['study'].astype('str')
+        self['trial'] = self['trial'].astype('str')
         self['scale'] = self['scale'].astype('str')
         self['model_type'] = self['model_type'].astype('str')
         self['df1'] = self['df1'].astype('float')
@@ -134,27 +154,25 @@ class ModelSummaryDf(pd.DataFrame, CGRCDataFrame):
         if 'cgr_trial_id' in self.columns:
             self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
 
-        if 'model_id' in self.columns:
-            self['model_id'] = self['model_id'].astype('int')
+        #if 'model_id' in self.columns:
+        #    self['model_id'] = self['model_id'].astype('int')
+        #if 'trial_id' in self.columns:
+        #    self['trial_id'] = self['trial_id'].astype('int')
 
-        if 'trial_id' in self.columns:
-            self['trial_id'] = self['trial_id'].astype('int')
-
-    # needs implementation
     def check_assumptions(self):
         pass
+
 
 class ModelComponentsDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding model components output '''
 
     def __init__(self):
         super(ModelComponentsDf, self).__init__(columns=[
-            'study', 'scale', 'model_type', 'component', 'est', 'se', 't', 'p'])
+            'trial', 'scale', 'model_type', 'component', 'est', 'se', 't', 'p'])
 
     def set_column_types(self):
-        """ Set column types """
 
-        self['study'] = self['study'].astype('str')
+        self['trial'] = self['trial'].astype('str')
         self['scale'] = self['scale'].astype('str')
         self['model_type'] = self['model_type'].astype('str')
         self['component'] = self['component'].astype('str')
@@ -169,27 +187,26 @@ class ModelComponentsDf(pd.DataFrame, CGRCDataFrame):
         if 'cgr_trial_id' in self.columns:
             self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
 
-        if 'model_id' in self.columns:
-            self['model_id'] = self['model_id'].astype('int')
+        #if 'model_id' in self.columns:
+        #    self['model_id'] = self['model_id'].astype('int')
 
-        if 'trial_id' in self.columns:
-            self['trial_id'] = self['trial_id'].astype('int')
+        #if 'trial_id' in self.columns:
+        #    self['trial_id'] = self['trial_id'].astype('int')
 
-    # needs implementation
     def check_assumptions(self):
         pass
+
 
 class StrataSummaryDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding model output by strata '''
 
     def __init__(self):
         super(StrataSummaryDf, self).__init__(columns=[
-            'study', 'scale', 'strata', 'est', 'se', 'df', 'lower_CI', 'upper_CI'])
+            'trial', 'scale', 'strata', 'est', 'se', 'df', 'lower_CI', 'upper_CI'])
 
     def set_column_types(self):
-        """ Set column types """
 
-        self['study'] = self['study'].astype('str')
+        self['trial'] = self['trial'].astype('str')
         self['scale'] = self['scale'].astype('str')
         self['strata'] = self['strata'].astype('str')
         self['est'] = self['est'].astype('float')
@@ -204,27 +221,26 @@ class StrataSummaryDf(pd.DataFrame, CGRCDataFrame):
         if 'cgr_trial_id' in self.columns:
             self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
 
-        if 'model_id' in self.columns:
-            self['model_id'] = self['model_id'].astype('int')
+        #if 'model_id' in self.columns:
+        #    self['model_id'] = self['model_id'].astype('int')
+        #
+        #if 'trial_id' in self.columns:
+        #    self['trial_id'] = self['trial_id'].astype('int')
 
-        if 'trial_id' in self.columns:
-            self['trial_id'] = self['trial_id'].astype('int')
-
-    # needs implementation
     def check_assumptions(self):
         pass
+
 
 class StrataContrastDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding model output by strata '''
 
     def __init__(self):
         super(StrataContrastDf, self).__init__(columns=[
-            'study', 'scale', 'contrast', 'type', 'est', 'se', 'df', 't', 'p', 'p_adj'])
+            'trial', 'scale', 'contrast', 'type', 'est', 'se', 'df', 't', 'p', 'p_adj'])
 
     def set_column_types(self):
-        """ Set column types """
 
-        self['study'] = self['study'].astype('str')
+        self['trial'] = self['trial'].astype('str')
         self['scale'] = self['scale'].astype('str')
         self['type'] = self['type'].astype('str')
         self['est'] = self['est'].astype('float')
@@ -240,15 +256,15 @@ class StrataContrastDf(pd.DataFrame, CGRCDataFrame):
         if 'cgr_trial_id' in self.columns:
             self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
 
-        if 'model_id' in self.columns:
-            self['model_id'] = self['model_id'].astype('int')
+        #if 'model_id' in self.columns:
+        #    self['model_id'] = self['model_id'].astype('int')
+        #
+        #if 'trial_id' in self.columns:
+        #    self['trial_id'] = self['trial_id'].astype('int')
 
-        if 'trial_id' in self.columns:
-            self['trial_id'] = self['trial_id'].astype('int')
-
-    # needs implementation
     def check_assumptions(self):
         pass
+
 
 class ModelFamilyResultsDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding toy models data '''
@@ -269,7 +285,6 @@ class ModelFamilyResultsDf(pd.DataFrame, CGRCDataFrame):
         ])
 
     def set_column_types(self):
-        """ Set column types """
 
         self['model'] = self['model'].astype('str')
         self['n_trials'] = self['n_trials'].astype('int')
@@ -295,6 +310,5 @@ class ModelFamilyResultsDf(pd.DataFrame, CGRCDataFrame):
             self['cgradj_avg_trt_es'] = self['cgradj_avg_trt_es'].astype(
                 'float')
 
-    # needs implementation
     def check_assumptions(self):
         pass

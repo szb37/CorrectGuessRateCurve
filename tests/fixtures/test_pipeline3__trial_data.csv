@@ -1,4 +1,4 @@
-study,subject_id,scale,tp,condition,guess,baseline,score,delta_score,age,guess_conf,guesser,respondent,sex,why_guess
+trial,subject_id,scale,tp,condition,guess,baseline,score,delta_score,age,guess_conf,guesser,respondent,sex,why_guess
 test,200,scale_a,wk6,PL,AC,1.0,11.0,10.0,77,2.0,self,ext,F,se
 test,200,scale_a,wk6,PL,PL,1.0,11.0,10.0,77,1.5,ext,ext,F,eff
 test,200,scale_b,wk6,PL,AC,2.0,22.0,20.0,77,2.0,self,ext,F,se

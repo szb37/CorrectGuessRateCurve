@@ -1,6 +1,6 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2020, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
 """
 
@@ -30,20 +30,20 @@ def create_empty_dir(target_dir):
         os.mkdir(target_dir)
 
 
-def get_study_scales(input_df, study_scales):
-    ''' return info about study '''
+def get_trial_scales(input_df, trial_scales):
+    ''' return info about trial '''
 
-    assert (isinstance(study_scales, dict) or (study_scales is None))
+    assert (isinstance(trial_scales, dict) or (trial_scales is None))
     assert (isinstance(input_df, pd.DataFrame) or (input_df is None))
 
-    if study_scales is None:
-        studies = input_df.study.unique().tolist()
+    if trial_scales is None:
+        trials = input_df.trial.unique().tolist()
         scales = input_df.scale.unique().tolist()
     else:
-        studies = list(study_scales.keys())
-        scales = list(study_scales.values())[0]
+        trials = list(trial_scales.keys())
+        scales = list(trial_scales.values())[0]
 
-    return studies, scales
+    return trials, scales
 
 
 def create_analysis_dirs(analysis_name, trial_data_subdir=False, incl_cgrc_plots_dir=True):

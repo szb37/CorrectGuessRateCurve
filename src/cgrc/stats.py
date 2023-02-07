@@ -1,6 +1,6 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2020, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
 
 There is inconsistency in how the model and strata stats are extracted from R:
@@ -33,15 +33,15 @@ r('library(RJSONIO)')
 class Controllers():
 
     @staticmethod
-    def get_trial_stats(input_dir, input_fname, output_dir, output_prefix, study_scales=None, add_columns=None, try_covs=[]):
+    def get_trial_stats(input_dir, input_fname, output_dir, output_prefix, trial_scales=None, add_columns=None, try_covs=[]):
         ''' Gets stats from processedDf and save results as CSV
             Args:
                 input_dir (str): input file's directory
                 input_fname (str): input filename
                 output_dir (str): where to save outputs
                 output_prefix (str): prefix to label outputs
-                study_scales (dict): key-values of studies-scales for which stats will be calculated
-                    E.g. study_scales = {'study2':['scale1', 'scale3']}, will process scales 1 and 3 of study2
+                trial_scales (dict): key-values of trials-scales for which stats will be calculated
+                    E.g. trial_scales = {'trial2':['scale1', 'scale3']}, will process scales 1 and 3 of trial2
                 try_covs (list): list of strings, were each string is a column name in df; eacht will be
                     tried as a model covariate
                 add_columns(dict, optional): any key-value pair to add as column to output df
@@ -51,7 +51,7 @@ class Controllers():
         assert isinstance(input_fname, str)
         assert isinstance(output_dir, str)
         assert isinstance(output_prefix, str)
-        assert (isinstance(study_scales, dict) or (study_scales is None))
+        assert (isinstance(trial_scales, dict) or (trial_scales is None))
         assert (isinstance(add_columns, dict)) or (add_columns is None)
         assert isinstance(try_covs, list)
 
@@ -61,19 +61,19 @@ class Controllers():
         master_strata_summary_df = df_class.StrataSummaryDf()
         master_strata_contrast_df = df_class.StrataContrastDf()
 
-        # Get study_scales from trial_data input
+        # Get trial_scales from trial_data input
         input_trial_data_fpath = os.path.join(
             input_dir, input_fname).replace('\\', '/')
         trial_data_df = pd.read_csv(input_trial_data_fpath)
-        studies, scales = miscs.get_study_scales(input_df=trial_data_df, study_scales=study_scales)
+        trials, scales = miscs.get_trial_scales(input_df=trial_data_df, trial_scales=trial_scales)
 
         # Read dataframe into R and set baseline to be PL
         Helpers.load_df_into_R_space(input_trial_data_fpath)
         desc = 'Get trial stats ({})'.format(input_fname)
 
-        for study, scale in tqdmproduct(studies, scales, desc=desc, disable=False):
+        for trial, scale in tqdmproduct(trials, scales, desc=desc, disable=False):
 
-            Helpers.get_df_filtered(study, scale)
+            Helpers.get_df_filtered(trial, scale)
 
             try:
                 all_dfs = StatsCore.get_stats(
@@ -81,7 +81,7 @@ class Controllers():
                 )
                 all_dfs = Helpers.add_metadata_process_trialdata(
                     all_dfs=all_dfs,
-                    study=study,
+                    trial=trial,
                     scale=scale,
                 )
             except NoSelectedRows:
@@ -128,15 +128,15 @@ class Controllers():
             output_dir, output_prefix+'__model_summary.csv'), index=False)
 
     @staticmethod
-    def get_cgrc_stats(input_dir, input_fname, output_dir, output_prefix, study_scales=None, add_columns=None, try_covs=[]):
+    def get_cgrc_stats(input_dir, input_fname, output_dir, output_prefix, trial_scales=None, add_columns=None, try_covs=[]):
         """ Gets stats from processedDf (with BBC specific columns, cgr and cgr_trial_id) and save results as CSV
             Args:
                 input_dir (str): input file's directory
                 input_fname (str): input filename
                 output_dir (str): where to save outputs
                 output_prefix (str): prefix to label outputs
-                study_scales (dict): key-values of studies-scales for which stats will be calculated
-                    E.g. study_scales = {'study2':['scale1', 'scale3']}, will process scales 1 and 3 of study2
+                trial_scales (dict): key-values of trials-scales for which stats will be calculated
+                    E.g. trial_scales = {'trial2':['scale1', 'scale3']}, will process scales 1 and 3 of trial2
                 try_covs (list): list of strings, were each string is a column name in df; eacht will be
                     tried as a model covariate
                 add_columns(dict, optional): any key-value pair to add as column to output df
@@ -146,7 +146,7 @@ class Controllers():
         assert isinstance(input_fname, str)
         assert isinstance(output_dir, str)
         assert isinstance(output_prefix, str)
-        assert (isinstance(study_scales, dict) or (study_scales is None))
+        assert (isinstance(trial_scales, dict) or (trial_scales is None))
         assert (isinstance(add_columns, dict)) or (add_columns is None)
         assert isinstance(try_covs, list)
 
@@ -158,7 +158,7 @@ class Controllers():
         cgrc_data_df = pd.read_csv(input_fpath)
         cgr_trial_ids = cgrc_data_df.cgr_trial_id.unique().tolist()
         cgrs = cgrc_data_df.cgr.unique().tolist()
-        studies, scales = miscs.get_study_scales(input_df=cgrc_data_df, study_scales=study_scales)
+        trials, scales = miscs.get_trial_scales(input_df=cgrc_data_df, trial_scales=trial_scales)
 
         # Initalize output
         master_model_summary_df = df_class.ModelSummaryDf()
@@ -176,9 +176,9 @@ class Controllers():
 
         desc = 'Get CGRC stats ({})'.format(input_fname)
 
-        for study, scale, cgr, cgr_trial_id, in tqdmproduct(studies, scales, cgrs, cgr_trial_ids, desc=desc, disable=False):
+        for trial, scale, cgr, cgr_trial_id, in tqdmproduct(trials, scales, cgrs, cgr_trial_ids, desc=desc, disable=False):
 
-            Helpers.get_df_filtered(study, scale, cgr, cgr_trial_id)
+            Helpers.get_df_filtered(trial, scale, cgr, cgr_trial_id)
 
             try:
                 all_dfs = StatsCore.get_stats(
@@ -186,7 +186,7 @@ class Controllers():
                 )
                 all_dfs = Helpers.add_metadata_process_cgrc(
                     all_dfs=all_dfs,
-                    study=study,
+                    trial=trial,
                     scale=scale,
                     cgr=cgr,
                     cgr_trial_id=cgr_trial_id,
@@ -299,7 +299,7 @@ class StatsCore():
             # extract model summary df
             r('model_sum = summary({})'.format(model_type))
             model_summary_fromR = Helpers.get_model_summary_stats()
-            model_summary_fromR['study'] = [None]
+            model_summary_fromR['trial'] = [None]
             model_summary_fromR['scale'] = [None]
             model_summary_fromR['model_type'] = [model_type]
             model_summary = pd.concat(
@@ -315,7 +315,7 @@ class StatsCore():
                 if comp == '(Intercept)':
                     comp = 'intercept'
 
-                model_components_fromR['study'] = [None]
+                model_components_fromR['trial'] = [None]
                 model_components_fromR['scale'] = [None]
                 model_components_fromR['model_type'] = [model_type]
                 model_components_fromR['component'] = [comp]
@@ -395,7 +395,7 @@ class StatsCore():
                 'comparison')
             starata_contrast_fromR['p_adj'] = starata_contrast_fromR.pop(
                 'adj_p')
-            starata_contrast_fromR['study'] = [None, None]
+            starata_contrast_fromR['trial'] = [None, None]
             starata_contrast_fromR['scale'] = [None, None]
             strata_contrast = pd.concat(
                 [strata_contrast, pd.DataFrame.from_dict(starata_contrast_fromR)], sort=False)
@@ -415,7 +415,7 @@ class StatsCore():
                 'lower.CL')
             starata_summary_fromR['upper_CI'] = starata_summary_fromR.pop(
                 'upper.CL')
-            starata_summary_fromR['study'] = [None, None, None, None]
+            starata_summary_fromR['trial'] = [None, None, None, None]
             starata_summary_fromR['scale'] = [None, None, None, None]
             starata_summary_fromR['strata'] = [
                 starata_summary_fromR['condition'][0] +
@@ -483,33 +483,33 @@ class Helpers():
         return json.loads(rjson[0])
 
     @staticmethod
-    def get_df_filtered(study, scale, cgr=None, cgr_trial_id=None):
+    def get_df_filtered(trial, scale, cgr=None, cgr_trial_id=None):
         """ Selects subset of R dataframe.
             It is assumed that 'df' exists in R global space and it is an instance of the XYZ
-            dataframe types. This functions filters df by study, scale, cgr and cgr_trial_id
+            dataframe types. This functions filters df by trial, scale, cgr and cgr_trial_id
             Nothing is returned, but df_filtered is created in R global space.
 
             Args:
-                study (str): name of the study. If 'all', then
+                trial (str): name of the trial. If 'all', then
                 scale (str): name of the scale.
                 cgr (float, optional): break blind ratio, ignored if None
                 cgr_trial_id (int, optional): trial index if bbc_engine DF is the input, ignored if None
         """
 
-        if (study in ['all', 'sbmd']) and (cgr is None) and (cgr_trial_id is None):
+        if (trial in ['all', 'sbmd']) and (cgr is None) and (cgr_trial_id is None):
             filter_string = 'df_filtered = filter(df, scale=="{}")'.format(scale)
 
-        elif (study in ['all', 'sbmd']) and (cgr is not None) and (cgr_trial_id is not None):
+        elif (trial in ['all', 'sbmd']) and (cgr is not None) and (cgr_trial_id is not None):
             filter_string = 'df_filtered = filter(df, scale=="{}" & cgr=={} & cgr_trial_id=={})'.format(
                 scale, cgr, cgr_trial_id)
 
-        elif (study not in ['all', 'sbmd']) and (cgr is None) and (cgr_trial_id is None):
-            filter_string = 'df_filtered = filter(df, study=="{}" & scale=="{}")'.format(
-                study, scale)
+        elif (trial not in ['all', 'sbmd']) and (cgr is None) and (cgr_trial_id is None):
+            filter_string = 'df_filtered = filter(df, trial=="{}" & scale=="{}")'.format(
+                trial, scale)
 
-        elif (study not in ['all', 'sbmd']) and (cgr is not None) and (cgr_trial_id is not None):
-            filter_string = 'df_filtered = filter(df, study=="{}" & scale=="{}" & cgr=={} & cgr_trial_id=={})'.format(
-                study, scale, cgr, cgr_trial_id)
+        elif (trial not in ['all', 'sbmd']) and (cgr is not None) and (cgr_trial_id is not None):
+            filter_string = 'df_filtered = filter(df, trial=="{}" & scale=="{}" & cgr=={} & cgr_trial_id=={})'.format(
+                trial, scale, cgr, cgr_trial_id)
 
         else:
             assert False  # Invalid input
@@ -652,44 +652,44 @@ class Helpers():
         return tukey_contrasts
 
     @staticmethod
-    def add_metadata_process_trialdata(all_dfs, study, scale):
+    def add_metadata_process_trialdata(all_dfs, trial, scale):
         """ Add metadata to model_summary, model_components, strata_summary, strata_contrast """
 
-        all_dfs['model_summary'].study = study
+        all_dfs['model_summary'].trial = trial
         all_dfs['model_summary'].scale = scale
 
-        all_dfs['model_components'].study = study
+        all_dfs['model_components'].trial = trial
         all_dfs['model_components'].scale = scale
 
-        all_dfs['strata_summary'].study = study
+        all_dfs['strata_summary'].trial = trial
         all_dfs['strata_summary'].scale = scale
 
-        all_dfs['strata_contrast'].study = study
+        all_dfs['strata_contrast'].trial = trial
         all_dfs['strata_contrast'].scale = scale
 
 
         return all_dfs
 
     @staticmethod
-    def add_metadata_process_cgrc(all_dfs, study, scale, cgr, cgr_trial_id):
+    def add_metadata_process_cgrc(all_dfs, trial, scale, cgr, cgr_trial_id):
         """ Add metadata to model_summary, model_components, strata_summary, strata_contrast """
 
-        all_dfs['model_summary'].study = study
+        all_dfs['model_summary'].trial = trial
         all_dfs['model_summary'].scale = scale
         all_dfs['model_summary'].cgr = cgr
         all_dfs['model_summary'].cgr_trial_id = cgr_trial_id
 
-        all_dfs['model_components'].study = study
+        all_dfs['model_components'].trial = trial
         all_dfs['model_components'].scale = scale
         all_dfs['model_components'].cgr = cgr
         all_dfs['model_components'].cgr_trial_id = cgr_trial_id
 
-        all_dfs['strata_summary'].study = study
+        all_dfs['strata_summary'].trial = trial
         all_dfs['strata_summary'].scale = scale
         all_dfs['strata_summary'].cgr = cgr
         all_dfs['strata_summary'].cgr_trial_id = cgr_trial_id
 
-        all_dfs['strata_contrast'].study = study
+        all_dfs['strata_contrast'].trial = trial
         all_dfs['strata_contrast'].scale = scale
         all_dfs['strata_contrast'].cgr = cgr
         all_dfs['strata_contrast'].cgr_trial_id = cgr_trial_id

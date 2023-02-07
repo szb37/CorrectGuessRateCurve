@@ -1,9 +1,7 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2021, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
-
-TODO: seperate clearly stored reference result CSVs from generated files
 """
 
 import src.cgrc.core as cgrc
@@ -250,7 +248,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
             input_fname='get_cgrc_input1__trial_data.csv',
             output_dir=folders.tmp_dir,
             output_prefix=analysis_name,
-            study_scales={'test': ['tadaa']},
+            trial_scales={'test': ['tadaa']},
             cgrc_parameters={
                 'cgr_values': linspace(0, 1, 5).tolist(),
                 'n_cgrc_trials': 1, },
@@ -284,7 +282,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
             input_fname='get_cgrc_input2__trial_data.csv',
             output_dir=folders.tmp_dir,
             output_prefix=analysis_name,
-            study_scales={'test': ['tadaa']},
+            trial_scales={'test': ['tadaa']},
             cgrc_parameters={
                 'cgr_values': linspace(0, 1, 5).tolist(),
                 'n_cgrc_trials': 1, },
@@ -321,7 +319,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
             input_fname='get_cgrc_input2__trial_data.csv',
             output_dir=folders.tmp_dir,
             output_prefix=analysis_name,
-            study_scales={'test': ['tadaa']},
+            trial_scales={'test': ['tadaa']},
             cgrc_parameters={
                 'cgr_values': linspace(0, 1, 5).tolist(),
                 'n_cgrc_trials': 1, },
@@ -359,7 +357,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
             input_fname='get_cgrc_input4__trial_data.csv',
             output_dir=folders.tmp_dir,
             output_prefix=analysis_name,
-            study_scales={'test': ['tadaa']},
+            trial_scales={'test': ['tadaa']},
             cgrc_parameters={
                 'cgr_values': [0.25, 0.75],
                 'n_cgrc_trials': 1, },
@@ -373,7 +371,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
             input_fname='get_cgrc_input4__trial_data.csv',
             output_dir=folders.tmp_dir,
             output_prefix=analysis_name,
-            study_scales={'test': ['tadaa']},
+            trial_scales={'test': ['tadaa']},
             cgrc_parameters={
                 'cgr_values': [0.25, 0.75],
                 'n_cgrc_trials': 1, },
@@ -388,7 +386,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
             input_fname='get_cgrc_input4__trial_data.csv',
             output_dir=folders.tmp_dir,
             output_prefix=analysis_name,
-            study_scales={'test': ['tadaa']},
+            trial_scales={'test': ['tadaa']},
             cgrc_parameters={
                 'cgr_values': [0.25, 0.75],
                 'n_cgrc_trials': 2, },
@@ -405,7 +403,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
             input_fname='get_CGRC_stats3__cgrc.csv',
             output_dir=folders.tmp_dir,
             output_prefix=analysis_name,
-            study_scales={'test': ['tadaa']},
+            trial_scales={'test': ['tadaa']},
         )
 
         # Check model components
@@ -505,6 +503,6 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
             trial_name='sbmd',
             postfix='tmp',
             cgrc_param_set=1,
-            study_scales=constants.sbmd_test,
+            trial_scales=constants.sbmd_test,
             save_figs=False,
         )

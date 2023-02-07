@@ -1,4 +1,4 @@
-study,subject_id,tp,scale,score,delta_score,condition,guess,guess_conf,guesser,respondent
+trial,subject_id,tp,scale,score,delta_score,condition,guess,guess_conf,guesser,respondent
 test,0,wk8,tadaa,0,9.25099602165554,PL,PL,,self,self
 test,1,wk8,tadaa,0,11.772562027482033,PL,PL,,self,self
 test,2,wk8,tadaa,0,10.093113900580427,PL,PL,,self,self

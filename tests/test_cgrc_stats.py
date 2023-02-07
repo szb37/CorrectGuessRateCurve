@@ -1,6 +1,6 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2021, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
 """
 
@@ -20,7 +20,7 @@ class StatsUnitTests(unittest.TestCase):
     model_summary = df_class.ModelSummaryDf()
     model_summary.add_columns({'cgr': None, 'cgr_trial_id': None})
     model_summary = model_summary.append({
-        'study': 'test',
+        'trial': 'test',
         'scale': 'foo',
         'cgr': 50,
         'cgr_trial_id': 50,
@@ -35,7 +35,7 @@ class StatsUnitTests(unittest.TestCase):
     model_components = df_class.ModelComponentsDf()
     model_components.add_columns({'cgr': None, 'cgr_trial_id': None})
     model_components = model_components.append({
-        'study': 'test',
+        'trial': 'test',
         'scale': 'foo',
         'cgr': 50,
         'cgr_trial_id': 50,
@@ -50,7 +50,7 @@ class StatsUnitTests(unittest.TestCase):
     strata_summary = df_class.StrataSummaryDf()
     strata_summary.add_columns({'cgr': None, 'cgr_trial_id': None})
     strata_summary = strata_summary.append({
-        'study': 'test',
+        'trial': 'test',
         'scale': 'foo',
         'cgr': 40,
         'cgr_trial_id': 50,
@@ -65,7 +65,7 @@ class StatsUnitTests(unittest.TestCase):
     strata_contrast = df_class.StrataContrastDf()
     strata_contrast.add_columns({'cgr': None, 'cgr_trial_id': None})
     strata_contrast = strata_contrast.append({
-        'study': 'test',
+        'trial': 'test',
         'scale': 'foo',
         'cgr': 60,
         'cgr_trial_id': 50,
@@ -89,7 +89,7 @@ class StatsUnitTests(unittest.TestCase):
     model_summary2 = df_class.ModelSummaryDf()
     model_summary2.add_columns({'cgr': None, 'cgr_trial_id': None})
     model_summary2 = model_summary2.append({
-        'study': 'test',
+        'trial': 'test',
         'scale': 'foo',
         'cgr': 50,
         'cgr_trial_id': 50,
@@ -104,7 +104,7 @@ class StatsUnitTests(unittest.TestCase):
     model_components2 = df_class.ModelComponentsDf()
     model_components2.add_columns({'cgr': None, 'cgr_trial_id': None})
     model_components2 = model_components2.append({
-        'study': 'test',
+        'trial': 'test',
         'scale': 'foo',
         'cgr': 50,
         'cgr_trial_id': 50,
@@ -119,7 +119,7 @@ class StatsUnitTests(unittest.TestCase):
     strata_summary2 = df_class.StrataSummaryDf()
     strata_summary2.add_columns({'cgr': None, 'cgr_trial_id': None})
     strata_summary2 = strata_summary2.append({
-        'study': 'test',
+        'trial': 'test',
         'scale': 'foo',
         'cgr': 40,
         'cgr_trial_id': 50,
@@ -134,7 +134,7 @@ class StatsUnitTests(unittest.TestCase):
     strata_contrast2 = df_class.StrataContrastDf()
     strata_contrast2.add_columns({'cgr': None, 'cgr_trial_id': None})
     strata_contrast2 = strata_contrast2.append({
-        'study': 'test',
+        'trial': 'test',
         'scale': 'foo',
         'cgr': 60,
         'cgr_trial_id': 50,
@@ -160,43 +160,43 @@ class StatsUnitTests(unittest.TestCase):
         input_fpath = os.path.join(folders.fixtures, 'get_df_filtered_input.csv').replace('\\', '/')
         stats.Helpers.load_df_into_R_space(input_fpath)
 
-        stats.Helpers.get_df_filtered(study='a', scale='foo')
+        stats.Helpers.get_df_filtered(trial='a', scale='foo')
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [0, 3, 4, 5, 6, 7])
 
-        stats.Helpers.get_df_filtered(study='b', scale='foo')
+        stats.Helpers.get_df_filtered(trial='b', scale='foo')
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [1, 8])
 
-        stats.Helpers.get_df_filtered(study='a', scale='tadaa')
+        stats.Helpers.get_df_filtered(trial='a', scale='tadaa')
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [2])
 
-        stats.Helpers.get_df_filtered(study='a', scale='foo', cgr=0, cgr_trial_id=0)
+        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=0, cgr_trial_id=0)
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [0, 3, 4])
 
-        stats.Helpers.get_df_filtered(study='a', scale='foo', cgr=1, cgr_trial_id=0)
+        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=1, cgr_trial_id=0)
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [5])
 
-        stats.Helpers.get_df_filtered(study='a', scale='foo', cgr=0, cgr_trial_id=1)
+        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=0, cgr_trial_id=1)
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [6])
 
-        stats.Helpers.get_df_filtered(study='a', scale='foo', cgr=1, cgr_trial_id=1)
+        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=1, cgr_trial_id=1)
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [7])
 
-        stats.Helpers.get_df_filtered(study='all', scale='foo')
+        stats.Helpers.get_df_filtered(trial='all', scale='foo')
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [0, 1, 3, 4, 5, 6, 7, 8, 9])
 
-        stats.Helpers.get_df_filtered(study='all', scale='tadaa')
+        stats.Helpers.get_df_filtered(trial='all', scale='tadaa')
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [2])
 
-        stats.Helpers.get_df_filtered(study='all', scale='nonexistent')
+        stats.Helpers.get_df_filtered(trial='all', scale='nonexistent')
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [])
 
@@ -214,7 +214,7 @@ class StatsUnitTests(unittest.TestCase):
             input_fname='get_trial_data_stats_input1.csv',
             output_dir=folders.tmp_dir,
             output_prefix='get_trial_data_stats1',
-            study_scales={'tads': ['bdi', 'rads']},
+            trial_scales={'tads': ['bdi', 'rads']},
         )
 
         output_model_summary = pd.read_csv(os.path.join(
@@ -267,7 +267,7 @@ class StatsUnitTests(unittest.TestCase):
             input_fname='get_trial_data_stats_input1.csv',
             output_dir=folders.tmp_dir,
             output_prefix='get_trial_data_stats2',
-            study_scales={'tads': ['bdi', 'rads']},
+            trial_scales={'tads': ['bdi', 'rads']},
         )
 
         output_model_summary = pd.read_csv(os.path.join(
@@ -333,7 +333,7 @@ class StatsUnitTests(unittest.TestCase):
             input_fname='get_CGRC_stats1__cgrc.csv',
             output_dir=folders.tmp_dir,
             output_prefix='get_CGRC_stats1',
-            study_scales={'tads': ['bdi', 'rads']},
+            trial_scales={'tads': ['bdi', 'rads']},
         )
 
         output_model_summary = pd.read_csv(os.path.join(
@@ -385,7 +385,7 @@ class StatsUnitTests(unittest.TestCase):
             input_fname='get_CGRC_stats2__cgrc.csv',
             output_dir=folders.tmp_dir,
             output_prefix='get_CGRC_stats2',
-            study_scales={'tads': ['bdi', 'rads']},
+            trial_scales={'tads': ['bdi', 'rads']},
         )
 
         output_model_summary = pd.read_csv(os.path.join(
@@ -449,11 +449,11 @@ class StatsIntegrationTests(unittest.TestCase):
             folders.fixtures, 'get_stats_data_output1_model_summary.csv'))
 
         # Drop empty columns
-        model_components.drop(['study', 'scale'], axis=1, inplace=True)
-        model_summary.drop(['study', 'scale'], axis=1, inplace=True)
-        ref_components.drop(['study', 'scale', 'guesser', 'respondent',
+        model_components.drop(['trial', 'scale'], axis=1, inplace=True)
+        model_summary.drop(['trial', 'scale'], axis=1, inplace=True)
+        ref_components.drop(['trial', 'scale', 'guesser', 'respondent',
                             'cgr', 'cgr_trial_id'], axis=1, inplace=True)
-        ref_summary.drop(['study', 'scale', 'guesser', 'respondent',
+        ref_summary.drop(['trial', 'scale', 'guesser', 'respondent',
                          'cgr', 'cgr_trial_id'], axis=1, inplace=True)
 
         pd.testing.assert_frame_equal(ref_components, model_components)
@@ -470,10 +470,10 @@ class StatsIntegrationTests(unittest.TestCase):
         ref_contrast = pd.read_csv(os.path.join(folders.fixtures, 'get_stats_data_output1_strata_contrasts.csv'))
 
         # Drop empty columns
-        strata_summary.drop(['study', 'scale'], axis=1, inplace=True)
-        strata_contrast.drop(['study', 'scale'], axis=1, inplace=True)
-        ref_summary.drop(['study', 'scale', 'cgr', 'cgr_trial_id'], axis=1, inplace=True)
-        ref_contrast.drop(['study', 'scale', 'cgr', 'cgr_trial_id'], axis=1, inplace=True)
+        strata_summary.drop(['trial', 'scale'], axis=1, inplace=True)
+        strata_contrast.drop(['trial', 'scale'], axis=1, inplace=True)
+        ref_summary.drop(['trial', 'scale', 'cgr', 'cgr_trial_id'], axis=1, inplace=True)
+        ref_contrast.drop(['trial', 'scale', 'cgr', 'cgr_trial_id'], axis=1, inplace=True)
 
         strata_summary.df = strata_summary.df.astype('int64')
         strata_contrast.df = strata_contrast.df.astype('int64')

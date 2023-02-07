@@ -1,4 +1,4 @@
-study,subject_id,age,sex,tp,scale,baseline,score,delta_score,condition,guess,guess_conf,why_guess,guesser,respondent
+trial,subject_id,age,sex,tp,scale,baseline,score,delta_score,condition,guess,guess_conf,why_guess,guesser,respondent
 tads,211849,144,M,wk12,cdrs_r_b,57,58,1,PL,PL,5,,self,ext
 tads,211849,144,M,wk12,cdrs_14a,42,45,3,PL,PL,5,,self,self
 tads,211849,144,M,wk12,cdrs_14p,43,31,-12,PL,PL,5,,self,ext

@@ -1,4 +1,4 @@
-study,subject_id,tp,scale,score,delta_score,condition,guess,guess_conf,guesser,respondent
+trial,subject_id,tp,scale,score,delta_score,condition,guess,guess_conf,guesser,respondent
 sbmd,132,w1s1,PANAS,-4,-4,AC,PL,,self,self
 sbmd,132,w1s1,positive,17,17,AC,PL,,self,self
 sbmd,132,w1s1,negative,21,21,AC,PL,,self,self

@@ -1,6 +1,6 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2020, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
 """
 
@@ -19,14 +19,10 @@ cgrc_parameters = {
         'n_cgrc_trials': 4, },
 }
 
-
-sbmd_all = {'sbmd': ['PANAS', 'mood', 'creativity', 'WEMWB',
-                     'SCS', 'CPS', 'energy', 'focus', 'temper', 'QIDS', 'STAIT']}
-sbmd_acutes = {'sbmd': ['CPS', 'PANAS', 'mood',
-                        'creativity', 'energy', 'focus', 'temper']}
+sbmd_all = {'sbmd': ['PANAS', 'mood', 'creativity', 'WEMWB', 'SCS', 'CPS', 'energy', 'focus', 'temper', 'QIDS', 'STAIT']}
+sbmd_acutes = {'sbmd': ['CPS', 'PANAS', 'mood', 'creativity', 'energy', 'focus', 'temper']}
 sbmd_postacutes = {'sbmd': ['QIDS', 'WEMWB', 'STAIT']}
-sbmd_plots = {'sbmd': ['PANAS', 'mood',
-                       'creativity', 'energy', 'CPS', 'WEMWB']}
+sbmd_plots = {'sbmd': ['PANAS', 'mood', 'creativity', 'energy', 'CPS', 'WEMWB']}
 sbmd_test = {'sbmd': ['PANAS']}
 sbmd_tmp = {'sbmd': ['creativity']}
 

@@ -1,6 +1,6 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2020, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
 """
 
@@ -23,19 +23,19 @@ import os
 class Controllers():
 
     @staticmethod
-    def run_cgrc_trial(trial_name, postfix, cgrc_param_set, study_scales=None, save_figs=True):
+    def run_cgrc_trial(trial_name, postfix, cgrc_param_set, trial_scales=None, save_figs=True):
         ''' Run CGRC pipeline on a TrialDataDf
             Args:
                 trial_name (str): name of trial
                 cgrc_param_set (int): which paramter set used, see cgrc_parameters within constants
-                study_scales (dict): key-values of studies-scales for which stats will be calculated
-                    E.g. study_scales = {'study2':['scale1', 'scale3']}, will process scales 1 and 3 of study2
+                trial_scales (dict): key-values of trials-scales for which stats will be calculated
+                    E.g. trial_scales = {'trial2':['scale1', 'scale3']}, will process scales 1 and 3 of trial2
         '''
 
         assert isinstance(trial_name, str)
         assert isinstance(postfix, str)
         assert isinstance(cgrc_param_set, int)
-        assert (isinstance(study_scales, dict) or (study_scales is None))
+        assert (isinstance(trial_scales, dict) or (trial_scales is None))
 
         cgrc_parameters = constants.cgrc_parameters[cgrc_param_set]
         analysis_name = trial_name + '_{}'.format(postfix)
@@ -52,7 +52,7 @@ class Controllers():
             input_fname=trial_name + '__trial_data.csv',
             output_dir=trial_stats_dir,
             output_prefix=analysis_name,
-            study_scales=study_scales,
+            trial_scales=trial_scales,
         )
 
         # Get CGRC from trial data
@@ -62,7 +62,7 @@ class Controllers():
             output_dir=cgrc_data_dir,
             output_prefix=analysis_name,
             cgrc_parameters=cgrc_parameters,
-            study_scales=study_scales,
+            trial_scales=trial_scales,
         )
 
         # Get CGRC stats
@@ -71,7 +71,7 @@ class Controllers():
             input_fname=analysis_name + '__cgrc_data.csv',
             output_dir=cgrc_stats_dir,
             output_prefix=analysis_name,
-            study_scales=study_scales,
+            trial_scales=trial_scales,
         )
 
         # Make CGRC figues
@@ -81,11 +81,11 @@ class Controllers():
                 input_fname=analysis_name + '__cgrc_model_components.csv',
                 output_dir=cgrc_plots_dir,
                 output_prefix=analysis_name,
-                study_scales=study_scales,
+                trial_scales=trial_scales,
             )
 
     @staticmethod
-    def get_cgrc_comparison_table_v1(trial_name, analysis_name, trial_data_dir, trial_stats_dir, cgrc_data_dir, cgrc_stats_dir, study_scales=None,):
+    def get_cgrc_comparison_table_v1(trial_name, analysis_name, trial_data_dir, trial_stats_dir, cgrc_data_dir, cgrc_stats_dir, trial_scales=None,):
         ''' Compute and save Type 1 summary table of results '''
 
         assert isinstance(trial_name, str)
@@ -94,7 +94,7 @@ class Controllers():
         assert isinstance(trial_stats_dir, str)
         assert isinstance(cgrc_data_dir, str)
         assert isinstance(cgrc_stats_dir, str)
-        assert (isinstance(study_scales, dict) or (study_scales is None))
+        assert (isinstance(trial_scales, dict) or (trial_scales is None))
 
         df = pd.DataFrame(
             columns=[
@@ -206,14 +206,14 @@ class Controllers():
         return df
 
     @staticmethod
-    def get_cgrc_comparison_table_v2(trial_name, analysis_name, cgrc_data_dir, cgrc_stats_dir, study_scales=None,):
+    def get_cgrc_comparison_table_v2(trial_name, analysis_name, cgrc_data_dir, cgrc_stats_dir, trial_scales=None,):
         ''' Compute and save Type 2 summary table of results '''
 
         assert isinstance(trial_name, str)
         assert isinstance(analysis_name, str)
         assert isinstance(cgrc_data_dir, str)
         assert isinstance(cgrc_stats_dir, str)
-        assert (isinstance(study_scales, dict) or (study_scales is None))
+        assert (isinstance(trial_scales, dict) or (trial_scales is None))
 
         df = pd.DataFrame(
             columns=[
@@ -287,7 +287,7 @@ class CorrectGuessRateCurve():
     ''' Calculate correct guess rate curve '''
 
     @staticmethod
-    def get_cgrc_data(input_dir, input_fname, output_dir, output_prefix, cgrc_parameters, use_KDE=True, strata_sampling='all_prop', study_scales=None, add_columns=None, n_sample=None):
+    def get_cgrc_data(input_dir, input_fname, output_dir, output_prefix, cgrc_parameters, use_KDE=True, strata_sampling='all_prop', trial_scales=None, add_columns=None, n_sample=None):
         ''' Get CGRC data
             Args:
                 input_dir (str): folder of input file
@@ -296,8 +296,8 @@ class CorrectGuessRateCurve():
                 output_prefix (str): prefix of output files
                 cgrc_parameters (dict): dictionary of CGRC parameters; see constants
                 use_KDE (bool, optional): fit KDE distribution over strata
-                study_scales (dict): defines combinations of studies/scales for which stats will be calculated
-                    E.g. study_scales = {'study2':['scale1', 'scale3']}, will process scales 1 and 3 of study2
+                trial_scales (dict): defines combinations of trials/scales for which stats will be calculated
+                    E.g. trial_scales = {'trial2':['scale1', 'scale3']}, will process scales 1 and 3 of trial2
                 strata_sampling (str, optional): method how to assign sample size between strata;
                     must be in ['all_prop', 'all_equal', 'active_equal', 'active_prop']
         '''
@@ -310,7 +310,7 @@ class CorrectGuessRateCurve():
         assert isinstance(use_KDE, bool)
         assert strata_sampling in ['all_prop',
                                    'all_equal', 'active_equal', 'active_prop']
-        assert (isinstance(study_scales, dict) or (study_scales is None))
+        assert (isinstance(trial_scales, dict) or (trial_scales is None))
         assert (isinstance(add_columns, dict)) or (add_columns is None)
         assert isinstance(n_sample, int) or (n_sample is None)
 
@@ -319,17 +319,17 @@ class CorrectGuessRateCurve():
         cgr_values = [round(el, 5) for el in cgrc_parameters['cgr_values']]
 
         trial_data_df = pd.read_csv(os.path.join(input_dir, input_fname))
-        studies, scales = miscs.get_study_scales(input_df=trial_data_df, study_scales=study_scales)
+        trials, scales = miscs.get_trial_scales(input_df=trial_data_df, trial_scales=trial_scales)
 
         master_cgrc_df = df_class.CGRCurveDf()
 
-        for study, scale in product(studies, scales):
+        for trial, scale in product(trials, scales):
 
 
             df_filtered = trial_data_df.loc[(trial_data_df.scale == scale)]
 
-            if study != 'all':
-                df_filtered = df_filtered.loc[(df_filtered.study == study)]
+            if trial != 'all':
+                df_filtered = df_filtered.loc[(df_filtered.trial == trial)]
 
             if df_filtered.shape[0] == 0:
                 continue
@@ -342,7 +342,7 @@ class CorrectGuessRateCurve():
             if use_KDE:
                 kdes = CorrectGuessRateCurve.get_kdes(df_filtered=df_filtered)
 
-            desc = 'Get CGRC data ({}:{})'.format(study, scale)
+            desc = 'Get CGRC data ({}:{})'.format(trial, scale)
 
             for cgr, cgr_trial_id in tqdmproduct(cgr_values, range(n_cgrc_trials), desc=desc, disable=False):
 
@@ -365,7 +365,7 @@ class CorrectGuessRateCurve():
                         cgr=cgr,)
 
                 cgrc_datapoint_df.cgr_trial_id = cgr_trial_id
-                cgrc_datapoint_df.study = study
+                cgrc_datapoint_df.trial = trial
                 cgrc_datapoint_df.scale = scale
 
                 master_cgrc_df = pd.concat(

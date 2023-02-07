@@ -1,6 +1,6 @@
 """
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
-:Copyright: 2020, DrugNerdsLab
+:Copyright: 2022, DrugNerdsLab
 :License: MIT
 
 Model family analyis naming convention:
@@ -412,7 +412,7 @@ class Helpers():
 
         df.subject_id = [idx for idx in range(n)]
 
-        df.study = 'mock'
+        df.trial = 'mock'
         df.scale = 'scale1'
         df.tp = 'wk8'
         df.baseline = 0
