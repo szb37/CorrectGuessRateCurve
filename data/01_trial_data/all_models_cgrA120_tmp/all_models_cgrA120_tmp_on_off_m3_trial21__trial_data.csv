@@ -1,4 +1,4 @@
-trial,subject_id,scale,tp,condition,guess,baseline,score,delta_score,guesser,respondent,model_name,trial_id
+trial,subject_id,scale,tp,condition,guess,baseline,score,delta_score,guesser,respondent,model_name,model_sim_id
 mock,0,scale1,wk8,PL,PL,0.0,17.0,17.0,self,self,on_off_m3,21
 mock,1,scale1,wk8,PL,PL,0.0,20.0,20.0,self,self,on_off_m3,21
 mock,2,scale1,wk8,PL,PL,0.0,25.0,25.0,self,self,on_off_m3,21

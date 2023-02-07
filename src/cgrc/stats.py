@@ -129,7 +129,7 @@ class Controllers():
 
     @staticmethod
     def get_cgrc_stats(input_dir, input_fname, output_dir, output_prefix, trial_scales=None, add_columns=None, try_covs=[]):
-        """ Gets stats from processedDf (with BBC specific columns, cgr and cgr_trial_id) and save results as CSV
+        """ Gets stats from processedDf (with BBC specific columns, cgr and cgr_sim_id) and save results as CSV
             Args:
                 input_dir (str): input file's directory
                 input_fname (str): input filename
@@ -154,31 +154,31 @@ class Controllers():
         input_fpath = os.path.join(input_dir, input_fname).replace('\\', '/')
         Helpers.load_df_into_R_space(input_fpath)
 
-        # Extracts cgrs and cgr_trial_ids from df
+        # Extracts cgrs and cgr_sim_ids from df
         cgrc_data_df = pd.read_csv(input_fpath)
-        cgr_trial_ids = cgrc_data_df.cgr_trial_id.unique().tolist()
+        cgr_sim_ids = cgrc_data_df.cgr_sim_id.unique().tolist()
         cgrs = cgrc_data_df.cgr.unique().tolist()
         trials, scales = miscs.get_trial_scales(input_df=cgrc_data_df, trial_scales=trial_scales)
 
         # Initalize output
         master_model_summary_df = df_class.ModelSummaryDf()
         master_model_summary_df.add_columns(
-            {'cgr': None, 'cgr_trial_id': None})
+            {'cgr': None, 'cgr_sim_id': None})
         master_model_components_df = df_class.ModelComponentsDf()
         master_model_components_df.add_columns(
-            {'cgr': None, 'cgr_trial_id': None})
+            {'cgr': None, 'cgr_sim_id': None})
         master_strata_summary_df = df_class.StrataSummaryDf()
         master_strata_summary_df.add_columns(
-            {'cgr': None, 'cgr_trial_id': None})
+            {'cgr': None, 'cgr_sim_id': None})
         master_strata_contrast_df = df_class.StrataContrastDf()
         master_strata_contrast_df.add_columns(
-            {'cgr': None, 'cgr_trial_id': None})
+            {'cgr': None, 'cgr_sim_id': None})
 
         desc = 'Get CGRC stats ({})'.format(input_fname)
 
-        for trial, scale, cgr, cgr_trial_id, in tqdmproduct(trials, scales, cgrs, cgr_trial_ids, desc=desc, disable=False):
+        for trial, scale, cgr, cgr_sim_id, in tqdmproduct(trials, scales, cgrs, cgr_sim_ids, desc=desc, disable=False):
 
-            Helpers.get_df_filtered(trial, scale, cgr, cgr_trial_id)
+            Helpers.get_df_filtered(trial, scale, cgr, cgr_sim_id)
 
             try:
                 all_dfs = StatsCore.get_stats(
@@ -189,7 +189,7 @@ class Controllers():
                     trial=trial,
                     scale=scale,
                     cgr=cgr,
-                    cgr_trial_id=cgr_trial_id,
+                    cgr_sim_id=cgr_sim_id,
                 )
             except NoSelectedRows:
                 continue
@@ -243,7 +243,7 @@ class StatsCore():
             Args:
                 try_covs (list): list of strings, each string is a potential covariate (i.e. column name in df_filtered)
                     that will be tried as a covariate for models.
-                add_cgrc_columns (bool, optional): if True, then will add empty 'cgr' and 'cgr_trial_id' columns to output dfs
+                add_cgrc_columns (bool, optional): if True, then will add empty 'cgr' and 'cgr_sim_id' columns to output dfs
         '''
 
         assert isinstance(add_cgrc_columns, bool)
@@ -276,7 +276,7 @@ class StatsCore():
             Args:
                 try_covs (list): list of strings, each string is a potential covariate (i.e. column name in df_filtered)
                     that will be tried as a covariate for models.
-                add_cgrc_columns (bool, optional): if True, then will add empty 'cgr' and 'cgr_trial_id' columns to output dfs
+                add_cgrc_columns (bool, optional): if True, then will add empty 'cgr' and 'cgr_sim_id' columns to output dfs
         '''
 
         assert isinstance(add_cgrc_columns, bool)
@@ -287,9 +287,9 @@ class StatsCore():
         model_components = df_class.ModelComponentsDf()
         if add_cgrc_columns:
             model_summary.add_columns(
-                {'cgr': None, 'cgr_trial_id': None})
+                {'cgr': None, 'cgr_sim_id': None})
             model_components.add_columns(
-                {'cgr': None, 'cgr_trial_id': None})
+                {'cgr': None, 'cgr_sim_id': None})
 
         r("without_guess=lm(formula='delta_score~condition', df_filtered)")
         r("with_guess=lm(formula='delta_score~condition+guess+condition*guess', df_filtered)")
@@ -339,7 +339,7 @@ class StatsCore():
             Args:
                 try_covs (list): list of strings, each string is a potential covariate (i.e. column name in df_filtered)
                     that will be tried as a covariate for models.
-                add_cgrc_columns (bool, optional): if True, then will add empty 'cgr' and 'cgr_trial_id' columns to output dfs
+                add_cgrc_columns (bool, optional): if True, then will add empty 'cgr' and 'cgr_sim_id' columns to output dfs
         '''
 
         assert isinstance(add_cgrc_columns, bool)
@@ -350,9 +350,9 @@ class StatsCore():
 
         if add_cgrc_columns:
             strata_summary.add_columns(
-                {'cgr': None, 'cgr_trial_id': None})
+                {'cgr': None, 'cgr_sim_id': None})
             strata_contrast.add_columns(
-                {'cgr': None, 'cgr_trial_id': None})
+                {'cgr': None, 'cgr_sim_id': None})
 
         py_df_filtered = Helpers.r2pyjson('df_filtered')
         if 'cgr' in py_df_filtered.keys():
@@ -483,33 +483,33 @@ class Helpers():
         return json.loads(rjson[0])
 
     @staticmethod
-    def get_df_filtered(trial, scale, cgr=None, cgr_trial_id=None):
+    def get_df_filtered(trial, scale, cgr=None, cgr_sim_id=None):
         """ Selects subset of R dataframe.
             It is assumed that 'df' exists in R global space and it is an instance of the XYZ
-            dataframe types. This functions filters df by trial, scale, cgr and cgr_trial_id
+            dataframe types. This functions filters df by trial, scale, cgr and cgr_sim_id
             Nothing is returned, but df_filtered is created in R global space.
 
             Args:
                 trial (str): name of the trial. If 'all', then
                 scale (str): name of the scale.
                 cgr (float, optional): break blind ratio, ignored if None
-                cgr_trial_id (int, optional): trial index if bbc_engine DF is the input, ignored if None
+                cgr_sim_id (int, optional): trial index if bbc_engine DF is the input, ignored if None
         """
 
-        if (trial in ['all', 'sbmd']) and (cgr is None) and (cgr_trial_id is None):
+        if (trial in ['all', 'sbmd']) and (cgr is None) and (cgr_sim_id is None):
             filter_string = 'df_filtered = filter(df, scale=="{}")'.format(scale)
 
-        elif (trial in ['all', 'sbmd']) and (cgr is not None) and (cgr_trial_id is not None):
-            filter_string = 'df_filtered = filter(df, scale=="{}" & cgr=={} & cgr_trial_id=={})'.format(
-                scale, cgr, cgr_trial_id)
+        elif (trial in ['all', 'sbmd']) and (cgr is not None) and (cgr_sim_id is not None):
+            filter_string = 'df_filtered = filter(df, scale=="{}" & cgr=={} & cgr_sim_id=={})'.format(
+                scale, cgr, cgr_sim_id)
 
-        elif (trial not in ['all', 'sbmd']) and (cgr is None) and (cgr_trial_id is None):
+        elif (trial not in ['all', 'sbmd']) and (cgr is None) and (cgr_sim_id is None):
             filter_string = 'df_filtered = filter(df, trial=="{}" & scale=="{}")'.format(
                 trial, scale)
 
-        elif (trial not in ['all', 'sbmd']) and (cgr is not None) and (cgr_trial_id is not None):
-            filter_string = 'df_filtered = filter(df, trial=="{}" & scale=="{}" & cgr=={} & cgr_trial_id=={})'.format(
-                trial, scale, cgr, cgr_trial_id)
+        elif (trial not in ['all', 'sbmd']) and (cgr is not None) and (cgr_sim_id is not None):
+            filter_string = 'df_filtered = filter(df, trial=="{}" & scale=="{}" & cgr=={} & cgr_sim_id=={})'.format(
+                trial, scale, cgr, cgr_sim_id)
 
         else:
             assert False  # Invalid input
@@ -671,28 +671,28 @@ class Helpers():
         return all_dfs
 
     @staticmethod
-    def add_metadata_process_cgrc(all_dfs, trial, scale, cgr, cgr_trial_id):
+    def add_metadata_process_cgrc(all_dfs, trial, scale, cgr, cgr_sim_id):
         """ Add metadata to model_summary, model_components, strata_summary, strata_contrast """
 
         all_dfs['model_summary'].trial = trial
         all_dfs['model_summary'].scale = scale
         all_dfs['model_summary'].cgr = cgr
-        all_dfs['model_summary'].cgr_trial_id = cgr_trial_id
+        all_dfs['model_summary'].cgr_sim_id = cgr_sim_id
 
         all_dfs['model_components'].trial = trial
         all_dfs['model_components'].scale = scale
         all_dfs['model_components'].cgr = cgr
-        all_dfs['model_components'].cgr_trial_id = cgr_trial_id
+        all_dfs['model_components'].cgr_sim_id = cgr_sim_id
 
         all_dfs['strata_summary'].trial = trial
         all_dfs['strata_summary'].scale = scale
         all_dfs['strata_summary'].cgr = cgr
-        all_dfs['strata_summary'].cgr_trial_id = cgr_trial_id
+        all_dfs['strata_summary'].cgr_sim_id = cgr_sim_id
 
         all_dfs['strata_contrast'].trial = trial
         all_dfs['strata_contrast'].scale = scale
         all_dfs['strata_contrast'].cgr = cgr
-        all_dfs['strata_contrast'].cgr_trial_id = cgr_trial_id
+        all_dfs['strata_contrast'].cgr_sim_id = cgr_sim_id
 
         return all_dfs
 

@@ -1,2 +1,2 @@
-trial,scale,model_type,component,est,se,t,p,cgr,cgr_trial_id
+trial,scale,model_type,component,est,se,t,p,cgr,cgr_sim_id
 tads,bdi,test_type,tadaa,1.0,2.0,3.0,4.0,0.0,0

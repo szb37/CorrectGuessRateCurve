@@ -1,4 +1,4 @@
-trial,scale,respondent,guesser,cgr,cgr_trial_id,condition,guess,delta_score
+trial,scale,respondent,guesser,cgr,cgr_sim_id,condition,guess,delta_score
 stoppd,cgi_si,ext,self,0,0,PL,PL,-2
 stoppd,cgi_si,ext,self,0,0,PL,AC,-5
 stoppd,cgi_si,ext,self,0,0,AC,PL,0

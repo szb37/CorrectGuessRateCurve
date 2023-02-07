@@ -153,13 +153,13 @@ class Controllers():
 
             # Compute CGRC effect size
             cgrc_hedges_g = []
-            for cgr_trial_id in cgrc_data.cgr_trial_id.unique().tolist():
+            for cgr_sim_id in cgrc_data.cgr_sim_id.unique().tolist():
                 cgrc_hedges_g.append(
                     pingouin.compute_effsize(
                         tmp_cgrc_data.loc[(tmp_cgrc_data.condition == 'AC') & (
-                            tmp_cgrc_data.cgr_trial_id == cgr_trial_id)].delta_score,
+                            tmp_cgrc_data.cgr_sim_id == cgr_sim_id)].delta_score,
                         tmp_cgrc_data.loc[(tmp_cgrc_data.condition == 'PL') & (
-                            tmp_cgrc_data.cgr_trial_id == cgr_trial_id)].delta_score,
+                            tmp_cgrc_data.cgr_sim_id == cgr_sim_id)].delta_score,
                         eftype='hedges'
                     ))
 
@@ -172,13 +172,13 @@ class Controllers():
 
             # Compute CGRC CGR
             cgrc_cgrs = []
-            for cgr_trial_id in cgrc_data.cgr_trial_id.unique().tolist():
+            for cgr_sim_id in cgrc_data.cgr_sim_id.unique().tolist():
                 n_plpl = tmp_cgrc_data.loc[(tmp_cgrc_data.condition == 'PL') & (
-                    tmp_cgrc_data.guess == 'PL') & (tmp_cgrc_data.cgr_trial_id == cgr_trial_id)].shape[0]
+                    tmp_cgrc_data.guess == 'PL') & (tmp_cgrc_data.cgr_sim_id == cgr_sim_id)].shape[0]
                 n_acac = tmp_cgrc_data.loc[(tmp_cgrc_data.condition == 'AC') & (
-                    tmp_cgrc_data.guess == 'AC') & (tmp_cgrc_data.cgr_trial_id == cgr_trial_id)].shape[0]
+                    tmp_cgrc_data.guess == 'AC') & (tmp_cgrc_data.cgr_sim_id == cgr_sim_id)].shape[0]
                 cgrc_cgrs.append(
-                    (n_plpl+n_acac)/tmp_cgrc_data.loc[(tmp_cgrc_data.cgr_trial_id == cgr_trial_id)].shape[0])
+                    (n_plpl+n_acac)/tmp_cgrc_data.loc[(tmp_cgrc_data.cgr_sim_id == cgr_sim_id)].shape[0])
 
             # Add results to output table
             row = {}
@@ -244,25 +244,25 @@ class Controllers():
 
             # Compute CGRC effect size
             cgrc_hedges_g = []
-            for cgr_trial_id in cgrc_data.cgr_trial_id.unique().tolist():
+            for cgr_sim_id in cgrc_data.cgr_sim_id.unique().tolist():
                 cgrc_hedges_g.append(
                     pingouin.compute_effsize(
                         tmp_cgrc_data.loc[(tmp_cgrc_data.condition == 'AC') & (
-                            tmp_cgrc_data.cgr_trial_id == cgr_trial_id)].delta_score,
+                            tmp_cgrc_data.cgr_sim_id == cgr_sim_id)].delta_score,
                         tmp_cgrc_data.loc[(tmp_cgrc_data.condition == 'PL') & (
-                            tmp_cgrc_data.cgr_trial_id == cgr_trial_id)].delta_score,
+                            tmp_cgrc_data.cgr_sim_id == cgr_sim_id)].delta_score,
                         eftype='hedges'
                     ))
 
             # Compute CGRC CGR
             cgrc_cgrs = []
-            for cgr_trial_id in cgrc_data.cgr_trial_id.unique().tolist():
+            for cgr_sim_id in cgrc_data.cgr_sim_id.unique().tolist():
                 n_plpl = tmp_cgrc_data.loc[(tmp_cgrc_data.condition == 'PL') & (
-                    tmp_cgrc_data.guess == 'PL') & (tmp_cgrc_data.cgr_trial_id == cgr_trial_id)].shape[0]
+                    tmp_cgrc_data.guess == 'PL') & (tmp_cgrc_data.cgr_sim_id == cgr_sim_id)].shape[0]
                 n_acac = tmp_cgrc_data.loc[(tmp_cgrc_data.condition == 'AC') & (
-                    tmp_cgrc_data.guess == 'AC') & (tmp_cgrc_data.cgr_trial_id == cgr_trial_id)].shape[0]
+                    tmp_cgrc_data.guess == 'AC') & (tmp_cgrc_data.cgr_sim_id == cgr_sim_id)].shape[0]
                 cgrc_cgrs.append(
-                    (n_plpl+n_acac)/tmp_cgrc_data.loc[(tmp_cgrc_data.cgr_trial_id == cgr_trial_id)].shape[0])
+                    (n_plpl+n_acac)/tmp_cgrc_data.loc[(tmp_cgrc_data.cgr_sim_id == cgr_sim_id)].shape[0])
 
             # Add results to output table
             row = {}
@@ -344,7 +344,7 @@ class CorrectGuessRateCurve():
 
             desc = 'Get CGRC data ({}:{})'.format(trial, scale)
 
-            for cgr, cgr_trial_id in tqdmproduct(cgr_values, range(n_cgrc_trials), desc=desc, disable=False):
+            for cgr, cgr_sim_id in tqdmproduct(cgr_values, range(n_cgrc_trials), desc=desc, disable=False):
 
                 sample_sizes = CorrectGuessRateCurve.get_strata_sample_sizes(
                     total_sample_size=total_sample_size,
@@ -364,7 +364,7 @@ class CorrectGuessRateCurve():
                         sample_sizes=sample_sizes,
                         cgr=cgr,)
 
-                cgrc_datapoint_df.cgr_trial_id = cgr_trial_id
+                cgrc_datapoint_df.cgr_sim_id = cgr_sim_id
                 cgrc_datapoint_df.trial = trial
                 cgrc_datapoint_df.scale = scale
 

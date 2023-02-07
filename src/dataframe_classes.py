@@ -95,7 +95,7 @@ class CGRCurveDf(TrialDataDf):
         super(TrialDataDf, self).__init__(columns=[
             'trial',
             'cgr',
-            'cgr_trial_id',
+            'cgr_sim_id',
             'scale',
             'tp',
             'condition',
@@ -108,7 +108,7 @@ class CGRCurveDf(TrialDataDf):
     def set_column_types(self):
         self['trial'] = self['trial'].astype('str')
         self['cgr'] = self['cgr'].astype('float')
-        self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
+        self['cgr_sim_id'] = self['cgr_sim_id'].astype('int')
         #self['subject_id'] = self['subject_id'].astype('int')
         self['scale'] = self['scale'].astype('str')
         self['tp'] = self['tp'].astype('str')
@@ -118,10 +118,8 @@ class CGRCurveDf(TrialDataDf):
         self['score'] = self['score'].astype('float')
         self['delta_score'] = self['delta_score'].astype('float')
 
-        if 'model_id' in self.columns:
-            self['model_id'] = self['model_id'].astype('int')
-        if 'trial_id' in self.columns:
-            self['trial_id'] = self['trial_id'].astype('int')
+        if 'model_sim_id' in self.columns:
+            self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def check_assumptions(self):
         super(CGRCurveDf, self).check_assumptions()
@@ -151,13 +149,11 @@ class ModelSummaryDf(pd.DataFrame, CGRCDataFrame):
         if 'cgr' in self.columns:
             self['cgr'] = self['cgr'].astype('float')
 
-        if 'cgr_trial_id' in self.columns:
-            self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
+        if 'cgr_sim_id' in self.columns:
+            self['cgr_sim_id'] = self['cgr_sim_id'].astype('int')
 
-        #if 'model_id' in self.columns:
-        #    self['model_id'] = self['model_id'].astype('int')
-        #if 'trial_id' in self.columns:
-        #    self['trial_id'] = self['trial_id'].astype('int')
+        #if 'model_sim_id' in self.columns:
+        #    self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def check_assumptions(self):
         pass
@@ -184,14 +180,11 @@ class ModelComponentsDf(pd.DataFrame, CGRCDataFrame):
         if 'cgr' in self.columns:
             self['cgr'] = self['cgr'].astype('float')
 
-        if 'cgr_trial_id' in self.columns:
-            self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
+        if 'cgr_sim_id' in self.columns:
+            self['cgr_sim_id'] = self['cgr_sim_id'].astype('int')
 
-        #if 'model_id' in self.columns:
-        #    self['model_id'] = self['model_id'].astype('int')
-
-        #if 'trial_id' in self.columns:
-        #    self['trial_id'] = self['trial_id'].astype('int')
+        #if 'model_sim_id' in self.columns:
+        #    self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def check_assumptions(self):
         pass
@@ -218,14 +211,11 @@ class StrataSummaryDf(pd.DataFrame, CGRCDataFrame):
         if 'cgr' in self.columns:
             self['cgr'] = self['cgr'].astype('float')
 
-        if 'cgr_trial_id' in self.columns:
-            self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
-
-        #if 'model_id' in self.columns:
-        #    self['model_id'] = self['model_id'].astype('int')
+        if 'cgr_sim_id' in self.columns:
+            self['cgr_sim_id'] = self['cgr_sim_id'].astype('int')
         #
-        #if 'trial_id' in self.columns:
-        #    self['trial_id'] = self['trial_id'].astype('int')
+        #if 'model_sim_id' in self.columns:
+        #    self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def check_assumptions(self):
         pass
@@ -253,14 +243,11 @@ class StrataContrastDf(pd.DataFrame, CGRCDataFrame):
         if 'cgr' in self.columns:
             self['cgr'] = self['cgr'].astype('float')
 
-        if 'cgr_trial_id' in self.columns:
-            self['cgr_trial_id'] = self['cgr_trial_id'].astype('int')
+        if 'cgr_sim_id' in self.columns:
+            self['cgr_sim_id'] = self['cgr_sim_id'].astype('int')
 
-        #if 'model_id' in self.columns:
-        #    self['model_id'] = self['model_id'].astype('int')
-        #
-        #if 'trial_id' in self.columns:
-        #    self['trial_id'] = self['trial_id'].astype('int')
+        #if 'model_sim_id' in self.columns:
+        #    self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def check_assumptions(self):
         pass

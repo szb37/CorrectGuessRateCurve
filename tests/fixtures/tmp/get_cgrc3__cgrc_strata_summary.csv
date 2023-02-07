@@ -1,4 +1,4 @@
-trial,scale,strata,est,se,df,lower_CI,upper_CI,cgr,cgr_trial_id
+trial,scale,strata,est,se,df,lower_CI,upper_CI,cgr,cgr_sim_id
 test,tadaa,PLPL,10.21053,0.233596,296.0,9.750807,10.67025,0.25,0
 test,tadaa,ACPL,70.0625,0.1360656,296.0,69.79472,70.33028,0.25,0
 test,tadaa,PLAC,49.82301,0.1354622,296.0,49.55642,50.0896,0.25,0

@@ -58,7 +58,7 @@ class DataGeneratorUnitTests(unittest.TestCase):
                 model_specs=model_specs,
                 n_datapoints=n_datapoints,
                 model_name='test',
-                trial_id=idx,
+                model_sim_id=idx,
                 min_strata_size=4,
                 round_digits=5,
             )
@@ -122,7 +122,7 @@ class DataGeneratorUnitTests(unittest.TestCase):
                 model_specs=model_specs,
                 n_datapoints=n_datapoints,
                 model_name='test',
-                trial_id=idx,
+                model_sim_id=idx,
                 min_strata_size=None,
                 round_digits=5,
             )
@@ -175,7 +175,7 @@ class DataGeneratorUnitTests(unittest.TestCase):
             model_specs=model_specs,
             n_datapoints=n_datapoints,
             model_name='test',
-            trial_id=1,
+            model_sim_id=1,
             min_strata_size=None,
             round_digits=5,
         )
@@ -188,7 +188,7 @@ class DataGeneratorUnitTests(unittest.TestCase):
             model_specs=model_specs,
             n_datapoints=n_datapoints,
             model_name='test',
-            trial_id=1,
+            model_sim_id=1,
             min_strata_size=5,
             round_digits=5,
         )
@@ -204,7 +204,7 @@ class DataGeneratorUnitTests(unittest.TestCase):
             model_specs=model_specs,
             n_datapoints=n_datapoints,
             model_name='test',
-            trial_id=1,
+            model_sim_id=1,
             min_strata_size=15,
             round_digits=5,
         )

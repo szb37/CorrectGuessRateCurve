@@ -18,12 +18,12 @@ class StatsUnitTests(unittest.TestCase):
 
     # Define mock dataframes
     model_summary = df_class.ModelSummaryDf()
-    model_summary.add_columns({'cgr': None, 'cgr_trial_id': None})
+    model_summary.add_columns({'cgr': None, 'cgr_sim_id': None})
     model_summary = model_summary.append({
         'trial': 'test',
         'scale': 'foo',
         'cgr': 50,
-        'cgr_trial_id': 50,
+        'cgr_sim_id': 50,
         'model_type': 'test_type',
         'df1': 1,
         'df2': 2,
@@ -33,12 +33,12 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     model_components = df_class.ModelComponentsDf()
-    model_components.add_columns({'cgr': None, 'cgr_trial_id': None})
+    model_components.add_columns({'cgr': None, 'cgr_sim_id': None})
     model_components = model_components.append({
         'trial': 'test',
         'scale': 'foo',
         'cgr': 50,
-        'cgr_trial_id': 50,
+        'cgr_sim_id': 50,
         'model_type': 'test_type',
         'component': 'tadaa',
         'est': 1,
@@ -48,12 +48,12 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     strata_summary = df_class.StrataSummaryDf()
-    strata_summary.add_columns({'cgr': None, 'cgr_trial_id': None})
+    strata_summary.add_columns({'cgr': None, 'cgr_sim_id': None})
     strata_summary = strata_summary.append({
         'trial': 'test',
         'scale': 'foo',
         'cgr': 40,
-        'cgr_trial_id': 50,
+        'cgr_sim_id': 50,
         'strata': 'tadaa',
         'est': 4,
         'se': 5,
@@ -63,12 +63,12 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     strata_contrast = df_class.StrataContrastDf()
-    strata_contrast.add_columns({'cgr': None, 'cgr_trial_id': None})
+    strata_contrast.add_columns({'cgr': None, 'cgr_sim_id': None})
     strata_contrast = strata_contrast.append({
         'trial': 'test',
         'scale': 'foo',
         'cgr': 60,
-        'cgr_trial_id': 50,
+        'cgr_sim_id': 50,
         'contrast': 'tadaa',
         'type': 'tadaaa',
         'est': 10,
@@ -87,12 +87,12 @@ class StatsUnitTests(unittest.TestCase):
     }
 
     model_summary2 = df_class.ModelSummaryDf()
-    model_summary2.add_columns({'cgr': None, 'cgr_trial_id': None})
+    model_summary2.add_columns({'cgr': None, 'cgr_sim_id': None})
     model_summary2 = model_summary2.append({
         'trial': 'test',
         'scale': 'foo',
         'cgr': 50,
-        'cgr_trial_id': 50,
+        'cgr_sim_id': 50,
         'model_type': 'test_type',
         'df1': 5,
         'df2': 6,
@@ -102,12 +102,12 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     model_components2 = df_class.ModelComponentsDf()
-    model_components2.add_columns({'cgr': None, 'cgr_trial_id': None})
+    model_components2.add_columns({'cgr': None, 'cgr_sim_id': None})
     model_components2 = model_components2.append({
         'trial': 'test',
         'scale': 'foo',
         'cgr': 50,
-        'cgr_trial_id': 50,
+        'cgr_sim_id': 50,
         'model_type': 'test_type',
         'component': 'tadaa',
         'est': 4,
@@ -117,12 +117,12 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     strata_summary2 = df_class.StrataSummaryDf()
-    strata_summary2.add_columns({'cgr': None, 'cgr_trial_id': None})
+    strata_summary2.add_columns({'cgr': None, 'cgr_sim_id': None})
     strata_summary2 = strata_summary2.append({
         'trial': 'test',
         'scale': 'foo',
         'cgr': 40,
-        'cgr_trial_id': 50,
+        'cgr_sim_id': 50,
         'strata': 'tadaa',
         'est': 1,
         'se': 2,
@@ -132,12 +132,12 @@ class StatsUnitTests(unittest.TestCase):
         ignore_index=True)
 
     strata_contrast2 = df_class.StrataContrastDf()
-    strata_contrast2.add_columns({'cgr': None, 'cgr_trial_id': None})
+    strata_contrast2.add_columns({'cgr': None, 'cgr_sim_id': None})
     strata_contrast2 = strata_contrast2.append({
         'trial': 'test',
         'scale': 'foo',
         'cgr': 60,
-        'cgr_trial_id': 50,
+        'cgr_sim_id': 50,
         'contrast': 'tadaa',
         'type': 'tadaaa',
         'est': 1,
@@ -172,19 +172,19 @@ class StatsUnitTests(unittest.TestCase):
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [2])
 
-        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=0, cgr_trial_id=0)
+        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=0, cgr_sim_id=0)
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [0, 3, 4])
 
-        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=1, cgr_trial_id=0)
+        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=1, cgr_sim_id=0)
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [5])
 
-        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=0, cgr_trial_id=1)
+        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=0, cgr_sim_id=1)
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [6])
 
-        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=1, cgr_trial_id=1)
+        stats.Helpers.get_df_filtered(trial='a', scale='foo', cgr=1, cgr_sim_id=1)
         temp = stats.Helpers.r2pyjson('df_filtered')
         self.assertEqual(temp['delta_score'], [7])
 
@@ -452,9 +452,9 @@ class StatsIntegrationTests(unittest.TestCase):
         model_components.drop(['trial', 'scale'], axis=1, inplace=True)
         model_summary.drop(['trial', 'scale'], axis=1, inplace=True)
         ref_components.drop(['trial', 'scale', 'guesser', 'respondent',
-                            'cgr', 'cgr_trial_id'], axis=1, inplace=True)
+                            'cgr', 'cgr_sim_id'], axis=1, inplace=True)
         ref_summary.drop(['trial', 'scale', 'guesser', 'respondent',
-                         'cgr', 'cgr_trial_id'], axis=1, inplace=True)
+                         'cgr', 'cgr_sim_id'], axis=1, inplace=True)
 
         pd.testing.assert_frame_equal(ref_components, model_components)
         pd.testing.assert_frame_equal(ref_summary, model_summary)
@@ -472,8 +472,8 @@ class StatsIntegrationTests(unittest.TestCase):
         # Drop empty columns
         strata_summary.drop(['trial', 'scale'], axis=1, inplace=True)
         strata_contrast.drop(['trial', 'scale'], axis=1, inplace=True)
-        ref_summary.drop(['trial', 'scale', 'cgr', 'cgr_trial_id'], axis=1, inplace=True)
-        ref_contrast.drop(['trial', 'scale', 'cgr', 'cgr_trial_id'], axis=1, inplace=True)
+        ref_summary.drop(['trial', 'scale', 'cgr', 'cgr_sim_id'], axis=1, inplace=True)
+        ref_contrast.drop(['trial', 'scale', 'cgr', 'cgr_sim_id'], axis=1, inplace=True)
 
         strata_summary.df = strata_summary.df.astype('int64')
         strata_contrast.df = strata_contrast.df.astype('int64')

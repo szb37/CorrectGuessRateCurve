@@ -618,7 +618,7 @@ class Helpers():
         avg_df['se'] = None
         avg_df['ci_low'] = None
         avg_df['ci_high'] = None
-        del avg_df['cgr_trial_id']
+        del avg_df['cgr_sim_id']
         avg_df.drop_duplicates(inplace=True)
 
         for cgr in df.cgr.unique():

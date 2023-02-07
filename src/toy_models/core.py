@@ -5,7 +5,7 @@
 
 Model family analyis naming convention:
 analysis_name: {model_family}_cgrc{cgrc_param_set}
-subanalysis_name: {model_family}_cgrc{cgrc_param_set}_{model_name}_trial{trial_id}
+subanalysis_name: {model_family}_cgrc{cgrc_param_set}_{model_name}_trial{model_sim_id}
 """
 
 from tqdm.contrib.itertools import product as tqdmproduct
@@ -55,15 +55,15 @@ class Controllers():
             incl_cgrc_plots_dir=save_figs,
         )
 
-        for model, trial_id in tqdmproduct(models, range(n_trials), desc='Model family CGRC analysis'):
+        for model, model_sim_id in tqdmproduct(models, range(n_trials), desc='Model family CGRC analysis'):
 
             model_name = list(model.keys())[0]
             model_specs = model[model_name]
-            add_columns = {'model_name': model_name, 'trial_id': trial_id}
+            add_columns = {'model_name': model_name, 'model_sim_id': model_sim_id}
             subanalysis_name = Helpers.get_subanalysis_name(
                 analysis_name=analysis_name,
                 model_name=model_name,
-                trial_id=trial_id
+                model_sim_id=model_sim_id
             )
 
             # Generate pseudodata according to model specifications
@@ -73,7 +73,7 @@ class Controllers():
                 model_specs=model_specs,
                 n_datapoints=n_patients,
                 model_name=model_name,
-                trial_id=trial_id
+                model_sim_id=model_sim_id
             )
 
             # Get trial stats for psuedodata
@@ -146,10 +146,10 @@ class ToyModelsAnalyis():
 
         # Get n_patients and n_trials assuming each member of the model family has same n_patient and n_trial
         tmp_mid = trial_data.model_name.to_list()[0]
-        tmp_tid = trial_data.trial_id.to_list()[0]
+        tmp_tid = trial_data.model_sim_id.to_list()[0]
         n_patients = trial_data.loc[(trial_data.model_name == tmp_mid) & (
-            trial_data.trial_id == tmp_tid)].shape[0]
-        n_trials = len(trial_data.trial_id.unique().tolist())
+            trial_data.model_sim_id == tmp_tid)].shape[0]
+        n_trials = len(trial_data.model_sim_id.unique().tolist())
 
         # Get unadjusted model components
         unadj_model_components = Helpers.get_concateneted_df_type(
@@ -165,7 +165,7 @@ class ToyModelsAnalyis():
             cgradj_model_components.cgr == 0.5)]
         assert cgradj_model_components.shape[0] > 0
         cgradj_n_trials = len(
-            cgradj_model_components.trial_id.unique().tolist())
+            cgradj_model_components.model_sim_id.unique().tolist())
         assert n_trials == cgradj_n_trials
         cgradj_model_names = cgradj_model_components.model_name.unique().tolist()
         unadj_model_names = unadj_model_components.model_name.unique().tolist()
@@ -204,11 +204,11 @@ class ToyModelsAnalyis():
             ]
 
             # Calculate average p/es aross n_cgr_trials (avg corresponds to p/es of single trial)
-            trial_ids = filtered_cgradj_model_comps.trial_id.unique().tolist()
+            model_sim_ids = filtered_cgradj_model_comps.model_sim_id.unique().tolist()
             trial_ps = []
             trial_efs = []
-            for trial_id in trial_ids:
-                tmp = filtered_cgradj_model_comps.loc[filtered_cgradj_model_comps.trial_id == trial_id]
+            for model_sim_id in model_sim_ids:
+                tmp = filtered_cgradj_model_comps.loc[filtered_cgradj_model_comps.model_sim_id == model_sim_id]
                 assert tmp.shape[0] == constants.cgrc_parameters[cgrc_param_set]['n_cgrc_trials']
                 trial_ps.append(mean(tmp.p.tolist()))
                 trial_efs.append(mean(tmp.est.tolist()))
@@ -232,7 +232,7 @@ class ToyModelsDataGenerator():
     ''' Functions to get simulated toy model data '''
 
     @staticmethod
-    def get_pseudodata(output_dir, output_prefix, model_specs, n_datapoints, model_name=None, trial_id=None, min_strata_size=4, round_digits=0):
+    def get_pseudodata(output_dir, output_prefix, model_specs, n_datapoints, model_name=None, model_sim_id=None, min_strata_size=4, round_digits=0):
         ''' High level function to generate pseudo-experimental toy model data
             Args:
                 output_dir (str): subfolder name where results will be saved
@@ -240,7 +240,7 @@ class ToyModelsDataGenerator():
                 model_specs (dict): model specifiction; see model_defs.py
                 n_datapoints (int): number of datapoints in each trial
                 model_name (str): name of model
-                trial_id (int): id of current simulations
+                model_sim_id (int): id of current simulations
                 min_strata_size (int, optional): the minimum sample size of each strata
                 round_digits (int, optional): generated scores rounded to
         '''
@@ -250,7 +250,7 @@ class ToyModelsDataGenerator():
         assert isinstance(output_prefix, str)
         assert Helpers.is_valid_model_specs(model_specs)
         assert isinstance(n_datapoints, int)
-        assert isinstance(trial_id, int)
+        assert isinstance(model_sim_id, int)
         assert (min_strata_size is None) or (isinstance(min_strata_size, int))
         assert isinstance(round_digits, int)
 
@@ -301,8 +301,8 @@ class ToyModelsDataGenerator():
         if model_name is not None:
             df['model_name'] = model_name
 
-        if trial_id is not None:
-            df['trial_id'] = trial_id
+        if model_sim_id is not None:
+            df['model_sim_id'] = model_sim_id
 
         df.__class__ = df_class.TrialDataDf
         df.set_column_types()
@@ -450,14 +450,14 @@ class Helpers():
         return df
 
     @staticmethod
-    def get_subanalysis_name(analysis_name, model_name, trial_id):
+    def get_subanalysis_name(analysis_name, model_name, model_sim_id):
         ''' Return name of subanalysis '''
 
         assert isinstance(analysis_name, str)
         assert isinstance(model_name, str)
-        assert isinstance(trial_id, int)
+        assert isinstance(model_sim_id, int)
 
-        return '{}_{}_trial{}'.format(analysis_name, model_name, trial_id)
+        return '{}_{}_trial{}'.format(analysis_name, model_name, model_sim_id)
 
     @staticmethod
     def get_concateneted_df_type(target_dir, df_type):
@@ -481,16 +481,16 @@ class Helpers():
             master_df = df_class.StrataContrastDf()
         elif df_type == '__cgrc_model_components':
             master_df = df_class.ModelComponentsDf()
-            master_df.add_columns({'cgr': None, 'cgr_trial_id': None})
+            master_df.add_columns({'cgr': None, 'cgr_sim_id': None})
         elif df_type == '__cgrc_strata_contrast':
             master_df = df_class.StrataContrastDf()
-            master_df.add_columns({'cgr': None, 'cgr_trial_id': None})
+            master_df.add_columns({'cgr': None, 'cgr_sim_id': None})
         elif df_type == '__trial_data':
             master_df = df_class.TrialDataDf()
         else:
             assert False
 
-        master_df.add_columns({'model_name': None, 'trial_id': None})
+        master_df.add_columns({'model_name': None, 'model_sim_id': None})
 
         for fpath in [fpath for fpath in os.listdir(target_dir) if (df_type in fpath)]:
             df = pd.read_csv(os.path.join(target_dir, fpath))

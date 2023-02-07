@@ -122,7 +122,7 @@ def gen_faux_get_model_stats1():
 def gen_faux_bbc_1():
 
     df = pd.DataFrame(columns=[
-        'trial', 'scale', 'respondent', 'guesser', 'cgr', 'cgr_trial_id', 'condition', 'guess', 'delta_score'])
+        'trial', 'scale', 'respondent', 'guesser', 'cgr', 'cgr_sim_id', 'condition', 'guess', 'delta_score'])
 
     cgrs = np.linspace(0, 1, 15)
     guesser = 'self'
@@ -141,7 +141,7 @@ def gen_faux_bbc_1():
             'respondent':,
             'guesser':,
             'cgr':,
-            'cgr_trial_id':,
+            'cgr_sim_id':,
             'condition':,
             'guess':,
             'delta_score':},

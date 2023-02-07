@@ -1,2 +1,2 @@
-trial,scale,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_trial_id
+trial,scale,contrast,type,est,se,df,t,p,p_adj,cgr,cgr_sim_id
 tads,bdi,tadaa,tadaaa,10.0,20.0,30.0,40.0,50.0,60.0,0.0,0
