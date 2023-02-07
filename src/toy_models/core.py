@@ -271,7 +271,7 @@ class ToyModelsDataGenerator():
         for idx, row in df.iterrows():
 
             condition, guess, score = ToyModelsDataGenerator.get_pseudodatapoint(
-                oc_nh=model_specs['oc_nh'],
+                nhist=model_specs['nhist'],
                 gs_nh=model_specs['gs_nh'],
                 se=model_specs['se'],
                 dte=model_specs['dte'],
@@ -312,10 +312,10 @@ class ToyModelsDataGenerator():
         return df
 
     @staticmethod
-    def get_pseudodatapoint(oc_nh, gs_nh, se, dte, pte, ate, oc2gs, forced_condition=None, forced_guess=None):
+    def get_pseudodatapoint(nhist, gs_nh, se, dte, pte, ate, oc2gs, forced_condition=None, forced_guess=None):
         ''' Generate toy model datapoint
             Args:
-                oc_nh (tuple): (mean, std) of the outcomes's natural history (in terms of change score)
+                nhist (tuple): (mean, std) of the outcomes's natural history (in terms of change score)
                 gs_nh (tuple): (mean, std) of treatment guess's natural history
                 se (tuple): (mean, std) of treatment allocation's contribution to treatment guess probability
                 dte (tuple): (mean, std) of treatment's contribution to outcomes
@@ -326,7 +326,7 @@ class ToyModelsDataGenerator():
                 forced_guess (bool, optional): force guess to be active/placebo
         '''
 
-        assert isinstance(oc_nh, tuple)
+        assert isinstance(nhist, tuple)
         assert isinstance(gs_nh, tuple)
         assert isinstance(se, tuple)
         assert isinstance(dte, tuple)
@@ -370,7 +370,7 @@ class ToyModelsDataGenerator():
             assert False
 
         # get score
-        score = random.gauss(oc_nh[0], oc_nh[1])
+        score = random.gauss(nhist[0], nhist[1])
         if condition == 'AC':
             score += random.gauss(dte[0], dte[1])
         else:
@@ -523,7 +523,7 @@ class Helpers():
         assert isinstance(model, dict)
         assert len(model.keys()) == 7
         assert all([p in model.keys()
-                   for p in ['oc_nh', 'gs_nh', 'se', 'dte', 'pte', 'ate', 'oc2gs']])
+                   for p in ['nhist', 'gs_nh', 'se', 'dte', 'pte', 'ate', 'oc2gs']])
 
         for model_parameter in model.values():
             assert isinstance(model_parameter, tuple)

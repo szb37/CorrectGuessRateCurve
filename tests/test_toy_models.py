@@ -39,7 +39,7 @@ class DataGeneratorUnitTests(unittest.TestCase):
         n_acac = []
 
         model_specs = {
-            'oc_nh': (20, 2),
+            'nhist': (20, 2),
             'gs_nh': (0.5, 0.25),
             'se': (0.15, 0.05),
             'dte': (2, 1),
@@ -103,7 +103,7 @@ class DataGeneratorUnitTests(unittest.TestCase):
         n_acac = []
 
         model_specs = {
-            'oc_nh': (20, 2),
+            'nhist': (20, 2),
             'gs_nh': (0.5, 0.125),
             'se': (0.25, 0.08),
             'dte': (3, 1),
@@ -158,7 +158,7 @@ class DataGeneratorUnitTests(unittest.TestCase):
     def test_min_strata_size(self):
 
         model_specs = {
-            'oc_nh': (20, 3),
+            'nhist': (20, 3),
             'gs_nh': (0, 0),
             'se': (0, 0),
             'dte': (3, 1),
