@@ -6,18 +6,24 @@
 Model family analyis naming convention:
 analysis_name: {model_family}_cgrc{cgrc_param_set}
 subanalysis_name: {model_family}_cgrc{cgrc_param_set}_{model_name}_trial{model_sim_id}
+
+
+NEW:
+name of run: {analysis_name}_{cgrc_param_set}
+subanalysis_name: {analysis_name}_{cgrc_param_set}_{model_name}_trial{model_sim_id}
 """
 
-from tqdm.contrib.itertools import product as tqdmproduct
 import src.toy_models.model_defs as model_defs
-from statistics import mean, median
 import src.dataframe_classes as df_class
-import src.constants as constants
+import src.config as config
 import src.folders as folders
-import src.figures as figures
-import src.cgrc.core as cgrc
 import src.cgrc.stats as stats
+import src.cgrc.core as cgrc
+import src.figures as figures
 import src.miscs as miscs
+from tqdm.contrib.itertools import product as tqdmproduct
+from statistics import mean, median
+from scipy.stats import bernoulli
 import pandas as pd
 import itertools
 import random
@@ -27,55 +33,46 @@ import os
 class Controllers():
 
     @staticmethod
-    def run_cgrc_model_family(model_family_name, cgrc_param_set, postfix, n_patients, n_trials, save_figs=True):
+    def run_cgrc_model_family(models, analysis_name, cgrc_param_set, n_patients, n_trials):
         ''' Runs CGRC analysis on a family of models
             Args:
-                model_family_name (str): name of model family (i.e. list of model definitions, see model_defs)
-                cgrc_param_set (int): number defning which CGRC parameter set to use, see constants
-                postfix (str): str appended to the end of the output files
+                models(list): list of model model_defs
+                analysis_name (str): prefix string of outputfiles
+                cgrc_param_set (str): CGRC parameter set, see config.py
                 n_patients (int): number of patients in each simulated trail
                 n_trials (int): number of trials to simulate for each member of the model family
-                save_figs (bool, optional): save output figures
         '''
 
-        assert isinstance(model_family_name, str)
-        assert isinstance(cgrc_param_set, int)
-        assert isinstance(postfix, str)
+        assert isinstance(models, list)
+        assert all([model.is_valid() for model in models])
+        assert isinstance(analysis_name, str)
+        assert isinstance(cgrc_param_set, str)
         assert isinstance(n_patients, int)
         assert isinstance(n_trials, int)
-        assert isinstance(save_figs, bool)
 
-        cgrc_parameters = constants.cgrc_parameters[cgrc_param_set]
-        models = eval('model_defs.{}'.format(model_family_name))
-        analysis_name = model_family_name + '_{}'.format(postfix)
+        cgrc_parameters = config.cgrc_parameters[cgrc_param_set]
 
         trial_data_dir, trial_stats_dir, cgrc_data_dir, cgrc_stats_dir, cgrc_plots_dir = miscs.create_analysis_dirs(
             analysis_name,
             trial_data_subdir=True,
-            incl_cgrc_plots_dir=save_figs,
+            incl_cgrc_plots_dir=config.save_figs,
         )
 
-        for model, model_sim_id in tqdmproduct(models, range(n_trials), desc='Model family CGRC analysis'):
+        for model, model_sim_id in tqdmproduct(models, range(n_trials), desc='Toy model(s) analysis'):
 
-            model_name = list(model.keys())[0]
-            model_specs = model[model_name]
-            add_columns = {'model_name': model_name, 'model_sim_id': model_sim_id}
-            subanalysis_name = Helpers.get_subanalysis_name(
-                analysis_name=analysis_name,
-                model_name=model_name,
-                model_sim_id=model_sim_id
-            )
+            model_name = model['name']
+            subanalysis_name = f"{analysis_name}_{cgrc_param_set}_{model_name}_trial{model_sim_id}"
 
             # Generate pseudodata according to model specifications
-            ToyModelsDataGenerator.get_pseudodata(
+            ToyModelsDataGenerator.get_toymodel_data(
                 output_dir=trial_data_dir,
                 output_prefix=subanalysis_name,
-                model_specs=model_specs,
-                n_datapoints=n_patients,
-                model_name=model_name,
+                model=model,
+                n=n_patients,
                 model_sim_id=model_sim_id
             )
 
+            '''
             # Get trial stats for psuedodata
             stats.Controllers.get_trial_stats(
                 input_dir=trial_data_dir,
@@ -105,7 +102,7 @@ class Controllers():
             )
 
             # Make CGRC figues
-            if save_figs:
+            if config.save_figs:
                 figures.Controllers.plot_VScgr_twinx(
                     input_dir=cgrc_stats_dir,
                     input_fname=subanalysis_name + '__cgrc_model_components.csv',
@@ -115,28 +112,180 @@ class Controllers():
 
         # Get summary table
         #summary_df = ToyModelsAnalyis.get_model_family_summary(
-        #    model_family_name=model_family_name,
+        #    analysis_name=analysis_name,
         #    analysis_name=analysis_name,
         #    cgrc_param_set=cgrc_param_set,
         #)
         #print('\n', summary_df.to_string(index=False))
+        '''
+
+
+class ToyModelsDataGenerator():
+
+    @staticmethod
+    def get_toymodel_data(output_dir, output_prefix, model, n, model_sim_id=0, enforce_all_strata=True):
+        ''' Generate pseudo-experimental data according to toy model definition
+            Args:
+                output_dir (str): subfolder name where results will be saved
+                output_prefix (str): appended to the begining of output files
+                model (dict): model specifiction; see model_defs.py
+                n (int): number of datapoints in each simulation
+                model_sim_id (int, optional): id of current simulations
+                enforce_all_strata(bool, optional): if True, then all 4 strata is guaranteed to have
+                    at least 1 point in the sample; otherwise errors may occur
+        '''
+
+        assert isinstance(output_dir, str)
+        assert isinstance(output_prefix, str)
+        assert model.is_valid()
+        assert isinstance(n, int)
+        assert isinstance(model_sim_id, int)
+
+        # Generate conditions
+        conditions = ['AC' if condition==1 else 'PL' for condition in bernoulli.rvs(model['p_act'], size=n)]
+
+        # Generate guesses
+        guesses=[]
+        for condition in conditions:
+            if condition=='AC':
+                guesses.append(bernoulli.rvs(model['p_sea'], size=1)[0])
+            elif condition=='PL':
+                guesses.append(bernoulli.rvs(model['p_sep'], size=1)[0])
+            else:
+                assert False
+        guesses = ['AC' if guess==1 else 'PL' for guess in guesses]
+
+        # Ensure all strata represented if needed
+        if enforce_all_strata:
+            conditions, guesses = ToyModelsDataGenerator.enforce_all_strata(conditions, guesses)
+
+        # Generate scores
+        scores=[]
+        for idx, condition in enumerate(conditions):
+            score = random.gauss(model['nhist'][0], model['nhist'][1])
+
+            if (conditions[idx]=='PL' and guesses[idx]=='PL'):
+                pass
+            elif (conditions[idx]=='AC' and guesses[idx]=='PL'):
+                score += random.gauss(model['dte'][0], model['dte'][1])
+            elif (conditions[idx]=='PL' and guesses[idx]=='AC'):
+                score += random.gauss(model['aeb'][0], model['aeb'][1])
+            elif (conditions[idx]=='AC' and guesses[idx]=='AC'):
+                score += random.gauss(model['dte'][0], model['dte'][1]) + random.gauss(model['aeb'][0], model['aeb'][1])
+            else:
+                assert False
+
+            scores.append(round(score))
+
+        # Format & save output
+        toy_model_data_df = ToyModelsDataGenerator.get_TrialDataDf(
+            model['name'],
+            model_sim_id,
+            conditions,
+            guesses,
+            scores)
+
+        if config.save_csvs:
+            toy_model_data_df.to_csv(os.path.join(output_dir, output_prefix+'__trial_data.csv'), index=False)
+
+        return toy_model_data_df
+
+    @staticmethod
+    def get_TrialDataDf(model_name, model_sim_id, conditions, guesses, scores):
+        ''' Returns TrialDataDf with aux data filled
+            Args:
+                model_name (str): simulation id
+                model_sim_id (int): simulation id
+                conditions (list):
+                guesses(list):
+                scores(list):
+        '''
+
+        assert (isinstance(model_name, str) or model_name is None)
+        assert isinstance(model_sim_id, int)
+        assert isinstance(conditions, list)
+        assert isinstance(guesses, list)
+        assert isinstance(scores, list)
+
+        n = len(scores)
+
+        toy_model_data_df = df_class.TrialDataDf()
+
+        toy_model_data_df['trial'] = [model_name]*n
+        toy_model_data_df['subject_id'] = list(range(n))
+        toy_model_data_df['scale'] = ['scale1']*n
+        toy_model_data_df['tp'] = ['wk8']*n
+        toy_model_data_df['condition'] = conditions
+        toy_model_data_df['guess'] = guesses
+        toy_model_data_df['baseline'] = [0]*n
+        toy_model_data_df['score'] = scores
+        toy_model_data_df['delta_score'] = scores
+
+        # Add new column and rearrange order
+        toy_model_data_df.add_columns({'model_sim_id':model_sim_id})
+        column_order = [
+            'trial',
+            'model_sim_id',
+            'subject_id',
+            'scale',
+            'tp',
+            'condition',
+            'guess',
+            'baseline',
+            'score',
+            'delta_score',]
+        toy_model_data_df = toy_model_data_df.reindex(columns=column_order)
+
+        toy_model_data_df.__class__ = df_class.TrialDataDf
+        toy_model_data_df.set_column_types()
+
+        assert toy_model_data_df.is_valid()
+        return toy_model_data_df
+
+    @staticmethod
+    def enforce_all_strata(conditions, guesses):
+        ''' Overwrites first 4 elements of conditions/guesses to ensure that there is at least
+            on row in each treatment/guess strata
+
+            Args:
+                conditions(list)
+                conditions(guesses)
+        '''
+
+        assert isinstance(conditions, list)
+        assert len(conditions) >= 4
+        assert isinstance(guesses, list)
+        assert len(guesses) >= 4
+
+        conditions[0] = 'PL'
+        guesses[0] = 'PL'
+
+        conditions[1] = 'AC'
+        guesses[1] = 'PL'
+
+        conditions[2] = 'PL'
+        guesses[2] = 'AC'
+
+        conditions[3] = 'AC'
+        guesses[3] = 'AC'
+
+        return conditions, guesses
 
 
 class ToyModelsAnalyis():
-    ''' Functions for model family CGRC analysis '''
 
     @staticmethod
-    def get_model_family_summary(analysis_name, model_family_name, cgrc_param_set):
+    def get_model_family_summary(analysis_name, cgrc_param_set):
         ''' Construct summary table for model family
             Args:
-                analysis_name (str): model_family_name+postfix
-                model_family_name (str): name of model family (i.e. list of model definitions, see model_defs)
-                cgrc_param_set (int): number defning which CGRC parameter set to use, see constants
+                analysis_name (str): analysis_name+postfix
+                analysis_name (str): name of model family (i.e. list of model definitions, see model_defs)
+                cgrc_param_set (int): number defning which CGRC parameter set to use, see config
         '''
 
         assert isinstance(analysis_name, str)
-        assert isinstance(model_family_name, str)
-        assert isinstance(cgrc_param_set, int)
+        assert isinstance(analysis_name, str)
+        assert isinstance(cgrc_param_set, str)
 
         df = df_class.ModelFamilyResultsDf()
 
@@ -209,7 +358,7 @@ class ToyModelsAnalyis():
             trial_efs = []
             for model_sim_id in model_sim_ids:
                 tmp = filtered_cgradj_model_comps.loc[filtered_cgradj_model_comps.model_sim_id == model_sim_id]
-                assert tmp.shape[0] == constants.cgrc_parameters[cgrc_param_set]['n_cgrc_trials']
+                assert tmp.shape[0] == config.cgrc_parameters[cgrc_param_set]['n_cgrc_trials']
                 trial_ps.append(mean(tmp.p.tolist()))
                 trial_efs.append(mean(tmp.est.tolist()))
 
@@ -223,241 +372,9 @@ class ToyModelsAnalyis():
         df.__class__ = df_class.ModelFamilyResultsDf
         df.set_column_types()
         df.to_csv(os.path.join(folders.data_summary_tables, analysis_name +
-                  '_{}__summary_table.csv'.format(constants.estimator)), index=False)
+                  '_{}__summary_table.csv'.format(config.estimator)), index=False)
 
         return df
-
-
-class ToyModelsDataGenerator():
-    ''' Functions to get simulated toy model data '''
-
-    @staticmethod
-    def get_pseudodata(output_dir, output_prefix, model_specs, n_datapoints, model_name=None, model_sim_id=None, min_strata_size=4, round_digits=0):
-        ''' High level function to generate pseudo-experimental toy model data
-            Args:
-                output_dir (str): subfolder name where results will be saved
-                output_prefix (str): appended to the begining of output files
-                model_specs (dict): model specifiction; see model_defs.py
-                n_datapoints (int): number of datapoints in each trial
-                model_name (str): name of model
-                model_sim_id (int): id of current simulations
-                min_strata_size (int, optional): the minimum sample size of each strata
-                round_digits (int, optional): generated scores rounded to
-        '''
-
-        assert isinstance(output_dir, str)
-        assert isinstance(output_prefix, str)
-        assert isinstance(output_prefix, str)
-        assert Helpers.is_valid_model_specs(model_specs)
-        assert isinstance(n_datapoints, int)
-        assert isinstance(model_sim_id, int)
-        assert (min_strata_size is None) or (isinstance(min_strata_size, int))
-        assert isinstance(round_digits, int)
-
-        df = Helpers.get_TrialDatadDf(n_datapoints)
-
-        #import pdb; pdb.set_trace()
-
-        if min_strata_size is not None:
-            df = Helpers.enforce_min_strata_size(df, min_strata_size)
-
-        #import pdb; pdb.set_trace()
-
-        conditions = []
-        guesses = []
-        scores = []
-        delta_scores = []
-
-        for idx, row in df.iterrows():
-
-            condition, guess, score = ToyModelsDataGenerator.get_pseudodatapoint(
-                nhist=model_specs['nhist'],
-                gs_nh=model_specs['gs_nh'],
-                se=model_specs['se'],
-                dte=model_specs['dte'],
-                pte=model_specs['pte'],
-                ate=model_specs['ate'],
-                oc2gs=model_specs['oc2gs'],
-                forced_condition=row.condition,
-                forced_guess=row.guess,
-            )
-
-            conditions.append(condition)
-            guesses.append(guess)
-            scores.append(round(score, round_digits))
-            delta_scores.append(round(score, round_digits))
-
-        df['condition'] = conditions
-        df['guess'] = guesses
-        df['score'] = scores
-        df['delta_score'] = delta_scores
-
-
-        #row.condition = condition
-        #row.guess = guess
-        #row.score = round(score, round_digits)
-        #row.delta_score = round(score, round_digits)
-
-        if model_name is not None:
-            df['model_name'] = model_name
-
-        if model_sim_id is not None:
-            df['model_sim_id'] = model_sim_id
-
-        df.__class__ = df_class.TrialDataDf
-        df.set_column_types()
-        df.to_csv(os.path.join(output_dir, output_prefix +
-                  '__trial_data.csv'), index=False)
-
-        return df
-
-    @staticmethod
-    def get_pseudodatapoint(nhist, gs_nh, se, dte, pte, ate, oc2gs, forced_condition=None, forced_guess=None):
-        ''' Generate toy model datapoint
-            Args:
-                nhist (tuple): (mean, std) of the outcomes's natural history (in terms of change score)
-                gs_nh (tuple): (mean, std) of treatment guess's natural history
-                se (tuple): (mean, std) of treatment allocation's contribution to treatment guess probability
-                dte (tuple): (mean, std) of treatment's contribution to outcomes
-                pte (tuple): (mean, std) of placebo guess's contribution to guess
-                ate (tuple): (mean, std) of active guess's contribution to guess
-                oc2gs (tuple): (mean, std) of outcome's contribution to guess
-                forced_condition (bool, optional): force treatment to be active/placebo
-                forced_guess (bool, optional): force guess to be active/placebo
-        '''
-
-        assert isinstance(nhist, tuple)
-        assert isinstance(gs_nh, tuple)
-        assert isinstance(se, tuple)
-        assert isinstance(dte, tuple)
-        assert isinstance(pte, tuple)
-        assert isinstance(ate, tuple)
-        assert isinstance(oc2gs, tuple)
-        assert forced_guess in [None, 'PL', 'AC']
-        assert forced_condition in [None, 'PL', 'AC']
-
-        # get conditon
-        if forced_condition == 'PL':
-            condition = 'PL'
-        elif forced_condition == 'AC':
-            condition = 'AC'
-        elif forced_condition is None:
-            condition = random.choice(['PL', 'AC'])
-        else:
-            assert False
-
-        # get guess; if roll>=0.5, then guess is active
-        if condition == 'PL':
-            roll = random.gauss(gs_nh[0], gs_nh[1])
-        elif condition == 'AC':
-            roll = random.gauss(gs_nh[0], gs_nh[1])
-            roll = min(1, roll)
-            roll = max(0, roll)
-            roll += random.gauss(se[0], se[1])
-        else:
-            assert False
-
-        roll = min(1, roll)
-        roll = max(0, roll)
-
-        if (forced_guess is None) and (roll >= 0.5):
-            guess = 'AC'
-        elif (forced_guess is None) and (roll < 0.5):
-            guess = 'PL'
-        elif forced_guess is not None:
-            guess = forced_guess
-        else:
-            assert False
-
-        # get score
-        score = random.gauss(nhist[0], nhist[1])
-        if condition == 'AC':
-            score += random.gauss(dte[0], dte[1])
-        else:
-            assert condition == 'PL'
-
-        if guess == 'AC':
-            score += random.gauss(ate[0], ate[1])
-        elif guess == 'PL':
-            score += random.gauss(pte[0], pte[1])
-        else:
-            assert False
-
-        return condition, guess, score
-
-
-class Helpers():
-    ''' Various helper functions '''
-
-    @staticmethod
-    def get_TrialDatadDf(n, equal_sample_per_condition=True):
-        ''' Returns TrialDataDf with aux data filled
-            Args:
-                n (int): number of patients, i.e. n of rows
-                equal_sample_per_condition (bool, optional): force to have equal n in active / placebo arms
-        '''
-
-        assert isinstance(n, int)
-        assert isinstance(equal_sample_per_condition, bool)
-
-        df = df_class.TrialDataDf()
-
-        if equal_sample_per_condition:
-            n_pl = round(n/2)
-            n_ac = n-n_pl
-            df.condition = ['PL' for i in range(
-                n_pl)] + ['AC' for i in range(n_ac)]
-        else:
-            df.condition = [None for i in range(n)]
-
-        df.subject_id = [idx for idx in range(n)]
-
-        df.trial = 'mock'
-        df.scale = 'scale1'
-        df.tp = 'wk8'
-        df.baseline = 0
-        df.score = None
-        df.delta_score = None
-        df.guess = None
-
-        df['baseline'] = df['baseline'].astype('object')
-        df['subject_id'] = df['subject_id'].astype('object')
-
-        return df
-
-    @staticmethod
-    def enforce_min_strata_size(df, min_strata_size):
-        ''' Adds rows to df to ensure that there is at least rows in each treatment/guess strata '''
-
-        assert isinstance(min_strata_size, int)
-
-        condition_idx = df.columns.get_loc('condition')
-        guess_idx = df.columns.get_loc('guess')
-
-        stratas = [
-            ('PL', 'PL'),
-            ('AC', 'PL'),
-            ('PL', 'AC'),
-            ('AC', 'AC'),
-        ]
-
-        idx = 0
-        for strata, sample_idx in itertools.product(stratas, range(min_strata_size)):
-            df.iloc[idx, condition_idx] = strata[0]
-            df.iloc[idx, guess_idx] = strata[1]
-            idx += 1
-
-        return df
-
-    @staticmethod
-    def get_subanalysis_name(analysis_name, model_name, model_sim_id):
-        ''' Return name of subanalysis '''
-
-        assert isinstance(analysis_name, str)
-        assert isinstance(model_name, str)
-        assert isinstance(model_sim_id, int)
-
-        return '{}_{}_trial{}'.format(analysis_name, model_name, model_sim_id)
 
     @staticmethod
     def get_concateneted_df_type(target_dir, df_type):
@@ -511,24 +428,3 @@ class Helpers():
 
         master_df.set_column_types()
         return master_df
-
-    @staticmethod
-    def is_valid_model_specs(model):
-        ''' Check if dict is a valid model parameters dictionary
-            Returns True if it is; otherwise will throw False Assertion
-            Args:
-                model(dict): dictionary containing model parameters
-        '''
-
-        assert isinstance(model, dict)
-        assert len(model.keys()) == 7
-        assert all([p in model.keys()
-                   for p in ['nhist', 'gs_nh', 'se', 'dte', 'pte', 'ate', 'oc2gs']])
-
-        for model_parameter in model.values():
-            assert isinstance(model_parameter, tuple)
-            assert len(model_parameter) == 2
-            assert all([(isinstance(el, float) or isinstance(el, int))
-                       for el in model_parameter])
-
-        return True

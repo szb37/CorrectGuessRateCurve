@@ -10,15 +10,26 @@ https://drive.google.com/drive/folders/1sQe1GQ97DbkIiw3YeOcXwA1KZIsp79zT?usp=sha
 (replace content of codebase/data/ with content of shared drive folder)
 """
 
+import src.toy_models.model_defs as model_defs
 import src.toy_models.core as toy_models
-import src.constants as constants
+import src.config as config
 import src.cgrc.core as cgrc
 import time
 
 start = time.time()
 
+toy_models.Controllers.run_cgrc_model_family(
+    analysis_name = 'tmp2',
+    models = model_defs.test_models,
+    cgrc_param_set = 'cgrA_low',
+    n_patients = 100,
+    n_trials = 4
+)
+
+
+''' Legacy code '''
 # CGR adjusted analysis of all toy models (including robustness analysis) - reproduces Table 1 and Supp Table 1
-if True:
+if False:
     toy_models.Controllers.run_cgrc_model_family(
         model_family_name='test_model',
         postfix='tmp',
@@ -42,7 +53,7 @@ if False:  # CGR adjusted outcomes of self-blinding microdose trial - reproduces
     cgrc.Controllers.run_cgrc_trial(
         trial_name='sbmd',
         postfix='cgrA_tmp',
-        trial_scales=constants.sbmd_all,
+        trial_scales=config.sbmd_all,
         cgrc_param_set=1,
         save_figs=False,
     )
@@ -51,7 +62,7 @@ if False:  # CGR curves of self-blinding microdose trial outcomes - reproduces F
     cgrc.Controllers.run_cgrc_trial(
         trial_name='sbmd',
         postfix='cgrC_tmp',
-        trial_scales=constants.sbmd_plots,
+        trial_scales=config.sbmd_plots,
         cgrc_param_set=2,
         save_figs=True,
     )

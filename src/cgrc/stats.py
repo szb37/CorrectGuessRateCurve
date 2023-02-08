@@ -13,7 +13,7 @@ TODO:
 """
 
 from tqdm.contrib.itertools import product as tqdmproduct
-import src.constants as constants
+import src.config as config
 import src.miscs as miscs
 import src.dataframe_classes as df_class
 from itertools import product as product

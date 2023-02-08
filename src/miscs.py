@@ -5,7 +5,7 @@
 """
 
 from statistics import mean, median
-import src.constants as constants
+import src.config as config
 import src.folders as folders
 import pandas as pd
 import os
@@ -81,7 +81,7 @@ def create_analysis_dirs(analysis_name, trial_data_subdir=False, incl_cgrc_plots
     return trial_data_dir, trial_stats_dir, cgrc_data_dir, cgrc_stats_dir, cgrc_plots_dir
 
 
-def get_estimate(data, metric=constants.estimator):
+def get_estimate(data, metric=config.estimator):
     ''' choose which estimator '''
 
     assert metric in ['mean', 'median']

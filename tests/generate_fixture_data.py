@@ -6,7 +6,7 @@
 Functions to generate faux data for testing purposes
 """
 
-import src.constants as constants
+import src.config as config
 import src.folders as folders
 import pandas as pd
 import numpy as np

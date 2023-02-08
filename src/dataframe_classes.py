@@ -21,7 +21,7 @@ class CGRCDataFrame(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def check_assumptions(self):
+    def is_valid(self):
         pass
 
     def add_columns(self, add_columns):
@@ -63,7 +63,7 @@ class TrialDataDf(pd.DataFrame, CGRCDataFrame):
         self['score'] = self['score'].astype('float')
         self['delta_score'] = self['delta_score'].astype('float')
 
-    def check_assumptions(self):
+    def is_valid(self):
 
         # All conditions / guesses are either 'PL' or 'AC'
         assert all([condition in ['PL', 'AC'] for condition in self.condition.to_list()])
@@ -71,21 +71,19 @@ class TrialDataDf(pd.DataFrame, CGRCDataFrame):
 
         # Assert all baseline / scores / delta_scores are numbers
         assert all([
-            (isinstance(baseline, float) and not math.isnan(baseline))
-            for score in self.baseline.to_list()])
+            (isinstance(baseline, float) and not math.isnan(baseline)) for baseline in self.baseline.to_list()])
         assert all([
-            (isinstance(score, float) and not math.isnan(score))
-            for score in self.score.to_list()])
+            (isinstance(score, float) and not math.isnan(score)) for score in self.score.to_list()])
         assert all([
-            (isinstance(delta_score, float) and not math.isnan(delta_score))
-            for delta_score in self.score.to_list()])
+            (isinstance(delta_score, float) and not math.isnan(delta_score)) for delta_score in self.delta_score.to_list()])
 
         self._def_check_entry_uniqueness()
+        return True
 
     def _def_check_entry_uniqueness(self):
         # All combinations of trial/subject_id/scale/tp should be unique
         temp = copy.deepcopy(self).loc[:, ['trial', 'subject_id', 'scale', 'tp']]
-        assert temp.shape[0] == temp.drop_duplicates(inplace=True).shape[0]
+        assert temp.shape[0] == temp.drop_duplicates().shape[0]
 
 
 class CGRCurveDf(TrialDataDf):
@@ -117,13 +115,12 @@ class CGRCurveDf(TrialDataDf):
         self['baseline'] = self['baseline'].astype('float')
         self['score'] = self['score'].astype('float')
         self['delta_score'] = self['delta_score'].astype('float')
-
         if 'model_sim_id' in self.columns:
             self['model_sim_id'] = self['model_sim_id'].astype('int')
 
-    def check_assumptions(self):
-        super(CGRCurveDf, self).check_assumptions()
-        self._def_check_entry_uniqueness()
+    def is_valid(self):
+        super(CGRCurveDf, self).is_valid()
+        return True
 
 
 
@@ -155,7 +152,7 @@ class ModelSummaryDf(pd.DataFrame, CGRCDataFrame):
         #if 'model_sim_id' in self.columns:
         #    self['model_sim_id'] = self['model_sim_id'].astype('int')
 
-    def check_assumptions(self):
+    def is_valid(self):
         pass
 
 
@@ -186,7 +183,7 @@ class ModelComponentsDf(pd.DataFrame, CGRCDataFrame):
         #if 'model_sim_id' in self.columns:
         #    self['model_sim_id'] = self['model_sim_id'].astype('int')
 
-    def check_assumptions(self):
+    def is_valid(self):
         pass
 
 
@@ -217,7 +214,7 @@ class StrataSummaryDf(pd.DataFrame, CGRCDataFrame):
         #if 'model_sim_id' in self.columns:
         #    self['model_sim_id'] = self['model_sim_id'].astype('int')
 
-    def check_assumptions(self):
+    def is_valid(self):
         pass
 
 
@@ -249,7 +246,7 @@ class StrataContrastDf(pd.DataFrame, CGRCDataFrame):
         #if 'model_sim_id' in self.columns:
         #    self['model_sim_id'] = self['model_sim_id'].astype('int')
 
-    def check_assumptions(self):
+    def is_valid(self):
         pass
 
 
@@ -297,5 +294,5 @@ class ModelFamilyResultsDf(pd.DataFrame, CGRCDataFrame):
             self['cgradj_avg_trt_es'] = self['cgradj_avg_trt_es'].astype(
                 'float')
 
-    def check_assumptions(self):
+    def is_valid(self):
         pass

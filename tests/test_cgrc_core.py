@@ -7,7 +7,7 @@
 import src.cgrc.core as cgrc
 import src.cgrc.stats as stats
 import src.dataframe_classes as df_class
-import src.constants as constants
+import src.config as config
 import src.folders as folders
 from numpy import linspace as linspace
 from rpy2.robjects import r
@@ -502,7 +502,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
         cgrc.Controllers.run_cgrc_trial(
             trial_name='sbmd',
             postfix='tmp',
-            cgrc_param_set=1,
-            trial_scales=constants.sbmd_test,
+            cgrc_param_set='test',
+            trial_scales=config.sbmd_test,
             save_figs=False,
         )

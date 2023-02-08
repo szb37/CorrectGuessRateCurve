@@ -19,15 +19,15 @@ class ModelDefinition(dict):
     def __init__(self, name=None, p_act=0.5, p_sea=0.9, p_sep=0.5, nhist=(20,4), dte=(10,2), aeb=(8,2)):
         super(ModelDefinition, self).__init__()
         self['name']=name
-        self['p_act']=p_act
-        self['p_sea']=p_sea
-        self['p_sep']=p_sep
+        self['p_act']=float(p_act)
+        self['p_sea']=float(p_sea)
+        self['p_sep']=float(p_sep)
         self['nhist']=(float(nhist[0]), float(nhist[1]))
         self['dte']=(float(dte[0]), float(dte[1]))
         self['aeb']=(float(aeb[0]), float(aeb[1]))
-        self.check_assumptions()
+        assert self.is_valid()
 
-    def check_assumptions(self):
+    def is_valid(self):
         assert (isinstance(self['name'], str) or self['name'] is None)
 
         assert isinstance(self['p_act'], float)
@@ -51,6 +51,8 @@ class ModelDefinition(dict):
         assert isinstance(self['aeb'][0], float)
         assert isinstance(self['aeb'][1], float)
 
+        return True
+
 
 # Define models to be simulated
 off_off_0 = ModelDefinition(
@@ -63,6 +65,6 @@ on_on_0 = ModelDefinition(
 
 
 # Define usefull lists of models
-test_model = [off_off_0]
+test_models = [off_off_0, on_on_0]
 default_models = []
 all_models = []

@@ -7,7 +7,7 @@
 from itertools import product as product
 import matplotlib.pyplot as pyplt
 import matplotlib.ticker as ticker
-import src.constants as constants
+import src.config as config
 import src.folders as folders
 import src.miscs as miscs
 import seaborn as sns
@@ -129,9 +129,9 @@ class Controllers():
             print('Create BBC plots - trial:{}'.format(trial))
 
             if cgr_type == 'all':
-                original_cgr = constants.trial_cgrs[trial]
+                original_cgr = config.trial_cgrs[trial]
             elif cgr_type == 'active':
-                original_cgr = constants.active_cgrs[trial]
+                original_cgr = config.active_cgrs[trial]
             else:
                 assert False
 
@@ -202,9 +202,9 @@ class Controllers():
         for trial, scale in product(trials, scales):
 
             if cgr_type == 'all':
-                original_cgr = constants.trial_cgrs[trial]
+                original_cgr = config.trial_cgrs[trial]
             elif cgr_type == 'active':
-                original_cgr = constants.active_cgrs[trial]
+                original_cgr = config.active_cgrs[trial]
             else:
                 assert False
 
@@ -233,7 +233,7 @@ class Controllers():
                     fig=fig,
                     output_dir=output_dir,
                     output_fname=output_prefix +
-                    '_{}_{}__cgrc_plot'.format(scale, constants.estimator),
+                    '_{}_{}__cgrc_plot'.format(scale, config.estimator),
                 )
 
             pyplt.close('all')
@@ -472,14 +472,14 @@ class Drawer():
 
         avg_df = Helpers.get_avg_se(data)
 
-        if constants.estimator == 'mean':
+        if config.estimator == 'mean':
             ax2.fill_between(x=avg_df.cgr, y1=avg_df.ci_low,
                              y2=avg_df.ci_high, color=color2, alpha=0.2)
             sns.lineplot(ax=ax1, x='cgr', y='p',
                          estimator=np.mean, color=color1, data=data)
             sns.lineplot(ax=ax2, x='cgr', y='est', data=avg_df, color=color2)
 
-        elif constants.estimator == 'median':
+        elif config.estimator == 'median':
             assert False  # need to implement
             sns.lineplot(ax=ax1, x='cgr', y='p',
                          estimator=np.median, color=color1, data=data)

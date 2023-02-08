@@ -8,7 +8,7 @@ from tqdm.contrib.itertools import product as tqdmproduct
 from sklearn.neighbors import KernelDensity
 from itertools import product as product
 import src.dataframe_classes as df_class
-import src.constants as constants
+import src.config as config
 import src.folders as folders
 import src.figures as figures
 import src.cgrc.stats as stats
@@ -27,22 +27,21 @@ class Controllers():
         ''' Run CGRC pipeline on a TrialDataDf
             Args:
                 trial_name (str): name of trial
-                cgrc_param_set (int): which paramter set used, see cgrc_parameters within constants
+                cgrc_param_set (int): which paramter set used, see cgrc_parameters within config
                 trial_scales (dict): key-values of trials-scales for which stats will be calculated
                     E.g. trial_scales = {'trial2':['scale1', 'scale3']}, will process scales 1 and 3 of trial2
         '''
 
         assert isinstance(trial_name, str)
         assert isinstance(postfix, str)
-        assert isinstance(cgrc_param_set, int)
+        assert isinstance(cgrc_param_set, str)
         assert (isinstance(trial_scales, dict) or (trial_scales is None))
 
-        cgrc_parameters = constants.cgrc_parameters[cgrc_param_set]
+        cgrc_parameters = config.cgrc_parameters[cgrc_param_set]
         analysis_name = trial_name + '_{}'.format(postfix)
 
         trial_data_dir, trial_stats_dir, cgrc_data_dir, cgrc_stats_dir, cgrc_plots_dir = miscs.create_analysis_dirs(
             analysis_name,
-            trial_data_subdir=False,
             incl_cgrc_plots_dir=save_figs,
         )
 
@@ -202,7 +201,7 @@ class Controllers():
             df = df.append(row, ignore_index=True)
 
         df.to_csv(os.path.join(folders.data_summary_tables, analysis_name +
-                  '_{}__summary_table_v1.csv'.format(constants.estimator)), index=False)
+                  '_{}__summary_table_v1.csv'.format(config.estimator)), index=False)
         return df
 
     @staticmethod
@@ -279,7 +278,7 @@ class Controllers():
             df = df.append(row, ignore_index=True)
 
         df.to_csv(os.path.join(folders.data_summary_tables, analysis_name +
-                  '_{}__summary_table_v2.csv'.format(constants.estimator)), index=False)
+                  '_{}__summary_table_v2.csv'.format(config.estimator)), index=False)
         return df
 
 
@@ -294,7 +293,7 @@ class CorrectGuessRateCurve():
                 input_fname (str): filename of input file
                 output_dir (str): where output is written
                 output_prefix (str): prefix of output files
-                cgrc_parameters (dict): dictionary of CGRC parameters; see constants
+                cgrc_parameters (dict): dictionary of CGRC parameters; see config
                 use_KDE (bool, optional): fit KDE distribution over strata
                 trial_scales (dict): defines combinations of trials/scales for which stats will be calculated
                     E.g. trial_scales = {'trial2':['scale1', 'scale3']}, will process scales 1 and 3 of trial2
