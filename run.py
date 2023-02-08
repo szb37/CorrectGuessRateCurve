@@ -22,8 +22,8 @@ toy_models.Controllers.run_cgrc_model_family(
     analysis_name = 'tmp2',
     models = model_defs.test_models,
     cgrc_param_set = 'cgrA_low',
-    n_patients = 100,
-    n_trials = 4
+    n_patients = 50,
+    n_trials = 1
 )
 
 
@@ -69,4 +69,4 @@ if False:  # CGR curves of self-blinding microdose trial outcomes - reproduces F
 
 end = time.time()
 
-print("Execution time was:", (end-start)*10**3, "ms")
+print("Execution time was:", (end-start),)

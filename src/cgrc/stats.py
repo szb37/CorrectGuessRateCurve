@@ -12,10 +12,9 @@ TODO:
 - move all R related code to r files and call them when appropiate from python
 """
 
-from tqdm.contrib.itertools import product as tqdmproduct
+import src.dataframe_classes as df_class
 import src.config as config
 import src.miscs as miscs
-import src.dataframe_classes as df_class
 from itertools import product as product
 from rpy2.robjects import r
 import pandas as pd
@@ -71,7 +70,7 @@ class Controllers():
         Helpers.load_df_into_R_space(input_trial_data_fpath)
         desc = 'Get trial stats ({})'.format(input_fname)
 
-        for trial, scale in tqdmproduct(trials, scales, desc=desc, disable=False):
+        for trial, scale in product(trials, scales):
 
             Helpers.get_df_filtered(trial, scale)
 
@@ -176,7 +175,7 @@ class Controllers():
 
         desc = 'Get CGRC stats ({})'.format(input_fname)
 
-        for trial, scale, cgr, cgr_sim_id, in tqdmproduct(trials, scales, cgrs, cgr_sim_ids, desc=desc, disable=False):
+        for trial, scale, cgr, cgr_sim_id, in product(trials, scales, cgrs, cgr_sim_ids):
 
             Helpers.get_df_filtered(trial, scale, cgr, cgr_sim_id)
 

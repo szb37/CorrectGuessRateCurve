@@ -54,21 +54,21 @@ def create_analysis_dirs(analysis_name, trial_data_subdir=False, incl_cgrc_plots
 
     if trial_data_subdir:
         trial_data_dir = os.path.abspath(os.path.join(
-            folders.data_trial_data, analysis_name))
+            folders.trial_data_dir, analysis_name))
         create_dir(trial_data_dir)
     else:
-        trial_data_dir = os.path.abspath(folders.data_trial_data)
+        trial_data_dir = os.path.abspath(folders.trial_data_dir)
 
     trial_stats_dir = os.path.abspath(os.path.join(
-        folders.data_trial_stats, analysis_name))
+        folders.trial_stats_dir, analysis_name))
     create_dir(trial_stats_dir)
 
     cgrc_data_dir = os.path.abspath(os.path.join(
-        folders.data_cgrc_data, analysis_name))
+        folders.cgrc_data_dir, analysis_name))
     create_dir(cgrc_data_dir)
 
     cgrc_stats_dir = os.path.abspath(os.path.join(
-        folders.data_cgrc_stats, analysis_name))
+        folders.cgrc_stats_dir, analysis_name))
     create_dir(cgrc_stats_dir)
 
     if incl_cgrc_plots_dir:

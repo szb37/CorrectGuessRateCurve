@@ -62,7 +62,8 @@ class Controllers():
 
             model_name = model['name']
             subanalysis_name = f"{analysis_name}_{cgrc_param_set}_{model_name}_trial{model_sim_id}"
-
+            add_columns = {'model_name': model_name, 'model_sim_id': model_sim_id}
+            
             # Generate pseudodata according to model specifications
             ToyModelsDataGenerator.get_toymodel_data(
                 output_dir=trial_data_dir,
@@ -72,7 +73,7 @@ class Controllers():
                 model_sim_id=model_sim_id
             )
 
-            '''
+
             # Get trial stats for psuedodata
             stats.Controllers.get_trial_stats(
                 input_dir=trial_data_dir,
@@ -117,7 +118,7 @@ class Controllers():
         #    cgrc_param_set=cgrc_param_set,
         #)
         #print('\n', summary_df.to_string(index=False))
-        '''
+
 
 
 class ToyModelsDataGenerator():
@@ -290,7 +291,7 @@ class ToyModelsAnalyis():
         df = df_class.ModelFamilyResultsDf()
 
         trial_data = Helpers.get_concateneted_df_type(
-            target_dir=os.path.join(folders.data_trial_data, analysis_name),
+            target_dir=os.path.join(folders.trial_data_dir, analysis_name),
             df_type='__trial_data')
 
         # Get n_patients and n_trials assuming each member of the model family has same n_patient and n_trial
@@ -302,12 +303,12 @@ class ToyModelsAnalyis():
 
         # Get unadjusted model components
         unadj_model_components = Helpers.get_concateneted_df_type(
-            target_dir=os.path.join(folders.data_trial_stats, analysis_name),
+            target_dir=os.path.join(folders.trial_stats_dir, analysis_name),
             df_type='__model_components')
 
         # Get adjusted model components
         cgradj_model_components = Helpers.get_concateneted_df_type(
-            target_dir=os.path.join(folders.data_cgrc_stats, analysis_name),
+            target_dir=os.path.join(folders.cgrc_stats_dir, analysis_name),
             df_type='__cgrc_model_components')
 
         cgradj_model_components = cgradj_model_components.loc[(
@@ -371,7 +372,7 @@ class ToyModelsAnalyis():
 
         df.__class__ = df_class.ModelFamilyResultsDf
         df.set_column_types()
-        df.to_csv(os.path.join(folders.data_summary_tables, analysis_name +
+        df.to_csv(os.path.join(folders.summary_dir, analysis_name +
                   '_{}__summary_table.csv'.format(config.estimator)), index=False)
 
         return df

@@ -4,7 +4,6 @@
 :License: MIT
 """
 
-from tqdm.contrib.itertools import product as tqdmproduct
 from sklearn.neighbors import KernelDensity
 from itertools import product as product
 import src.dataframe_classes as df_class
@@ -200,7 +199,7 @@ class Controllers():
             row['cgrc_g'] = round(miscs.get_estimate(cgrc_hedges_g), 1)
             df = df.append(row, ignore_index=True)
 
-        df.to_csv(os.path.join(folders.data_summary_tables, analysis_name +
+        df.to_csv(os.path.join(folders.summary_dir, analysis_name +
                   '_{}__summary_table_v1.csv'.format(config.estimator)), index=False)
         return df
 
@@ -277,7 +276,7 @@ class Controllers():
             row['cgrc_g'] = round(miscs.get_estimate(cgrc_hedges_g), 2)
             df = df.append(row, ignore_index=True)
 
-        df.to_csv(os.path.join(folders.data_summary_tables, analysis_name +
+        df.to_csv(os.path.join(folders.summary_dir, analysis_name +
                   '_{}__summary_table_v2.csv'.format(config.estimator)), index=False)
         return df
 
@@ -343,7 +342,7 @@ class CorrectGuessRateCurve():
 
             desc = 'Get CGRC data ({}:{})'.format(trial, scale)
 
-            for cgr, cgr_sim_id in tqdmproduct(cgr_values, range(n_cgrc_trials), desc=desc, disable=False):
+            for cgr, cgr_sim_id in product(cgr_values, range(n_cgrc_trials)):
 
                 sample_sizes = CorrectGuessRateCurve.get_strata_sample_sizes(
                     total_sample_size=total_sample_size,
