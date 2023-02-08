@@ -438,8 +438,7 @@ class StatsIntegrationTests(unittest.TestCase):
 
         r('df_filtered=read.csv("'+folders.fixtures.replace('\\', '/') +
           '//get_stats_data_input1.csv")')
-        model_summary, model_components = stats.StatsCore.get_model_stats(
-            try_covs=[], add_cgrc_columns=False)
+        model_summary, model_components = stats.StatsCore.get_model_stats(add_cgrc_columns=False)
 
         # Reference outputs are manually checked against R output (codebase/tests/stats_calc_reference.r)
         # If new pseudodata is generated, check references again
@@ -462,7 +461,7 @@ class StatsIntegrationTests(unittest.TestCase):
     def test_get_strata_stats1(self):
 
         r('df_filtered=read.csv("'+folders.fixtures.replace('\\', '/') + '//get_stats_data_input1.csv")')
-        strata_summary, strata_contrast = stats.StatsCore.get_strata_stats(try_covs=[], add_cgrc_columns=False)
+        strata_summary, strata_contrast = stats.StatsCore.get_strata_stats(add_cgrc_columns=False)
 
         # Reference outputs are manually checked against R output (codebase/tests/stats_calc_reference.r)
         # If new pseudodata is generated, check references again

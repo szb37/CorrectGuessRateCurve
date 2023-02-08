@@ -69,4 +69,4 @@ if False:  # CGR curves of self-blinding microdose trial outcomes - reproduces F
 
 end = time.time()
 
-print("Execution time was:", (end-start),)
+print("Execution time was:", (end-start), )

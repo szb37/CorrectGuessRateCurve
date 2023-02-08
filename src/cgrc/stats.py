@@ -32,7 +32,7 @@ r('library(RJSONIO)')
 class Controllers():
 
     @staticmethod
-    def get_trial_stats(input_dir, input_fname, output_dir, output_prefix, trial_scales=None, add_columns=None, try_covs=[]):
+    def get_trial_stats(input_dir, input_fname, output_dir, output_prefix, trial_scales=None, add_columns=None):
         ''' Gets stats from processedDf and save results as CSV
             Args:
                 input_dir (str): input file's directory
@@ -41,8 +41,6 @@ class Controllers():
                 output_prefix (str): prefix to label outputs
                 trial_scales (dict): key-values of trials-scales for which stats will be calculated
                     E.g. trial_scales = {'trial2':['scale1', 'scale3']}, will process scales 1 and 3 of trial2
-                try_covs (list): list of strings, were each string is a column name in df; eacht will be
-                    tried as a model covariate
                 add_columns(dict, optional): any key-value pair to add as column to output df
         '''
 
@@ -52,7 +50,6 @@ class Controllers():
         assert isinstance(output_prefix, str)
         assert (isinstance(trial_scales, dict) or (trial_scales is None))
         assert (isinstance(add_columns, dict)) or (add_columns is None)
-        assert isinstance(try_covs, list)
 
         # Initalize output
         master_model_summary_df = df_class.ModelSummaryDf()
@@ -75,9 +72,7 @@ class Controllers():
             Helpers.get_df_filtered(trial, scale)
 
             try:
-                all_dfs = StatsCore.get_stats(
-                    try_covs=try_covs, add_cgrc_columns=False
-                )
+                all_dfs = StatsCore.get_stats(add_cgrc_columns=False)
                 all_dfs = Helpers.add_metadata_process_trialdata(
                     all_dfs=all_dfs,
                     trial=trial,
@@ -127,7 +122,7 @@ class Controllers():
             output_dir, output_prefix+'__model_summary.csv'), index=False)
 
     @staticmethod
-    def get_cgrc_stats(input_dir, input_fname, output_dir, output_prefix, trial_scales=None, add_columns=None, try_covs=[]):
+    def get_cgrc_stats(input_dir, input_fname, output_dir, output_prefix, trial_scales=None, add_columns=None):
         """ Gets stats from processedDf (with BBC specific columns, cgr and cgr_sim_id) and save results as CSV
             Args:
                 input_dir (str): input file's directory
@@ -136,8 +131,6 @@ class Controllers():
                 output_prefix (str): prefix to label outputs
                 trial_scales (dict): key-values of trials-scales for which stats will be calculated
                     E.g. trial_scales = {'trial2':['scale1', 'scale3']}, will process scales 1 and 3 of trial2
-                try_covs (list): list of strings, were each string is a column name in df; eacht will be
-                    tried as a model covariate
                 add_columns(dict, optional): any key-value pair to add as column to output df
         """
 
@@ -147,7 +140,6 @@ class Controllers():
         assert isinstance(output_prefix, str)
         assert (isinstance(trial_scales, dict) or (trial_scales is None))
         assert (isinstance(add_columns, dict)) or (add_columns is None)
-        assert isinstance(try_covs, list)
 
         # Read dataframe into R and set baseline to be PL
         input_fpath = os.path.join(input_dir, input_fname).replace('\\', '/')
@@ -180,9 +172,7 @@ class Controllers():
             Helpers.get_df_filtered(trial, scale, cgr, cgr_sim_id)
 
             try:
-                all_dfs = StatsCore.get_stats(
-                    try_covs=try_covs, add_cgrc_columns=True
-                )
+                all_dfs = StatsCore.get_stats(add_cgrc_columns=True)
                 all_dfs = Helpers.add_metadata_process_cgrc(
                     all_dfs=all_dfs,
                     trial=trial,
@@ -237,26 +227,22 @@ class StatsCore():
     ''' Functions to extract starta/model stats using R '''
 
     @staticmethod
-    def get_stats(try_covs, add_cgrc_columns=True):
+    def get_stats(do_strata_stats=False, add_cgrc_columns=True):
         ''' Get all stats dataframes
             Args:
-                try_covs (list): list of strings, each string is a potential covariate (i.e. column name in df_filtered)
-                    that will be tried as a covariate for models.
                 add_cgrc_columns (bool, optional): if True, then will add empty 'cgr' and 'cgr_sim_id' columns to output dfs
         '''
 
         assert isinstance(add_cgrc_columns, bool)
-        assert isinstance(try_covs, list)
 
         if r('nrow(df_filtered)')[0] == 0:
             raise NoSelectedRows()
 
         model_summary, model_components = StatsCore.get_model_stats(
-            try_covs=try_covs,
             add_cgrc_columns=add_cgrc_columns)
 
+        #if do_strata_stats:
         strata_summary, strata_contrast = StatsCore.get_strata_stats(
-            try_covs=try_covs,
             add_cgrc_columns=add_cgrc_columns)
 
         all_dfs = {
@@ -269,17 +255,14 @@ class StatsCore():
         return all_dfs
 
     @staticmethod
-    def get_model_stats(try_covs, add_cgrc_columns=True):
+    def get_model_stats(add_cgrc_columns=True):
         ''' Returns model stats dataframe
 
             Args:
-                try_covs (list): list of strings, each string is a potential covariate (i.e. column name in df_filtered)
-                    that will be tried as a covariate for models.
                 add_cgrc_columns (bool, optional): if True, then will add empty 'cgr' and 'cgr_sim_id' columns to output dfs
         '''
 
         assert isinstance(add_cgrc_columns, bool)
-        assert isinstance(try_covs, list)
 
         # Initalize output
         model_summary = df_class.ModelSummaryDf()
@@ -332,17 +315,14 @@ class StatsCore():
         return model_summary, model_components
 
     @staticmethod
-    def get_strata_stats(try_covs, add_cgrc_columns=True):
+    def get_strata_stats(add_cgrc_columns=True):
         ''' Returns strata contrast and summary dataframes
 
             Args:
-                try_covs (list): list of strings, each string is a potential covariate (i.e. column name in df_filtered)
-                    that will be tried as a covariate for models.
                 add_cgrc_columns (bool, optional): if True, then will add empty 'cgr' and 'cgr_sim_id' columns to output dfs
         '''
 
         assert isinstance(add_cgrc_columns, bool)
-        assert isinstance(try_covs, list)
 
         strata_summary = df_class.StrataSummaryDf()
         strata_contrast = df_class.StrataContrastDf()
