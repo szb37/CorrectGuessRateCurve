@@ -22,7 +22,7 @@ import os
 class Controllers():
 
     @staticmethod
-    def run_cgrc_trial(trial_name, postfix, cgrc_param_set, trial_scales=None, save_figs=True):
+    def run_cgrc_trial(trial_name, postfix, cgrc_param_set, do_stratas=False, trial_scales=None, save_figs=True):
         ''' Run CGRC pipeline on a TrialDataDf
             Args:
                 trial_name (str): name of trial
@@ -70,6 +70,7 @@ class Controllers():
             output_dir=cgrc_stats_dir,
             output_prefix=analysis_name,
             trial_scales=trial_scales,
+            do_stratas=do_stratas,
         )
 
         # Make CGRC figues

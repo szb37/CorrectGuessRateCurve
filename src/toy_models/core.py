@@ -63,7 +63,7 @@ class Controllers():
             model_name = model['name']
             subanalysis_name = f"{analysis_name}_{cgrc_param_set}_{model_name}_trial{model_sim_id}"
             add_columns = {'model_name': model_name, 'model_sim_id': model_sim_id}
-            
+
             # Generate pseudodata according to model specifications
             ToyModelsDataGenerator.get_toymodel_data(
                 output_dir=trial_data_dir,
@@ -100,6 +100,7 @@ class Controllers():
                 output_dir=cgrc_stats_dir,
                 output_prefix=subanalysis_name,
                 add_columns=add_columns,
+                do_stratas = False,
             )
 
             # Make CGRC figues
@@ -110,6 +111,7 @@ class Controllers():
                     output_dir=cgrc_plots_dir,
                     output_prefix=subanalysis_name,
                 )
+
 
         # Get summary table
         #summary_df = ToyModelsAnalyis.get_model_family_summary(

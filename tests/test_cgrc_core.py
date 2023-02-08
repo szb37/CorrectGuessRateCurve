@@ -404,6 +404,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
             output_dir=folders.tmp_dir,
             output_prefix=analysis_name,
             trial_scales={'test': ['tadaa']},
+            do_stratas=True,
         )
 
         # Check model components
@@ -505,4 +506,5 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
             cgrc_param_set='test',
             trial_scales=config.sbmd_test,
             save_figs=False,
+            do_stratas=True,
         )

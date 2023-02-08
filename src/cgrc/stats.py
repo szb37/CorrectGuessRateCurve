@@ -32,7 +32,7 @@ r('library(RJSONIO)')
 class Controllers():
 
     @staticmethod
-    def get_trial_stats(input_dir, input_fname, output_dir, output_prefix, trial_scales=None, add_columns=None):
+    def get_trial_stats(input_dir, input_fname, output_dir, output_prefix, do_stratas=False, trial_scales=None, add_columns=None):
         ''' Gets stats from processedDf and save results as CSV
             Args:
                 input_dir (str): input file's directory
@@ -48,81 +48,97 @@ class Controllers():
         assert isinstance(input_fname, str)
         assert isinstance(output_dir, str)
         assert isinstance(output_prefix, str)
+        assert isinstance(do_stratas, bool)
         assert (isinstance(trial_scales, dict) or (trial_scales is None))
         assert (isinstance(add_columns, dict)) or (add_columns is None)
 
         # Initalize output
-        master_model_summary_df = df_class.ModelSummaryDf()
-        master_model_components_df = df_class.ModelComponentsDf()
-        master_strata_summary_df = df_class.StrataSummaryDf()
-        master_strata_contrast_df = df_class.StrataContrastDf()
+        master_model_summary = df_class.ModelSummaryDf()
+        master_model_components = df_class.ModelComponentsDf()
+        if do_stratas:
+            master_strata_summary = df_class.StrataSummaryDf()
+            master_strata_contrast = df_class.StrataContrastDf()
+
+        # Read dataframe into python & R (and set baseline to be PL)
+        input_trial_data_fpath = os.path.join(input_dir, input_fname).replace('\\', '/')
+        trial_data_df = pd.read_csv(input_trial_data_fpath)
+        Helpers.load_df_into_R_space(input_trial_data_fpath)
 
         # Get trial_scales from trial_data input
-        input_trial_data_fpath = os.path.join(
-            input_dir, input_fname).replace('\\', '/')
-        trial_data_df = pd.read_csv(input_trial_data_fpath)
         trials, scales = miscs.get_trial_scales(input_df=trial_data_df, trial_scales=trial_scales)
-
-        # Read dataframe into R and set baseline to be PL
-        Helpers.load_df_into_R_space(input_trial_data_fpath)
-        desc = 'Get trial stats ({})'.format(input_fname)
 
         for trial, scale in product(trials, scales):
 
             Helpers.get_df_filtered(trial, scale)
 
             try:
-                all_dfs = StatsCore.get_stats(add_cgrc_columns=False)
+                all_dfs = StatsCore.get_stats(do_stratas=do_stratas, add_cgrc_columns=False)
                 all_dfs = Helpers.add_metadata_process_trialdata(
                     all_dfs=all_dfs,
                     trial=trial,
                     scale=scale,
                 )
+
+                model_summary = all_dfs['model_summary']
+                model_components = all_dfs['model_components']
+
+                if do_stratas:
+                    strata_summary = all_dfs['strata_summary']
+                    strata_contrast = all_dfs['strata_contrast']
+
             except NoSelectedRows:
                 continue
             finally:
                 r('rm(df_filtered)')
 
             # Concatanate dataframes
-            master_model_summary_df = pd.concat(
-                [master_model_summary_df, all_dfs['model_summary']], sort=False)
-            master_model_components_df = pd.concat(
-                [master_model_components_df, all_dfs['model_components']], sort=False)
-            master_strata_summary_df = pd.concat(
-                [master_strata_summary_df, all_dfs['strata_summary']], sort=False)
-            master_strata_contrast_df = pd.concat(
-                [master_strata_contrast_df, all_dfs['strata_contrast']], sort=False)
+            master_model_summary = pd.concat([master_model_summary, model_summary], sort=False)
+            master_model_components = pd.concat([master_model_components, model_components], sort=False)
+            if do_stratas:
+                master_strata_summary = pd.concat([master_strata_summary, strata_summary], sort=False)
+                master_strata_contrast = pd.concat([master_strata_contrast, strata_contrast], sort=False)
 
         # Clear R global namespace and save results
         r('rm(list = ls())')
 
-        master_strata_summary_df.__class__ = df_class.StrataSummaryDf
-        master_strata_contrast_df.__class__ = df_class.StrataContrastDf
-        master_model_components_df.__class__ = df_class.ModelComponentsDf
-        master_model_summary_df.__class__ = df_class.ModelSummaryDf
+        # Clean up and save results
+        master_model_summary.__class__ = df_class.ModelSummaryDf
+        master_model_components.__class__ = df_class.ModelComponentsDf
+        if do_stratas:
+            master_strata_summary.__class__ = df_class.StrataSummaryDf
+            master_strata_contrast.__class__ = df_class.StrataContrastDf
 
-        # if add_columns is not None:
-        master_strata_summary_df.add_columns(add_columns)
-        master_strata_contrast_df.add_columns(add_columns)
-        master_model_components_df.add_columns(add_columns)
-        master_model_summary_df.add_columns(add_columns)
+        # Add add_columns if needed
+        master_model_summary.add_columns(add_columns)
+        master_model_components.add_columns(add_columns)
+        if do_stratas:
+            master_strata_summary.add_columns(add_columns)
+            master_strata_contrast.add_columns(add_columns)
 
-        master_strata_summary_df.set_column_types()
-        master_strata_contrast_df.set_column_types()
-        master_model_components_df.set_column_types()
-        master_model_summary_df.set_column_types()
+        master_model_summary.set_column_types()
+        master_model_components.set_column_types()
+        if do_stratas:
+            master_strata_summary.set_column_types()
+            master_strata_contrast.set_column_types()
 
-        master_strata_summary_df.to_csv(os.path.join(
-            output_dir, output_prefix+'__strata_summary.csv'), index=False)
-        master_strata_contrast_df.to_csv(os.path.join(
-            output_dir, output_prefix+'__strata_contrast.csv'), index=False)
-        master_model_components_df.to_csv(os.path.join(
-            output_dir, output_prefix+'__model_components.csv'), index=False)
-        master_model_summary_df.to_csv(os.path.join(
+        #assert master_model_summary.is_valid()
+        #assert master_model_components.is_valid()
+        #if do_stratas:
+        #    assert master_strata_summary.is_valid()
+        #    assert master_strata_contrast.is_valid()
+
+        master_model_summary.to_csv(os.path.join(
             output_dir, output_prefix+'__model_summary.csv'), index=False)
+        master_model_components.to_csv(os.path.join(
+            output_dir, output_prefix+'__model_components.csv'), index=False)
+        if do_stratas:
+            master_strata_summary.to_csv(os.path.join(
+                output_dir, output_prefix+'__strata_summary.csv'), index=False)
+            master_strata_contrast.to_csv(os.path.join(
+                output_dir, output_prefix+'__strata_contrast.csv'), index=False)
 
     @staticmethod
-    def get_cgrc_stats(input_dir, input_fname, output_dir, output_prefix, trial_scales=None, add_columns=None):
+    def get_cgrc_stats(input_dir, input_fname, output_dir, output_prefix, do_stratas=False, trial_scales=None, add_columns=None):
         """ Gets stats from processedDf (with BBC specific columns, cgr and cgr_sim_id) and save results as CSV
             Args:
                 input_dir (str): input file's directory
@@ -149,32 +165,29 @@ class Controllers():
         cgrc_data_df = pd.read_csv(input_fpath)
         cgr_sim_ids = cgrc_data_df.cgr_sim_id.unique().tolist()
         cgrs = cgrc_data_df.cgr.unique().tolist()
-        trials, scales = miscs.get_trial_scales(input_df=cgrc_data_df, trial_scales=trial_scales)
 
         # Initalize output
-        master_model_summary_df = df_class.ModelSummaryDf()
-        master_model_summary_df.add_columns(
-            {'cgr': None, 'cgr_sim_id': None})
-        master_model_components_df = df_class.ModelComponentsDf()
-        master_model_components_df.add_columns(
-            {'cgr': None, 'cgr_sim_id': None})
-        master_strata_summary_df = df_class.StrataSummaryDf()
-        master_strata_summary_df.add_columns(
-            {'cgr': None, 'cgr_sim_id': None})
-        master_strata_contrast_df = df_class.StrataContrastDf()
-        master_strata_contrast_df.add_columns(
-            {'cgr': None, 'cgr_sim_id': None})
+        master_model_summary = df_class.ModelSummaryDf()
+        master_model_summary.add_columns({'cgr': None, 'cgr_sim_id': None})
+        master_model_components = df_class.ModelComponentsDf()
+        master_model_components.add_columns({'cgr': None, 'cgr_sim_id': None})
+        if do_stratas:
+            master_strata_summary = df_class.StrataSummaryDf()
+            master_strata_summary.add_columns({'cgr': None, 'cgr_sim_id': None})
+            master_strata_contrast= df_class.StrataContrastDf()
+            master_strata_contrast.add_columns({'cgr': None, 'cgr_sim_id': None})
 
-        desc = 'Get CGRC stats ({})'.format(input_fname)
+        trials, scales = miscs.get_trial_scales(input_df=cgrc_data_df, trial_scales=trial_scales)
 
         for trial, scale, cgr, cgr_sim_id, in product(trials, scales, cgrs, cgr_sim_ids):
 
             Helpers.get_df_filtered(trial, scale, cgr, cgr_sim_id)
 
             try:
-                all_dfs = StatsCore.get_stats(add_cgrc_columns=True)
+                all_dfs = StatsCore.get_stats(do_stratas=do_stratas, add_cgrc_columns=True)
                 all_dfs = Helpers.add_metadata_process_cgrc(
                     all_dfs=all_dfs,
+                    do_stratas=do_stratas,
                     trial=trial,
                     scale=scale,
                     cgr=cgr,
@@ -186,48 +199,54 @@ class Controllers():
                 r('rm(df_filtered)')
 
             # Concatanate dataframes
-            master_model_summary_df = pd.concat(
-                [master_model_summary_df, all_dfs['model_summary']], sort=False)
-            master_model_components_df = pd.concat(
-                [master_model_components_df, all_dfs['model_components']], sort=False)
-            master_strata_summary_df = pd.concat(
-                [master_strata_summary_df, all_dfs['strata_summary']], sort=False)
-            master_strata_contrast_df = pd.concat(
-                [master_strata_contrast_df, all_dfs['strata_contrast']], sort=False)
+            master_model_summary = pd.concat(
+                [master_model_summary, all_dfs['model_summary']], sort=False)
+            master_model_components = pd.concat(
+                [master_model_components, all_dfs['model_components']], sort=False)
+            if do_stratas:
+                master_strata_summary = pd.concat(
+                    [master_strata_summary, all_dfs['strata_summary']], sort=False)
+                master_strata_contrast= pd.concat(
+                    [master_strata_contrast, all_dfs['strata_contrast']], sort=False)
 
         # Clear R global namespace and save results
         r('rm(list = ls())')
 
-        master_strata_summary_df.__class__ = df_class.StrataSummaryDf
-        master_strata_contrast_df.__class__ = df_class.StrataContrastDf
-        master_model_components_df.__class__ = df_class.ModelComponentsDf
-        master_model_summary_df.__class__ = df_class.ModelSummaryDf
+        master_model_summary.__class__ = df_class.ModelSummaryDf
+        master_model_components.__class__ = df_class.ModelComponentsDf
+        if do_stratas:
+            master_strata_summary.__class__ = df_class.StrataSummaryDf
+            master_strata_contrast.__class__ = df_class.StrataContrastDf
 
-        master_strata_summary_df.add_columns(add_columns)
-        master_strata_contrast_df.add_columns(add_columns)
-        master_model_components_df.add_columns(add_columns)
-        master_model_summary_df.add_columns(add_columns)
+        master_model_summary.add_columns(add_columns)
+        master_model_components.add_columns(add_columns)
+        if do_stratas:
+            master_strata_summary.add_columns(add_columns)
+            master_strata_contrast.add_columns(add_columns)
 
-        master_strata_summary_df.set_column_types()
-        master_strata_contrast_df.set_column_types()
-        master_model_components_df.set_column_types()
-        master_model_summary_df.set_column_types()
+        master_model_summary.set_column_types()
+        master_model_components.set_column_types()
+        if do_stratas:
+            master_strata_summary.set_column_types()
+            master_strata_contrast.set_column_types()
 
-        master_strata_summary_df.to_csv(os.path.join(
-            output_dir, output_prefix + '__cgrc_strata_summary.csv'), index=False)
-        master_strata_contrast_df.to_csv(os.path.join(
-            output_dir, output_prefix + '__cgrc_strata_contrast.csv'), index=False)
-        master_model_components_df.to_csv(os.path.join(
-            output_dir, output_prefix + '__cgrc_model_components.csv'), index=False)
-        master_model_summary_df.to_csv(os.path.join(
+        master_model_summary.to_csv(os.path.join(
             output_dir, output_prefix + '__cgrc_model_summary.csv'), index=False)
+        master_model_components.to_csv(os.path.join(
+            output_dir, output_prefix + '__cgrc_model_components.csv'), index=False)
+        if do_stratas:
+            master_strata_summary.to_csv(os.path.join(
+                output_dir, output_prefix + '__cgrc_strata_summary.csv'), index=False)
+            master_strata_contrast.to_csv(os.path.join(
+                output_dir, output_prefix + '__cgrc_strata_contrast.csv'), index=False)
+
 
 
 class StatsCore():
     ''' Functions to extract starta/model stats using R '''
 
     @staticmethod
-    def get_stats(do_strata_stats=False, add_cgrc_columns=True):
+    def get_stats(do_stratas, add_cgrc_columns=True):
         ''' Get all stats dataframes
             Args:
                 add_cgrc_columns (bool, optional): if True, then will add empty 'cgr' and 'cgr_sim_id' columns to output dfs
@@ -238,21 +257,19 @@ class StatsCore():
         if r('nrow(df_filtered)')[0] == 0:
             raise NoSelectedRows()
 
-        model_summary, model_components = StatsCore.get_model_stats(
-            add_cgrc_columns=add_cgrc_columns)
+        model_summary, model_components = StatsCore.get_model_stats(add_cgrc_columns=add_cgrc_columns)
 
-        #if do_strata_stats:
-        strata_summary, strata_contrast = StatsCore.get_strata_stats(
-            add_cgrc_columns=add_cgrc_columns)
-
-        all_dfs = {
+        stats_dfs = {
             'model_summary': model_summary,
             'model_components': model_components,
-            'strata_summary': strata_summary,
-            'strata_contrast': strata_contrast,
         }
 
-        return all_dfs
+        if do_stratas:
+            strata_summary, strata_contrast = StatsCore.get_strata_stats(add_cgrc_columns=add_cgrc_columns)
+            stats_dfs['strata_summary'] = strata_summary
+            stats_dfs['strata_contrast'] = strata_contrast
+
+        return stats_dfs
 
     @staticmethod
     def get_model_stats(add_cgrc_columns=True):
@@ -640,17 +657,18 @@ class Helpers():
         all_dfs['model_components'].trial = trial
         all_dfs['model_components'].scale = scale
 
-        all_dfs['strata_summary'].trial = trial
-        all_dfs['strata_summary'].scale = scale
+        if 'strata_summary' in all_dfs.keys():
+            all_dfs['strata_summary'].trial = trial
+            all_dfs['strata_summary'].scale = scale
 
-        all_dfs['strata_contrast'].trial = trial
-        all_dfs['strata_contrast'].scale = scale
-
+        if 'strata_contrast' in all_dfs.keys():
+            all_dfs['strata_contrast'].trial = trial
+            all_dfs['strata_contrast'].scale = scale
 
         return all_dfs
 
     @staticmethod
-    def add_metadata_process_cgrc(all_dfs, trial, scale, cgr, cgr_sim_id):
+    def add_metadata_process_cgrc(all_dfs, do_stratas, trial, scale, cgr, cgr_sim_id):
         """ Add metadata to model_summary, model_components, strata_summary, strata_contrast """
 
         all_dfs['model_summary'].trial = trial
@@ -663,15 +681,16 @@ class Helpers():
         all_dfs['model_components'].cgr = cgr
         all_dfs['model_components'].cgr_sim_id = cgr_sim_id
 
-        all_dfs['strata_summary'].trial = trial
-        all_dfs['strata_summary'].scale = scale
-        all_dfs['strata_summary'].cgr = cgr
-        all_dfs['strata_summary'].cgr_sim_id = cgr_sim_id
+        if do_stratas:
+            all_dfs['strata_summary'].trial = trial
+            all_dfs['strata_summary'].scale = scale
+            all_dfs['strata_summary'].cgr = cgr
+            all_dfs['strata_summary'].cgr_sim_id = cgr_sim_id
 
-        all_dfs['strata_contrast'].trial = trial
-        all_dfs['strata_contrast'].scale = scale
-        all_dfs['strata_contrast'].cgr = cgr
-        all_dfs['strata_contrast'].cgr_sim_id = cgr_sim_id
+            all_dfs['strata_contrast'].trial = trial
+            all_dfs['strata_contrast'].scale = scale
+            all_dfs['strata_contrast'].cgr = cgr
+            all_dfs['strata_contrast'].cgr_sim_id = cgr_sim_id
 
         return all_dfs
 

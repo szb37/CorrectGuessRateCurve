@@ -215,6 +215,7 @@ class StatsUnitTests(unittest.TestCase):
             output_dir=folders.tmp_dir,
             output_prefix='get_trial_data_stats1',
             trial_scales={'tads': ['bdi', 'rads']},
+            do_stratas=True
         )
 
         output_model_summary = pd.read_csv(os.path.join(
