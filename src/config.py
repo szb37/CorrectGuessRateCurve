@@ -25,13 +25,13 @@ cgrc_parameters = {
         'cgr_values': [0.5],
         'n_cgrc_trials': 128, },
     # Use cgrC (=correct guess rate CURVE) when plotting the whole CGR curve
-    'cgrA_low': {
+    'cgrC_low': {
         'cgr_values': np.linspace(0, 1, 13).tolist(),
         'n_cgrc_trials': 32, },
-    'cgrA_mid': {
+    'cgrC_mid': {
         'cgr_values': np.linspace(0, 1, 13).tolist(),
         'n_cgrc_trials': 64, },
-    'cgrA_high': {
+    'cgrC_high': {
         'cgr_values': np.linspace(0, 1, 13).tolist(),
         'n_cgrc_trials': 128, },
 }

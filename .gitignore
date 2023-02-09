@@ -5,12 +5,13 @@
 __pycache__/
 export figs/*
 
-tmp.py
-
 # These folders are too large for github, see run.py for access to all simulation data
+!data/01_trial_data/sbmd__trial_data.csv
+data/01_trial_data/*
 data/02_trial_stats/*
 data/03_cgrc_data/*
 data/04_cgrc_stats/*
+data/05_summary_tables/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
