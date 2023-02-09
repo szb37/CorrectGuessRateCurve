@@ -313,17 +313,15 @@ class CorrectGuessRateCurve():
         assert (isinstance(add_columns, dict)) or (add_columns is None)
         assert isinstance(n_sample, int) or (n_sample is None)
 
+        trial_data_df = pd.read_csv(os.path.join(input_dir, input_fname))
+        trials, scales = miscs.get_trial_scales(input_df=trial_data_df, trial_scales=trial_scales)
         n_cgrc_trials = cgrc_parameters['n_cgrc_trials']
         # CGR values need to be rounded, otherwise downstream R df filtering may not work
         cgr_values = [round(el, 5) for el in cgrc_parameters['cgr_values']]
 
-        trial_data_df = pd.read_csv(os.path.join(input_dir, input_fname))
-        trials, scales = miscs.get_trial_scales(input_df=trial_data_df, trial_scales=trial_scales)
-
-        master_cgrc_df = df_class.CGRCurveDf()
+        cgrc_dfs=[]
 
         for trial, scale in product(trials, scales):
-
 
             df_filtered = trial_data_df.loc[(trial_data_df.scale == scale)]
 
@@ -340,8 +338,6 @@ class CorrectGuessRateCurve():
 
             if use_KDE:
                 kdes = CorrectGuessRateCurve.get_kdes(df_filtered=df_filtered)
-
-            desc = 'Get CGRC data ({}:{})'.format(trial, scale)
 
             for cgr, cgr_sim_id in product(cgr_values, range(n_cgrc_trials)):
 
@@ -366,11 +362,11 @@ class CorrectGuessRateCurve():
                 cgrc_datapoint_df.cgr_sim_id = cgr_sim_id
                 cgrc_datapoint_df.trial = trial
                 cgrc_datapoint_df.scale = scale
+                cgrc_dfs.append(cgrc_datapoint_df)
 
-                master_cgrc_df = pd.concat(
-                    [master_cgrc_df, cgrc_datapoint_df], sort=False)
                 del cgrc_datapoint_df, sample_sizes
 
+        master_cgrc_df = pd.concat(cgrc_dfs, axis=0)
         master_cgrc_df.__class__ = df_class.CGRCurveDf
         master_cgrc_df.add_columns(add_columns)
         master_cgrc_df.set_column_types()
