@@ -5,6 +5,8 @@
 __pycache__/
 export figs/*
 
+tmp.py
+
 # These folders are too large for github, see run.py for access to all simulation data
 data/02_trial_stats/*
 data/03_cgrc_data/*

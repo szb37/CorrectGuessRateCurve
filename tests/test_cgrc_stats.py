@@ -32,9 +32,9 @@ class StatsUnitTests(unittest.TestCase):
         'p': 5},
         ignore_index=True)
 
-    model_components = df_class.ModelComponentsDf()
-    model_components.add_columns({'cgr': None, 'cgr_sim_id': None})
-    model_components = model_components.append({
+    model_comps = df_class.ModelComponentsDf()
+    model_comps.add_columns({'cgr': None, 'cgr_sim_id': None})
+    model_comps = model_comps.append({
         'trial': 'test',
         'scale': 'foo',
         'cgr': 50,
@@ -81,7 +81,7 @@ class StatsUnitTests(unittest.TestCase):
 
     all_dfs = {
         'model_summary': model_summary,
-        'model_components': model_components,
+        'model_comps': model_comps,
         'strata_summary': strata_summary,
         'strata_contrast': strata_contrast
     }
@@ -101,9 +101,9 @@ class StatsUnitTests(unittest.TestCase):
         'p': 9},
         ignore_index=True)
 
-    model_components2 = df_class.ModelComponentsDf()
-    model_components2.add_columns({'cgr': None, 'cgr_sim_id': None})
-    model_components2 = model_components2.append({
+    model_comps2 = df_class.ModelComponentsDf()
+    model_comps2.add_columns({'cgr': None, 'cgr_sim_id': None})
+    model_comps2 = model_comps2.append({
         'trial': 'test',
         'scale': 'foo',
         'cgr': 50,
@@ -150,7 +150,7 @@ class StatsUnitTests(unittest.TestCase):
 
     all_dfs2 = {
         'model_summary': model_summary2,
-        'model_components': model_components2,
+        'model_comps': model_comps2,
         'strata_summary': strata_summary2,
         'strata_contrast': strata_contrast2
     }
@@ -220,8 +220,8 @@ class StatsUnitTests(unittest.TestCase):
 
         output_model_summary = pd.read_csv(os.path.join(
             folders.tmp_dir, 'get_trial_data_stats1__model_summary.csv'))
-        output_model_components = pd.read_csv(os.path.join(
-            folders.tmp_dir, 'get_trial_data_stats1__model_components.csv'))
+        output_model_comps = pd.read_csv(os.path.join(
+            folders.tmp_dir, 'get_trial_data_stats1__model_comps.csv'))
         output_strata_summary = pd.read_csv(os.path.join(
             folders.tmp_dir, 'get_trial_data_stats1__strata_summary.csv'))
         output_strata_contrast = pd.read_csv(os.path.join(
@@ -233,10 +233,10 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_model_summary.adjr2[0], 4)
         self.assertEqual(output_model_summary.p[0], 5)
 
-        self.assertEqual(output_model_components.shape, (1, 10))
-        self.assertEqual(output_model_components.se[0], 2)
-        self.assertEqual(output_model_components.t[0], 3)
-        self.assertEqual(output_model_components.p[0], 4)
+        self.assertEqual(output_model_comps.shape, (1, 10))
+        self.assertEqual(output_model_comps.se[0], 2)
+        self.assertEqual(output_model_comps.t[0], 3)
+        self.assertEqual(output_model_comps.p[0], 4)
 
         self.assertEqual(output_strata_summary.shape, (1, 10))
         self.assertEqual(output_strata_summary.est[0], 4)
@@ -273,8 +273,8 @@ class StatsUnitTests(unittest.TestCase):
 
         output_model_summary = pd.read_csv(os.path.join(
             folders.tmp_dir, 'get_trial_data_stats2__model_summary.csv'))
-        output_model_components = pd.read_csv(os.path.join(
-            folders.tmp_dir, 'get_trial_data_stats2__model_components.csv'))
+        output_model_comps = pd.read_csv(os.path.join(
+            folders.tmp_dir, 'get_trial_data_stats2__model_comps.csv'))
         output_strata_summary = pd.read_csv(os.path.join(
             folders.tmp_dir, 'get_trial_data_stats2__strata_summary.csv'))
         output_strata_contrast = pd.read_csv(os.path.join(
@@ -289,13 +289,13 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_model_summary.adjr2[1], 8)
         self.assertEqual(output_model_summary.p[1], 9)
 
-        self.assertEqual(output_model_components.shape, (2, 10))
-        self.assertEqual(output_model_components.se[0], 2)
-        self.assertEqual(output_model_components.t[0], 3)
-        self.assertEqual(output_model_components.p[0], 4)
-        self.assertEqual(output_model_components.se[1], 5)
-        self.assertEqual(output_model_components.t[1], 6)
-        self.assertEqual(output_model_components.p[1], 7)
+        self.assertEqual(output_model_comps.shape, (2, 10))
+        self.assertEqual(output_model_comps.se[0], 2)
+        self.assertEqual(output_model_comps.t[0], 3)
+        self.assertEqual(output_model_comps.p[0], 4)
+        self.assertEqual(output_model_comps.se[1], 5)
+        self.assertEqual(output_model_comps.t[1], 6)
+        self.assertEqual(output_model_comps.p[1], 7)
 
         self.assertEqual(output_strata_summary.shape, (2, 10))
         self.assertEqual(output_strata_summary.est[0], 4)
@@ -339,8 +339,8 @@ class StatsUnitTests(unittest.TestCase):
 
         output_model_summary = pd.read_csv(os.path.join(
             folders.tmp_dir, 'get_CGRC_stats1__cgrc_model_summary.csv'))
-        output_model_components = pd.read_csv(os.path.join(
-            folders.tmp_dir, 'get_CGRC_stats1__cgrc_model_components.csv'))
+        output_model_comps = pd.read_csv(os.path.join(
+            folders.tmp_dir, 'get_CGRC_stats1__cgrc_model_comps.csv'))
         output_strata_summary = pd.read_csv(os.path.join(
             folders.tmp_dir, 'get_CGRC_stats1__cgrc_strata_summary.csv'))
         output_strata_contrast = pd.read_csv(os.path.join(
@@ -351,10 +351,10 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_model_summary.adjr2[0], 4)
         self.assertEqual(output_model_summary.p[0], 5)
 
-        self.assertEqual(output_model_components.shape, (1, 10))
-        self.assertEqual(output_model_components.se[0], 2)
-        self.assertEqual(output_model_components.t[0], 3)
-        self.assertEqual(output_model_components.p[0], 4)
+        self.assertEqual(output_model_comps.shape, (1, 10))
+        self.assertEqual(output_model_comps.se[0], 2)
+        self.assertEqual(output_model_comps.t[0], 3)
+        self.assertEqual(output_model_comps.p[0], 4)
 
         self.assertEqual(output_strata_summary.shape, (1, 10))
         self.assertEqual(output_strata_summary.est[0], 4)
@@ -391,8 +391,8 @@ class StatsUnitTests(unittest.TestCase):
 
         output_model_summary = pd.read_csv(os.path.join(
             folders.tmp_dir, 'get_CGRC_stats2__cgrc_model_summary.csv'))
-        output_model_components = pd.read_csv(os.path.join(
-            folders.tmp_dir, 'get_CGRC_stats2__cgrc_model_components.csv'))
+        output_model_comps = pd.read_csv(os.path.join(
+            folders.tmp_dir, 'get_CGRC_stats2__cgrc_model_comps.csv'))
         output_strata_summary = pd.read_csv(os.path.join(
             folders.tmp_dir, 'get_CGRC_stats2__cgrc_strata_summary.csv'))
         output_strata_contrast = pd.read_csv(os.path.join(
@@ -406,13 +406,13 @@ class StatsUnitTests(unittest.TestCase):
         self.assertEqual(output_model_summary.adjr2[1], 8)
         self.assertEqual(output_model_summary.p[1], 9)
 
-        self.assertEqual(output_model_components.shape, (2, 10))
-        self.assertEqual(output_model_components.se[0], 2)
-        self.assertEqual(output_model_components.t[0], 3)
-        self.assertEqual(output_model_components.p[0], 4)
-        self.assertEqual(output_model_components.se[1], 5)
-        self.assertEqual(output_model_components.t[1], 6)
-        self.assertEqual(output_model_components.p[1], 7)
+        self.assertEqual(output_model_comps.shape, (2, 10))
+        self.assertEqual(output_model_comps.se[0], 2)
+        self.assertEqual(output_model_comps.t[0], 3)
+        self.assertEqual(output_model_comps.p[0], 4)
+        self.assertEqual(output_model_comps.se[1], 5)
+        self.assertEqual(output_model_comps.t[1], 6)
+        self.assertEqual(output_model_comps.p[1], 7)
 
         self.assertEqual(output_strata_summary.shape, (2, 10))
         self.assertEqual(output_strata_summary.est[0], 4)
@@ -439,30 +439,30 @@ class StatsIntegrationTests(unittest.TestCase):
 
         r('df_filtered=read.csv("'+folders.fixtures.replace('\\', '/') +
           '//get_stats_data_input1.csv")')
-        model_summary, model_components = stats.StatsCore.get_model_stats(add_cgrc_columns=False)
+        model_summary, model_comps = stats.StatsCore.get_model_stats(add_columns=None)
 
         # Reference outputs are manually checked against R output (codebase/tests/stats_calc_reference.r)
         # If new pseudodata is generated, check references again
         ref_components = pd.read_csv(os.path.join(
-            folders.fixtures, 'get_stats_data_output1_model_components.csv'))
+            folders.fixtures, 'get_stats_data_output1_model_comps.csv'))
         ref_summary = pd.read_csv(os.path.join(
             folders.fixtures, 'get_stats_data_output1_model_summary.csv'))
 
         # Drop empty columns
-        model_components.drop(['trial', 'scale'], axis=1, inplace=True)
+        model_comps.drop(['trial', 'scale'], axis=1, inplace=True)
         model_summary.drop(['trial', 'scale'], axis=1, inplace=True)
         ref_components.drop(['trial', 'scale', 'guesser', 'respondent',
                             'cgr', 'cgr_sim_id'], axis=1, inplace=True)
         ref_summary.drop(['trial', 'scale', 'guesser', 'respondent',
                          'cgr', 'cgr_sim_id'], axis=1, inplace=True)
 
-        pd.testing.assert_frame_equal(ref_components, model_components)
+        pd.testing.assert_frame_equal(ref_components, model_comps)
         pd.testing.assert_frame_equal(ref_summary, model_summary)
 
     def test_get_strata_stats1(self):
 
         r('df_filtered=read.csv("'+folders.fixtures.replace('\\', '/') + '//get_stats_data_input1.csv")')
-        strata_summary, strata_contrast = stats.StatsCore.get_strata_stats(add_cgrc_columns=False)
+        strata_summary, strata_contrast = stats.StatsCore.get_strata_stats(add_columns=None)
 
         # Reference outputs are manually checked against R output (codebase/tests/stats_calc_reference.r)
         # If new pseudodata is generated, check references again

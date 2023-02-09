@@ -65,6 +65,6 @@ on_on_0 = ModelDefinition(
 
 
 # Define usefull lists of models
-test_models = [off_off_0, on_on_0]
+test_models = [off_off_0]
 default_models = []
 all_models = []

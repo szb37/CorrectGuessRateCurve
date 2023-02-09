@@ -104,7 +104,7 @@ class Controllers():
     def plot_VScgr_separatex(input_dir, input_fname, output_dir, output_fname, trial_scales, cgr_type='all', savePNG=True, saveSVG=False):
         """ Creates and saves combined 'CGR vs p' and 'CGR vs Effect' figures
         Args:
-            cgrc_model_comps (pandas.DataFrame): model_components BBC dataframe
+            cgrc_model_comps (pandas.DataFrame): model_comps BBC dataframe
             analysis_name (str): analysis_name for outputs; images saved in output_dir/analysis_name/;
                 target subfolder is created if it does not exist
             trial_scales (dict): defines combinations of trials/scales for which strata plots will be made
@@ -178,7 +178,7 @@ class Controllers():
     def plot_VScgr_twinx(input_dir, input_fname, output_dir, output_prefix, trial_scales=None, cgr_type='all', save_figure=True):
         """ Creates and saves combined 'CGR vs p' and 'CGR vs Effect' figures with twin axes
         Args:
-            cgrc_model_comps (pandas.DataFrame): model_components BBC dataframe
+            cgrc_model_comps (pandas.DataFrame): model_comps BBC dataframe
             analysis_name (str): analysis_name for outputs; images saved in output_dir/analysis_name/;
                 target subfolder is created if it does not exist
             trial_scales (dict): defines combinations of trials/scales for which strata plots will be made
@@ -362,7 +362,7 @@ class Drawer():
         Args:
             ax (matplotlib.axes._subplots.AxesSubplot): axes to be drawn on
             title (str): plot title, if any
-            cgrc_model_comps (pd.core.frame.DataFrame): model_components_df dataframe; rows
+            cgrc_model_comps (pd.core.frame.DataFrame): model_comps_df dataframe; rows
                 already filtered for trial and scale
                 # TODO: convert object to src.dataframe_classes.ModelComponentsDf
             cgr (float): correct guess rate

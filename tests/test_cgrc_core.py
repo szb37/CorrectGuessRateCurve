@@ -409,7 +409,7 @@ class CorrectGuessRateCurveIntegrationTests(unittest.TestCase):
 
         # Check model components
         df = pd.read_csv(os.path.join(
-            folders.tmp_dir, analysis_name+'__cgrc_model_components.csv'))
+            folders.tmp_dir, analysis_name+'__cgrc_model_comps.csv'))
 
         temp = df.loc[(df.cgr == 0) & (df.model_type == 'without_guess') & (
             df.component == 'intercept')]

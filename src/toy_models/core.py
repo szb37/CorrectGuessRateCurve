@@ -73,7 +73,6 @@ class Controllers():
                 model_sim_id=model_sim_id
             )
 
-
             # Get trial stats for psuedodata
             stats.Controllers.get_trial_stats(
                 input_dir=trial_data_dir,
@@ -107,11 +106,10 @@ class Controllers():
             if config.save_figs:
                 figures.Controllers.plot_VScgr_twinx(
                     input_dir=cgrc_stats_dir,
-                    input_fname=subanalysis_name + '__cgrc_model_components.csv',
+                    input_fname=subanalysis_name + '__cgrc_model_comps.csv',
                     output_dir=cgrc_plots_dir,
                     output_prefix=subanalysis_name,
                 )
-
 
         # Get summary table
         #summary_df = ToyModelsAnalyis.get_model_family_summary(
@@ -304,31 +302,31 @@ class ToyModelsAnalyis():
         n_trials = len(trial_data.model_sim_id.unique().tolist())
 
         # Get unadjusted model components
-        unadj_model_components = Helpers.get_concateneted_df_type(
+        unadj_model_comps = Helpers.get_concateneted_df_type(
             target_dir=os.path.join(folders.trial_stats_dir, analysis_name),
-            df_type='__model_components')
+            df_type='__model_comps')
 
         # Get adjusted model components
-        cgradj_model_components = Helpers.get_concateneted_df_type(
+        cgradj_model_comps = Helpers.get_concateneted_df_type(
             target_dir=os.path.join(folders.cgrc_stats_dir, analysis_name),
-            df_type='__cgrc_model_components')
+            df_type='__cgrc_model_comps')
 
-        cgradj_model_components = cgradj_model_components.loc[(
-            cgradj_model_components.cgr == 0.5)]
-        assert cgradj_model_components.shape[0] > 0
+        cgradj_model_comps = cgradj_model_comps.loc[(
+            cgradj_model_comps.cgr == 0.5)]
+        assert cgradj_model_comps.shape[0] > 0
         cgradj_n_trials = len(
-            cgradj_model_components.model_sim_id.unique().tolist())
+            cgradj_model_comps.model_sim_id.unique().tolist())
         assert n_trials == cgradj_n_trials
-        cgradj_model_names = cgradj_model_components.model_name.unique().tolist()
-        unadj_model_names = unadj_model_components.model_name.unique().tolist()
+        cgradj_model_names = cgradj_model_comps.model_name.unique().tolist()
+        unadj_model_names = unadj_model_comps.model_name.unique().tolist()
         assert cgradj_model_names == unadj_model_names
 
-        for model_name in unadj_model_components.model_name.unique().tolist():
+        for model_name in unadj_model_comps.model_name.unique().tolist():
 
-            filtered_unadj_model_comps = unadj_model_components.loc[
-                (unadj_model_components.model_name == model_name) &
-                (unadj_model_components.model_type == 'without_guess') &
-                (unadj_model_components.component == 'conditionAC')
+            filtered_unadj_model_comps = unadj_model_comps.loc[
+                (unadj_model_comps.model_name == model_name) &
+                (unadj_model_comps.model_type == 'without_guess') &
+                (unadj_model_comps.component == 'conditionAC')
             ]
 
             trial_model_data = trial_data.loc[(
@@ -349,10 +347,10 @@ class ToyModelsAnalyis():
             row['avg_trt_es'] = round(miscs.get_estimate(
                 filtered_unadj_model_comps.est.tolist()), 3)
 
-            filtered_cgradj_model_comps = cgradj_model_components.loc[
-                (cgradj_model_components.model_name == model_name) &
-                (cgradj_model_components.model_type == 'without_guess') &
-                (cgradj_model_components.component == 'conditionAC')
+            filtered_cgradj_model_comps = cgradj_model_comps.loc[
+                (cgradj_model_comps.model_name == model_name) &
+                (cgradj_model_comps.model_type == 'without_guess') &
+                (cgradj_model_comps.component == 'conditionAC')
             ]
 
             # Calculate average p/es aross n_cgr_trials (avg corresponds to p/es of single trial)
@@ -389,17 +387,17 @@ class ToyModelsAnalyis():
 
         assert df_type in [
             '__trial_data',
-            '__model_components',
+            '__model_comps',
             '__strata_contrast',
-            '__cgrc_model_components',
+            '__cgrc_model_comps',
             '__cgrc_strata_contrast']
 
         # Get all trial stats
-        if df_type == '__model_components':
+        if df_type == '__model_comps':
             master_df = df_class.ModelComponentsDf()
         elif df_type == '__strata_contrast':
             master_df = df_class.StrataContrastDf()
-        elif df_type == '__cgrc_model_components':
+        elif df_type == '__cgrc_model_comps':
             master_df = df_class.ModelComponentsDf()
             master_df.add_columns({'cgr': None, 'cgr_sim_id': None})
         elif df_type == '__cgrc_strata_contrast':
@@ -416,11 +414,11 @@ class ToyModelsAnalyis():
             df = pd.read_csv(os.path.join(target_dir, fpath))
             master_df = pd.concat([master_df, df], sort=False)
 
-        if df_type == '__model_components':
+        if df_type == '__model_comps':
             master_df.__class__ = df_class.ModelComponentsDf
         elif df_type == '__strata_contrast':
             master_df.__class__ = df_class.StrataContrastDf
-        elif df_type == '__cgrc_model_components':
+        elif df_type == '__cgrc_model_comps':
             master_df.__class__ = df_class.ModelComponentsDf
         elif df_type == '__cgrc_strata_contrast':
             master_df.__class__ = df_class.StrataContrastDf

@@ -23,7 +23,7 @@ toy_models.Controllers.run_cgrc_model_family(
     models = model_defs.test_models,
     cgrc_param_set = 'cgrA_low',
     n_patients = 50,
-    n_trials = 1
+    n_trials = 2
 )
 
 

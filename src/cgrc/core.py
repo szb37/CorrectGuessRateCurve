@@ -77,7 +77,7 @@ class Controllers():
         if save_figs:
             figures.Controllers.plot_VScgr_twinx(
                 input_dir=cgrc_stats_dir,
-                input_fname=analysis_name + '__cgrc_model_components.csv',
+                input_fname=analysis_name + '__cgrc_model_comps.csv',
                 output_dir=cgrc_plots_dir,
                 output_prefix=analysis_name,
                 trial_scales=trial_scales,
@@ -112,7 +112,7 @@ class Controllers():
             trial_data_dir, trial_name+'__trial_data.csv'))
 
         trial_stats = pd.read_csv(os.path.join(
-            trial_stats_dir, analysis_name+'__model_components.csv'))
+            trial_stats_dir, analysis_name+'__model_comps.csv'))
         trial_stats = trial_stats.loc[
             (trial_stats.model_type == 'without_guess') &
             (trial_stats.component == 'conditionAC')
@@ -125,7 +125,7 @@ class Controllers():
         ]
 
         cgrc_stats = pd.read_csv(os.path.join(
-            cgrc_stats_dir, analysis_name+'__cgrc_model_components.csv'))
+            cgrc_stats_dir, analysis_name+'__cgrc_model_comps.csv'))
         cgrc_stats = cgrc_stats.loc[
             (cgrc_stats.cgr == 0.5) &
             (cgrc_stats.model_type == 'without_guess') &
@@ -228,7 +228,7 @@ class Controllers():
             cgrc_data_dir, analysis_name+'__cgrc_data.csv'))
 
         cgrc_stats = pd.read_csv(os.path.join(
-            cgrc_stats_dir, analysis_name+'__cgrc_model_components.csv'))
+            cgrc_stats_dir, analysis_name+'__cgrc_model_comps.csv'))
         cgrc_stats = cgrc_stats.loc[
             (cgrc_stats.model_type == 'without_guess') &
             (cgrc_stats.component == 'conditionAC')
