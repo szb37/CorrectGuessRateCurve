@@ -286,7 +286,7 @@ class CorrectGuessRateCurve():
     ''' Calculate correct guess rate curve '''
 
     @staticmethod
-    def get_cgrc_data(input_dir, input_fname, output_dir, output_prefix, cgrc_parameters, use_KDE=True, strata_sampling='all_prop', trial_scales=None, add_columns=None, n_sample=None):
+    def get_cgrc_data(input_dir, input_fname, output_dir, output_prefix, cgrc_parameters, strata_sampling='all_prop', trial_scales=None, add_columns=None, n_sample=None):
         ''' Get CGRC data
             Args:
                 input_dir (str): folder of input file
@@ -306,9 +306,6 @@ class CorrectGuessRateCurve():
         assert isinstance(output_dir, str)
         assert isinstance(output_prefix, str)
         assert isinstance(cgrc_parameters, dict)
-        assert isinstance(use_KDE, bool)
-        assert strata_sampling in ['all_prop',
-                                   'all_equal', 'active_equal', 'active_prop']
         assert (isinstance(trial_scales, dict) or (trial_scales is None))
         assert (isinstance(add_columns, dict)) or (add_columns is None)
         assert isinstance(n_sample, int) or (n_sample is None)
@@ -324,10 +321,7 @@ class CorrectGuessRateCurve():
         for trial, scale in product(trials, scales):
 
             df_filtered = trial_data_df.loc[(trial_data_df.scale == scale)]
-
-            if trial != 'all':
-                df_filtered = df_filtered.loc[(df_filtered.trial == trial)]
-
+            df_filtered = df_filtered.loc[(df_filtered.trial == trial)]
             if df_filtered.shape[0] == 0:
                 continue
 
@@ -336,8 +330,7 @@ class CorrectGuessRateCurve():
             else:
                 total_sample_size = n_sample
 
-            if use_KDE:
-                kdes = CorrectGuessRateCurve.get_kdes(df_filtered=df_filtered)
+            kdes = CorrectGuessRateCurve.get_kdes(df_filtered=df_filtered)
 
             for cgr, cgr_sim_id in product(cgr_values, range(n_cgrc_trials)):
 
@@ -347,17 +340,11 @@ class CorrectGuessRateCurve():
                     correct_guess_rate=cgr,
                     strata_sampling=strata_sampling,)
 
-                if use_KDE:
-                    cgrc_datapoint_df = CorrectGuessRateCurve.get_cgrc_datapoint_KDE(
-                        df_filtered=df_filtered,
-                        sample_sizes=sample_sizes,
-                        kdes=kdes,
-                        cgr=cgr,)
-                else:
-                    cgrc_datapoint_df = CorrectGuessRateCurve.get_cgrc_datapoint_distribution(
-                        df_filtered=df_filtered,
-                        sample_sizes=sample_sizes,
-                        cgr=cgr,)
+                cgrc_datapoint_df = CorrectGuessRateCurve.get_cgrc_datapoint_KDE(
+                    df_filtered=df_filtered,
+                    sample_sizes=sample_sizes,
+                    kdes=kdes,
+                    cgr=cgr,)
 
                 cgrc_datapoint_df.cgr_sim_id = cgr_sim_id
                 cgrc_datapoint_df.trial = trial
@@ -400,48 +387,6 @@ class CorrectGuessRateCurve():
             sample_sizes['PLAC']).reshape(1, -1).tolist()[0]]
         acac_scores = [round(score) for score in kdes['ACAC'].sample(
             sample_sizes['ACAC']).reshape(1, -1).tolist()[0]]
-
-        plpl_df.delta_score = plpl_scores
-        acpl_df.delta_score = acpl_scores
-        plac_df.delta_score = plac_scores
-        acac_df.delta_score = acac_scores
-
-        plpl_df.condition = 'PL'
-        acpl_df.condition = 'AC'
-        plac_df.condition = 'PL'
-        acac_df.condition = 'AC'
-
-        plpl_df.guess = 'PL'
-        acpl_df.guess = 'PL'
-        plac_df.guess = 'AC'
-        acac_df.guess = 'AC'
-
-        df = pd.concat([plpl_df, acpl_df, plac_df, acac_df,], sort=False)
-        df.cgr = cgr
-        return df
-
-    @staticmethod
-    def get_cgrc_datapoint_distribution(df_filtered, sample_sizes, cgr):
-        ''' Gets psuedodata for the BBC with given parameters - not used in current pipeline
-            Args:
-                df_filtered (pd.DataFrame):
-                sample_sizes (dict): sample size of each strata
-                cgr(float): correct guess rate value
-        '''
-
-        plpl_scores = [random.choice(df_filtered.loc[(df_filtered.condition == 'PL') & (
-            df_filtered.guess == 'PL')].score.tolist()) for idx in range(sample_sizes['PLPL'])]
-        acpl_scores = [random.choice(df_filtered.loc[(df_filtered.condition == 'AC') & (
-            df_filtered.guess == 'PL')].score.tolist()) for idx in range(sample_sizes['ACPL'])]
-        plac_scores = [random.choice(df_filtered.loc[(df_filtered.condition == 'PL') & (
-            df_filtered.guess == 'AC')].score.tolist()) for idx in range(sample_sizes['PLAC'])]
-        acac_scores = [random.choice(df_filtered.loc[(df_filtered.condition == 'AC') & (
-            df_filtered.guess == 'AC')].score.tolist()) for idx in range(sample_sizes['ACAC'])]
-
-        plpl_df = df_class.CGRCurveDf()
-        acpl_df = df_class.CGRCurveDf()
-        plac_df = df_class.CGRCurveDf()
-        acac_df = df_class.CGRCurveDf()
 
         plpl_df.delta_score = plpl_scores
         acpl_df.delta_score = acpl_scores

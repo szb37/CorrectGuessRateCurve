@@ -3,12 +3,6 @@
 :Copyright: 2022, DrugNerdsLab
 :License: MIT
 
-Model family analyis naming convention:
-analysis_name: {model_family}_cgrc{cgrc_param_set}
-subanalysis_name: {model_family}_cgrc{cgrc_param_set}_{model_name}_trial{model_sim_id}
-
-
-NEW:
 name of run: {analysis_name}_{cgrc_param_set}
 subanalysis_name: {analysis_name}_{cgrc_param_set}_{model_name}_trial{model_sim_id}
 """
@@ -33,7 +27,7 @@ import os
 class Controllers():
 
     @staticmethod
-    def run_cgrc_model_family(models, analysis_name, cgrc_param_set, n_patients, n_trials):
+    def run_toymodels_cgrc(models, analysis_name, cgrc_param_set, n_patients, n_trials):
         ''' Runs CGRC analysis on a family of models
             Args:
                 models(list): list of model model_defs
@@ -112,13 +106,11 @@ class Controllers():
                 )
 
         # Get summary table
-        #summary_df = ToyModelsAnalyis.get_model_family_summary(
-        #    analysis_name=analysis_name,
-        #    analysis_name=analysis_name,
-        #    cgrc_param_set=cgrc_param_set,
-        #)
-        #print('\n', summary_df.to_string(index=False))
-
+        summary_df = ToyModelsAnalyis.get_model_family_summary(
+            analysis_name=analysis_name,
+            cgrc_param_set=cgrc_param_set,
+        )
+        print('\n', summary_df.to_string(index=False))
 
 
 class ToyModelsDataGenerator():
@@ -179,17 +171,19 @@ class ToyModelsDataGenerator():
             scores.append(round(score))
 
         # Format & save output
-        toy_model_data_df = ToyModelsDataGenerator.get_TrialDataDf(
+        toymodel_data_df = ToyModelsDataGenerator.get_TrialDataDf(
             model['name'],
             model_sim_id,
             conditions,
             guesses,
             scores)
 
-        if config.save_csvs:
-            toy_model_data_df.to_csv(os.path.join(output_dir, output_prefix+'__trial_data.csv'), index=False)
+        toymodel_data_df.add_columns({'model_name':model['name']})
 
-        return toy_model_data_df
+        if config.save_csvs:
+            toymodel_data_df.to_csv(os.path.join(output_dir, output_prefix+'__trial_data.csv'), index=False)
+
+        return toymodel_data_df
 
     @staticmethod
     def get_TrialDataDf(model_name, model_sim_id, conditions, guesses, scores):
@@ -210,20 +204,20 @@ class ToyModelsDataGenerator():
 
         n = len(scores)
 
-        toy_model_data_df = df_class.TrialDataDf()
+        toymodel_data_df = df_class.TrialDataDf()
 
-        toy_model_data_df['trial'] = [model_name]*n
-        toy_model_data_df['subject_id'] = list(range(n))
-        toy_model_data_df['scale'] = ['scale1']*n
-        toy_model_data_df['tp'] = ['wk8']*n
-        toy_model_data_df['condition'] = conditions
-        toy_model_data_df['guess'] = guesses
-        toy_model_data_df['baseline'] = [0]*n
-        toy_model_data_df['score'] = scores
-        toy_model_data_df['delta_score'] = scores
+        toymodel_data_df['trial'] = [model_name]*n
+        toymodel_data_df['subject_id'] = list(range(n))
+        toymodel_data_df['scale'] = ['scale1']*n
+        toymodel_data_df['tp'] = ['wk8']*n
+        toymodel_data_df['condition'] = conditions
+        toymodel_data_df['guess'] = guesses
+        toymodel_data_df['baseline'] = [0]*n
+        toymodel_data_df['score'] = scores
+        toymodel_data_df['delta_score'] = scores
 
         # Add new column and rearrange order
-        toy_model_data_df.add_columns({'model_sim_id':model_sim_id})
+        toymodel_data_df.add_columns({'model_sim_id':model_sim_id})
         column_order = [
             'trial',
             'model_sim_id',
@@ -235,13 +229,13 @@ class ToyModelsDataGenerator():
             'baseline',
             'score',
             'delta_score',]
-        toy_model_data_df = toy_model_data_df.reindex(columns=column_order)
+        toymodel_data_df = toymodel_data_df.reindex(columns=column_order)
 
-        toy_model_data_df.__class__ = df_class.TrialDataDf
-        toy_model_data_df.set_column_types()
+        toymodel_data_df.__class__ = df_class.TrialDataDf
+        toymodel_data_df.set_column_types()
 
-        assert toy_model_data_df.is_valid()
-        return toy_model_data_df
+        assert toymodel_data_df.is_valid()
+        return toymodel_data_df
 
     @staticmethod
     def enforce_all_strata(conditions, guesses):
@@ -279,18 +273,16 @@ class ToyModelsAnalyis():
     def get_model_family_summary(analysis_name, cgrc_param_set):
         ''' Construct summary table for model family
             Args:
-                analysis_name (str): analysis_name+postfix
-                analysis_name (str): name of model family (i.e. list of model definitions, see model_defs)
-                cgrc_param_set (int): number defning which CGRC parameter set to use, see config
+                analysis_name (str):
+                cgrc_param_set (str): number defning which CGRC parameter set to use, see config
         '''
 
-        assert isinstance(analysis_name, str)
         assert isinstance(analysis_name, str)
         assert isinstance(cgrc_param_set, str)
 
         df = df_class.ModelFamilyResultsDf()
 
-        trial_data = Helpers.get_concateneted_df_type(
+        trial_data = ToyModelsAnalyis.get_concateneted_df_type(
             target_dir=os.path.join(folders.trial_data_dir, analysis_name),
             df_type='__trial_data')
 
@@ -302,12 +294,12 @@ class ToyModelsAnalyis():
         n_trials = len(trial_data.model_sim_id.unique().tolist())
 
         # Get unadjusted model components
-        unadj_model_comps = Helpers.get_concateneted_df_type(
+        unadj_model_comps = ToyModelsAnalyis.get_concateneted_df_type(
             target_dir=os.path.join(folders.trial_stats_dir, analysis_name),
             df_type='__model_comps')
 
         # Get adjusted model components
-        cgradj_model_comps = Helpers.get_concateneted_df_type(
+        cgradj_model_comps = ToyModelsAnalyis.get_concateneted_df_type(
             target_dir=os.path.join(folders.cgrc_stats_dir, analysis_name),
             df_type='__cgrc_model_comps')
 
@@ -408,7 +400,7 @@ class ToyModelsAnalyis():
         else:
             assert False
 
-        master_df.add_columns({'model_name': None, 'model_sim_id': None})
+        #master_df.add_columns({'model_name': None, 'model_sim_id': None})
 
         for fpath in [fpath for fpath in os.listdir(target_dir) if (df_type in fpath)]:
             df = pd.read_csv(os.path.join(target_dir, fpath))

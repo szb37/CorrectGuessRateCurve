@@ -138,7 +138,7 @@ class IntegrationTests(unittest.TestCase):
     @unittest.skip('wip')
     def test_get_toymodel_data_case1(self):
 
-        toy_models.Controllers.run_cgrc_model_family(
+        toy_models.Controllers.run_toymodels_cgrc(
             model_family_name='default_models',
             n_trials=1,
             n_patients=50,

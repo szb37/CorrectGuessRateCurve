@@ -68,7 +68,7 @@ class StatsIntegrationTests(unittest.TestCase):
 
         r('df_filtered=read.csv("'+folders.fixtures.replace('\\', '/') +
           '//get_stats_data_input1.csv")')
-        model_summary, model_comps = stats.StatsCore.get_model_stats(add_columns=None)
+        model_summary, model_comps = stats.StatsCore.get_model_stats()
 
         # Reference outputs are manually checked against R output (codebase/tests/stats_calc_reference.r)
         # If new pseudodata is generated, check references again
@@ -85,13 +85,18 @@ class StatsIntegrationTests(unittest.TestCase):
         ref_summary.drop(['trial', 'scale', 'guesser', 'respondent',
                          'cgr', 'cgr_sim_id'], axis=1, inplace=True)
 
+        # convert frame type
+        model_comps.__class__=pd.core.frame.DataFrame
+        model_summary.__class__=pd.core.frame.DataFrame
+
         pd.testing.assert_frame_equal(ref_components, model_comps)
         pd.testing.assert_frame_equal(ref_summary, model_summary)
+
 
     def test_get_strata_stats1(self):
 
         r('df_filtered=read.csv("'+folders.fixtures.replace('\\', '/') + '//get_stats_data_input1.csv")')
-        strata_summary, strata_contrast = stats.StatsCore.get_strata_stats(add_columns=None)
+        strata_summary, strata_contrast = stats.StatsCore.get_strata_stats()
 
         # Reference outputs are manually checked against R output (codebase/tests/stats_calc_reference.r)
         # If new pseudodata is generated, check references again
@@ -106,6 +111,10 @@ class StatsIntegrationTests(unittest.TestCase):
 
         strata_summary.df = strata_summary.df.astype('int64')
         strata_contrast.df = strata_contrast.df.astype('int64')
+
+        # convert frame type
+        strata_contrast.__class__=pd.core.frame.DataFrame
+        strata_summary.__class__=pd.core.frame.DataFrame
 
         pd.testing.assert_frame_equal(ref_contrast, strata_contrast)
         pd.testing.assert_frame_equal(ref_summary, strata_summary)

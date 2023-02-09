@@ -18,8 +18,8 @@ import time
 
 start = time.time()
 
-toy_models.Controllers.run_cgrc_model_family(
-    analysis_name = 'tmp2',
+toy_models.Controllers.run_toymodels_cgrc(
+    analysis_name = 'tmp',
     models = model_defs.test_models,
     cgrc_param_set = 'cgrA_low',
     n_patients = 50,

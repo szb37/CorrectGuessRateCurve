@@ -123,8 +123,6 @@ class CGRCurveDf(TrialDataDf):
         return True
 
 
-
-
 class ModelSummaryDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding model summary output '''
 
@@ -149,11 +147,9 @@ class ModelSummaryDf(pd.DataFrame, CGRCDataFrame):
         if 'cgr_sim_id' in self.columns:
             self['cgr_sim_id'] = self['cgr_sim_id'].astype('int')
 
-        #if 'model_sim_id' in self.columns:
-        #    self['model_sim_id'] = self['model_sim_id'].astype('int')
-
     def is_valid(self):
-        pass
+        self.set_column_types()
+        return True
 
 
 class ModelComponentsDf(pd.DataFrame, CGRCDataFrame):
@@ -184,7 +180,8 @@ class ModelComponentsDf(pd.DataFrame, CGRCDataFrame):
         #    self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def is_valid(self):
-        pass
+        self.set_column_types()
+        return True
 
 
 class StrataSummaryDf(pd.DataFrame, CGRCDataFrame):
@@ -215,7 +212,8 @@ class StrataSummaryDf(pd.DataFrame, CGRCDataFrame):
         #    self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def is_valid(self):
-        pass
+        self.set_column_types()
+        return True
 
 
 class StrataContrastDf(pd.DataFrame, CGRCDataFrame):
@@ -247,7 +245,8 @@ class StrataContrastDf(pd.DataFrame, CGRCDataFrame):
         #    self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def is_valid(self):
-        pass
+        self.set_column_types()
+        return True
 
 
 class ModelFamilyResultsDf(pd.DataFrame, CGRCDataFrame):
@@ -281,7 +280,7 @@ class ModelFamilyResultsDf(pd.DataFrame, CGRCDataFrame):
             'float')  # average treatment effect size
 
         if 'cgrc_param_set' in self.columns:
-            self['cgrc_param_set'] = self['cgrc_param_set'].astype('int')
+            self['cgrc_param_set'] = self['cgrc_param_set'].astype('str')
 
         if 'cgradj_avg_trt_p' in self.columns:
             self['cgradj_avg_trt_p'] = self['cgradj_avg_trt_p'].astype('float')
@@ -295,4 +294,5 @@ class ModelFamilyResultsDf(pd.DataFrame, CGRCDataFrame):
                 'float')
 
     def is_valid(self):
-        pass
+        self.set_column_types()
+        return True
