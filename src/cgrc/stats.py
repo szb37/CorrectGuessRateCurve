@@ -154,7 +154,7 @@ class Controllers():
 
         for trial, scale, cgr, cgr_sim_id, in product(trials, scales, cgrs, cgr_sim_ids):
 
-            Helpers.get_df_filtered(trial, scale)
+            Helpers.get_df_filtered(trial, scale, cgr, cgr_sim_id)
             if r('nrow(df_filtered)')[0]==0:
                 continue
 
@@ -269,6 +269,7 @@ class StatsCore():
 
         py_df_filtered = Helpers.r2pyjson('df_filtered')
         if 'cgr' in py_df_filtered.keys():
+
             assert len(set(py_df_filtered['cgr'])) == 1
             if (0 in set(py_df_filtered['cgr'])) or (1 in set(py_df_filtered['cgr'])):
                 # By definition cannot calc strata stats if CGR==0 or 1

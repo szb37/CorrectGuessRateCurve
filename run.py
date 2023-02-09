@@ -21,7 +21,7 @@ start = time.time()
 toy_models.Controllers.run_cgrc_model_family(
     analysis_name = 'tmp2',
     models = model_defs.test_models,
-    cgrc_param_set = 'cgrA_low',
+    cgrc_param_set = 'cgrC_low',
     n_patients = 50,
     n_trials = 2
 )
