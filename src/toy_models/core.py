@@ -274,13 +274,12 @@ class ToyModelsAnalyis():
         ''' Construct summary table for model family
             Args:
                 analysis_name (str):
-                cgrc_param_set (str): number defning which CGRC parameter set to use, see config
         '''
 
         assert isinstance(analysis_name, str)
         assert isinstance(cgrc_param_set, str)
 
-        df = df_class.ModelFamilyResultsDf()
+        df = df_class.ToymodelsAnalysisDf()
 
         trial_data = ToyModelsAnalyis.get_concateneted_df_type(
             target_dir=os.path.join(folders.trial_data_dir, analysis_name),
@@ -330,7 +329,6 @@ class ToyModelsAnalyis():
             row['model'] = model_name
             row['n_trials'] = n_trials
             row['n_patients'] = n_patients
-            row['cgrc_param_set'] = cgrc_param_set
             row['cgr'] = cgr
             row['avg_trt_p'] = round(miscs.get_estimate(
                 filtered_unadj_model_comps.p.tolist()), 3)
@@ -349,11 +347,13 @@ class ToyModelsAnalyis():
             model_sim_ids = filtered_cgradj_model_comps.model_sim_id.unique().tolist()
             trial_ps = []
             trial_efs = []
+
             for model_sim_id in model_sim_ids:
                 tmp = filtered_cgradj_model_comps.loc[filtered_cgradj_model_comps.model_sim_id == model_sim_id]
                 assert tmp.shape[0] == config.cgrc_parameters[cgrc_param_set]['n_cgrc_trials']
                 trial_ps.append(mean(tmp.p.tolist()))
                 trial_efs.append(mean(tmp.est.tolist()))
+
 
             row['cgradj_avg_trt_p'] = round(miscs.get_estimate(trial_ps), 3)
             row['cgradj_sig_trt_rate'] = round(
@@ -362,10 +362,10 @@ class ToyModelsAnalyis():
 
             df = df.append(row, ignore_index=True)
 
-        df.__class__ = df_class.ModelFamilyResultsDf
+        df.__class__ = df_class.ToymodelsAnalysisDf
         df.set_column_types()
-        df.to_csv(os.path.join(folders.summary_dir, analysis_name +
-                  '_{}__summary_table.csv'.format(config.estimator)), index=False)
+        df.to_csv(os.path.join(folders.summary_dir,
+            f'{analysis_name}_{cgrc_param_set}__summary_table.csv'), index=False)
 
         return df
 
@@ -384,27 +384,13 @@ class ToyModelsAnalyis():
             '__cgrc_model_comps',
             '__cgrc_strata_contrast']
 
-        # Get all trial stats
-        if df_type == '__model_comps':
-            master_df = df_class.ModelComponentsDf()
-        elif df_type == '__strata_contrast':
-            master_df = df_class.StrataContrastDf()
-        elif df_type == '__cgrc_model_comps':
-            master_df = df_class.ModelComponentsDf()
-            master_df.add_columns({'cgr': None, 'cgr_sim_id': None})
-        elif df_type == '__cgrc_strata_contrast':
-            master_df = df_class.StrataContrastDf()
-            master_df.add_columns({'cgr': None, 'cgr_sim_id': None})
-        elif df_type == '__trial_data':
-            master_df = df_class.TrialDataDf()
-        else:
-            assert False
+        master_df_list=[]
 
-        #master_df.add_columns({'model_name': None, 'model_sim_id': None})
 
         for fpath in [fpath for fpath in os.listdir(target_dir) if (df_type in fpath)]:
-            df = pd.read_csv(os.path.join(target_dir, fpath))
-            master_df = pd.concat([master_df, df], sort=False)
+            master_df_list.append(pd.read_csv(os.path.join(target_dir, fpath)))
+
+        master_df = pd.concat(master_df_list, axis=0)
 
         if df_type == '__model_comps':
             master_df.__class__ = df_class.ModelComponentsDf
@@ -419,5 +405,5 @@ class ToyModelsAnalyis():
         else:
             assert False
 
-        master_df.set_column_types()
+        assert master_df.is_valid()
         return master_df

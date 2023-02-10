@@ -24,8 +24,7 @@ def create_empty_dir(target_dir):
     ''' ensures target_dir exists and that it is empty '''
 
     if os.path.isdir(target_dir):
-        [os.remove(os.path.join(target_dir, filename))
-         for filename in os.listdir(target_dir)]
+        [os.remove(os.path.join(target_dir, filename)) for filename in os.listdir(target_dir)]
     else:
         os.mkdir(target_dir)
 
@@ -53,28 +52,28 @@ def create_analysis_dirs(analysis_name, trial_data_subdir=False, incl_cgrc_plots
     assert isinstance(incl_cgrc_plots_dir, bool)
 
     if trial_data_subdir:
-        trial_data_dir = os.path.abspath(os.path.join(
-            folders.trial_data_dir, analysis_name))
-        create_dir(trial_data_dir)
+        trial_data_dir = os.path.abspath(os.path.join(folders.trial_data_dir, analysis_name))
+        create_empty_dir(trial_data_dir)
     else:
         trial_data_dir = os.path.abspath(folders.trial_data_dir)
+        create_dir(trial_data_dir)
 
     trial_stats_dir = os.path.abspath(os.path.join(
         folders.trial_stats_dir, analysis_name))
-    create_dir(trial_stats_dir)
+    create_empty_dir(trial_stats_dir)
 
     cgrc_data_dir = os.path.abspath(os.path.join(
         folders.cgrc_data_dir, analysis_name))
-    create_dir(cgrc_data_dir)
+    create_empty_dir(cgrc_data_dir)
 
     cgrc_stats_dir = os.path.abspath(os.path.join(
         folders.cgrc_stats_dir, analysis_name))
-    create_dir(cgrc_stats_dir)
+    create_empty_dir(cgrc_stats_dir)
 
     if incl_cgrc_plots_dir:
         cgrc_plots_dir = os.path.abspath(
             os.path.join(folders.cgrc_plots, analysis_name))
-        create_dir(cgrc_plots_dir)
+        create_empty_dir(cgrc_plots_dir)
     else:
         cgrc_plots_dir = None
 

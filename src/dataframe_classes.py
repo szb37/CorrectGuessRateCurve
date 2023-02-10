@@ -81,9 +81,14 @@ class TrialDataDf(pd.DataFrame, CGRCDataFrame):
         return True
 
     def _def_check_entry_uniqueness(self):
-        # All combinations of trial/subject_id/scale/tp should be unique
-        temp = copy.deepcopy(self).loc[:, ['trial', 'subject_id', 'scale', 'tp']]
-        assert temp.shape[0] == temp.drop_duplicates().shape[0]
+        # All combinations of trial/subject_id/scale/tp should be unique (add model_sim_id when )
+
+        if 'model_sim_id' in self.columns:
+            temp = copy.deepcopy(self).loc[:, ['trial', 'model_sim_id', 'subject_id', 'scale', 'tp']]
+            assert temp.shape[0] == temp.drop_duplicates().shape[0]
+        else:
+            temp = copy.deepcopy(self).loc[:, ['trial', 'subject_id', 'scale', 'tp']]
+            assert temp.shape[0] == temp.drop_duplicates().shape[0]
 
 
 class CGRCurveDf(TrialDataDf):
@@ -176,8 +181,8 @@ class ModelComponentsDf(pd.DataFrame, CGRCDataFrame):
         if 'cgr_sim_id' in self.columns:
             self['cgr_sim_id'] = self['cgr_sim_id'].astype('int')
 
-        #if 'model_sim_id' in self.columns:
-        #    self['model_sim_id'] = self['model_sim_id'].astype('int')
+        if 'model_sim_id' in self.columns:
+            self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def is_valid(self):
         self.set_column_types()
@@ -207,9 +212,9 @@ class StrataSummaryDf(pd.DataFrame, CGRCDataFrame):
 
         if 'cgr_sim_id' in self.columns:
             self['cgr_sim_id'] = self['cgr_sim_id'].astype('int')
-        #
-        #if 'model_sim_id' in self.columns:
-        #    self['model_sim_id'] = self['model_sim_id'].astype('int')
+
+        if 'model_sim_id' in self.columns:
+            self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def is_valid(self):
         self.set_column_types()
@@ -241,23 +246,22 @@ class StrataContrastDf(pd.DataFrame, CGRCDataFrame):
         if 'cgr_sim_id' in self.columns:
             self['cgr_sim_id'] = self['cgr_sim_id'].astype('int')
 
-        #if 'model_sim_id' in self.columns:
-        #    self['model_sim_id'] = self['model_sim_id'].astype('int')
+        if 'model_sim_id' in self.columns:
+            self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def is_valid(self):
         self.set_column_types()
         return True
 
 
-class ModelFamilyResultsDf(pd.DataFrame, CGRCDataFrame):
+class ToymodelsAnalysisDf(pd.DataFrame, CGRCDataFrame):
     ''' DataFrame for holding toy models data '''
 
     def __init__(self):
-        super(ModelFamilyResultsDf, self).__init__(columns=[
+        super(ToymodelsAnalysisDf, self).__init__(columns=[
             'model',
             'n_trials',
             'n_patients',
-            'cgrc_param_set',
             'cgr',
             'avg_trt_p',
             'sig_trt_rate',
@@ -278,17 +282,11 @@ class ModelFamilyResultsDf(pd.DataFrame, CGRCDataFrame):
             'float')  # % of trials with significant treatment p
         self['avg_trt_es'] = self['avg_trt_es'].astype(
             'float')  # average treatment effect size
-
-        if 'cgrc_param_set' in self.columns:
-            self['cgrc_param_set'] = self['cgrc_param_set'].astype('str')
-
         if 'cgradj_avg_trt_p' in self.columns:
             self['cgradj_avg_trt_p'] = self['cgradj_avg_trt_p'].astype('float')
-
         if 'cgradj_sig_trt_rate' in self.columns:
             self['cgradj_sig_trt_rate'] = self['cgradj_sig_trt_rate'].astype(
                 'float')
-
         if 'cgradj_avg_trt_es' in self.columns:
             self['cgradj_avg_trt_es'] = self['cgradj_avg_trt_es'].astype(
                 'float')

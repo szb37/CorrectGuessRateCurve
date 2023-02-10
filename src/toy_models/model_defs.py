@@ -61,10 +61,35 @@ off_off_0 = ModelDefinition(
     aeb=(0, 0),
     )
 on_on_0 = ModelDefinition(
-    name='on_on_0',)
+    name='on_on_0',
+    )
+
+on_off_10 = ModelDefinition(
+    name='on_off_10',
+    dte=(10, 2),
+    aeb=(0, 0),
+    )
+on_off_7 = ModelDefinition(
+    name='on_off_7',
+    dte=(7, 2),
+    aeb=(0, 0),
+    )
+on_off_5 = ModelDefinition(
+    name='on_off_5',
+    dte=(5, 2),
+    aeb=(0, 0),
+    )
+
+
 
 
 # Define usefull lists of models
+speed_test = [off_off_0]
+models710 = [on_off_7, on_off_10]
+models5 = [on_off_5]
+
+
+
 test_models = [off_off_0]
 default_models = []
 all_models = []
