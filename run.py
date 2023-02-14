@@ -27,12 +27,12 @@ if False: # speed test, ~3.8s
         n_trials = 2
     )
 
-if True: # santy check
+if True: # run default models
     toy_models.Controllers.run_toymodels_cgrc(
         analysis_name = 'default_models',
         models = model_defs.default_models,
         cgrc_param_set = 'cgrA_mid',
-        n_patients = 200,
+        n_patients = 120,
         n_trials = 100
     )
 
