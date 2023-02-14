@@ -18,25 +18,23 @@ import time
 
 start = time.time()
 
-if False: # speed test, ~3.5s
+if True: # speed test, ~3.8s
     toy_models.Controllers.run_toymodels_cgrc(
-        analysis_name = 'tmp',
-        models = model_defs.speed_test,
+        analysis_name = 'test',
+        models = model_defs.test,
         cgrc_param_set = 'cgrA_low',
         n_patients = 50,
         n_trials = 2
     )
 
-
-if True: # santy check
+if False: # santy check
     toy_models.Controllers.run_toymodels_cgrc(
         analysis_name = 'tmp',
-        models = model_defs.models5,
-        cgrc_param_set = 'cgrA_low',
-        n_patients = 50,
-        n_trials = 10
+        models = model_defs.tmp,
+        cgrc_param_set = 'cgrA_mid',
+        n_patients = 200,
+        n_trials = 100
     )
-
 
 
 end = time.time()

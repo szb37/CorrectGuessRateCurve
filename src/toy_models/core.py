@@ -134,18 +134,21 @@ class ToyModelsDataGenerator():
         assert isinstance(n, int)
         assert isinstance(model_sim_id, int)
 
-        # Generate conditions
-        conditions = ['AC' if condition==1 else 'PL' for condition in bernoulli.rvs(model['p_act'], size=n)]
+        conditions = [condition for condition in bernoulli.rvs(model['p_act'], size=n)]
+        guesses = [guess for guess in bernoulli.rvs(model['p_unb'], size=n)]
 
-        # Generate guesses
-        guesses=[]
-        for condition in conditions:
-            if condition=='AC':
-                guesses.append(bernoulli.rvs(model['p_sea'], size=1)[0])
-            elif condition=='PL':
-                guesses.append(bernoulli.rvs(model['p_sep'], size=1)[0])
+        for idx in range(n):
+            if guesses[idx]==1:
+                guesses[idx] = conditions[idx]
+            elif guesses[idx]==0 and conditions[idx]==0:
+                guesses[idx] = 1
+            elif guesses[idx]==0 and conditions[idx]==1:
+                guesses[idx] = 0
             else:
                 assert False
+
+        # convert numerics to labels
+        conditions = ['AC' if condition==1 else 'PL' for condition in conditions]
         guesses = ['AC' if guess==1 else 'PL' for guess in guesses]
 
         # Ensure all strata represented if needed
@@ -171,7 +174,7 @@ class ToyModelsDataGenerator():
             scores.append(round(score))
 
         # Format & save output
-        toymodel_data_df = ToyModelsDataGenerator.get_TrialDataDf(
+        toymodel_data_df = ToyModelsDataGenerator.get_TrialDataDf_w_metadata(
             model['name'],
             model_sim_id,
             conditions,
@@ -186,7 +189,7 @@ class ToyModelsDataGenerator():
         return toymodel_data_df
 
     @staticmethod
-    def get_TrialDataDf(model_name, model_sim_id, conditions, guesses, scores):
+    def get_TrialDataDf_w_metadata(model_name, model_sim_id, conditions, guesses, scores):
         ''' Returns TrialDataDf with aux data filled
             Args:
                 model_name (str): simulation id
@@ -332,7 +335,7 @@ class ToyModelsAnalyis():
             row['cgr'] = cgr
             row['avg_trt_p'] = round(miscs.get_estimate(
                 filtered_unadj_model_comps.p.tolist()), 3)
-            row['sig_trt_rate'] = round(
+            row['sig_trt_prop'] = round(
                 sum([el <= 0.05 for el in filtered_unadj_model_comps.p.tolist()])/n_trials, 3)
             row['avg_trt_es'] = round(miscs.get_estimate(
                 filtered_unadj_model_comps.est.tolist()), 3)
@@ -356,7 +359,7 @@ class ToyModelsAnalyis():
 
 
             row['cgradj_avg_trt_p'] = round(miscs.get_estimate(trial_ps), 3)
-            row['cgradj_sig_trt_rate'] = round(
+            row['cgradj_sig_trt_prop'] = round(
                 sum([p <= 0.05 for p in trial_ps])/n_trials, 3)
             row['cgradj_avg_trt_es'] = round(miscs.get_estimate(trial_efs), 3)
 

@@ -92,7 +92,6 @@ class StatsIntegrationTests(unittest.TestCase):
         pd.testing.assert_frame_equal(ref_components, model_comps)
         pd.testing.assert_frame_equal(ref_summary, model_summary)
 
-
     def test_get_strata_stats1(self):
 
         r('df_filtered=read.csv("'+folders.fixtures.replace('\\', '/') + '//get_stats_data_input1.csv")')

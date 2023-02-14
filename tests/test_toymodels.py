@@ -15,7 +15,6 @@ import mock
 
 
 class ToyModelsDataGeneratorUnitTests(unittest.TestCase):
-    """ Tests are probabilistic, ~1% chance of failure; thrs are set based on num experiments """
 
     def test_enforce_all_strata(self):
 
@@ -39,21 +38,7 @@ class ToyModelsDataGeneratorUnitTests(unittest.TestCase):
 
     def test_get_toymodel_data_extremes(self):
 
-        model = model_defs.ModelDefinition(p_act=0, p_sep=0)
-        df = toy_models.ToyModelsDataGenerator.get_toymodel_data(
-            output_dir=folders.tmp_dir,
-            output_prefix='test_get_toymodel_data_extremes',
-            model=model,
-            n=100,
-            model_sim_id=0,
-            enforce_all_strata=False
-        )
-        self.assertEqual(df.condition.to_list().count('AC'), 0)
-        self.assertEqual(df.condition.to_list().count('PL'), 100)
-        self.assertEqual(df.guess.to_list().count('AC'), 0)
-        self.assertEqual(df.guess.to_list().count('PL'), 100)
-
-        model = model_defs.ModelDefinition(p_act=0, p_sep=1)
+        model = model_defs.ModelDefinition(p_act=0, p_unb=0)
         df = toy_models.ToyModelsDataGenerator.get_toymodel_data(
             output_dir=folders.tmp_dir,
             output_prefix='test_get_toymodel_data_extremes',
@@ -67,7 +52,22 @@ class ToyModelsDataGeneratorUnitTests(unittest.TestCase):
         self.assertEqual(df.guess.to_list().count('AC'), 100)
         self.assertEqual(df.guess.to_list().count('PL'), 0)
 
-        model = model_defs.ModelDefinition(p_act=1, p_sea=0)
+
+        model = model_defs.ModelDefinition(p_act=0, p_unb=1)
+        df = toy_models.ToyModelsDataGenerator.get_toymodel_data(
+            output_dir=folders.tmp_dir,
+            output_prefix='test_get_toymodel_data_extremes',
+            model=model,
+            n=100,
+            model_sim_id=0,
+            enforce_all_strata=False
+        )
+        self.assertEqual(df.condition.to_list().count('AC'), 0)
+        self.assertEqual(df.condition.to_list().count('PL'), 100)
+        self.assertEqual(df.guess.to_list().count('AC'), 0)
+        self.assertEqual(df.guess.to_list().count('PL'), 100)
+
+        model = model_defs.ModelDefinition(p_act=1, p_unb=0)
         df = toy_models.ToyModelsDataGenerator.get_toymodel_data(
             output_dir=folders.tmp_dir,
             output_prefix='test_get_toymodel_data_extremes',
@@ -81,7 +81,7 @@ class ToyModelsDataGeneratorUnitTests(unittest.TestCase):
         self.assertEqual(df.guess.to_list().count('AC'), 0)
         self.assertEqual(df.guess.to_list().count('PL'), 100)
 
-        model = model_defs.ModelDefinition(p_act=1, p_sea=1)
+        model = model_defs.ModelDefinition(p_act=1, p_unb=1)
         df = toy_models.ToyModelsDataGenerator.get_toymodel_data(
             output_dir=folders.tmp_dir,
             output_prefix='test_get_toymodel_data_extremes',
@@ -96,28 +96,27 @@ class ToyModelsDataGeneratorUnitTests(unittest.TestCase):
         self.assertEqual(df.guess.to_list().count('PL'), 0)
 
     # Test is probabilistic; try running again if fail
-    def test_get_toymodel_data_normals(self, n=1000, thr=3): # Case 1 - normal p_act; normal p_se(a/p)
+    def test_get_toymodel_data_normals(self, n=1000, thr=2.5):
 
         model_params = [
-            {'p_act':0.5, 'p_se':0.5},  # mid p_act; mid p_se(a/p)
-            {'p_act':0.2, 'p_se':0.5},  # low p_act; mid p_se(a/p)
-            {'p_act':0.5, 'p_se':0.2},  # mid p_act; low p_se(a/p)
-            {'p_act':0.85, 'p_se':0.5}, # high p_act; mid p_se(a/p)
-            {'p_act':0.5, 'p_se':0.85}, # mid p_act; high p_se(a/p)
+            {'p_act':0.5, 'p_unb':0.5},  # mid / mid
+            {'p_act':0.2, 'p_unb':0.5},  # low / mid
+            {'p_act':0.5, 'p_unb':0.2},  # mid / low
+            {'p_act':0.85, 'p_unb':0.5}, # high / mid
+            {'p_act':0.5, 'p_unb':0.85}, # mid / high
         ]
 
         for model_param in model_params:
 
             p_act = model_param['p_act']
-            p_se = model_param['p_se']
+            p_unb = model_param['p_unb']
 
             df = toy_models.ToyModelsDataGenerator.get_toymodel_data(
                 output_dir=folders.tmp_dir,
                 output_prefix='test_get_toymodel_data_normals',
                 model=model_defs.ModelDefinition(
                     p_act=p_act,
-                    p_sep=p_se,
-                    p_sea=p_se,),
+                    p_unb=p_unb,),
                 n=n,
                 model_sim_id=0,
                 enforce_all_strata=False
@@ -127,22 +126,19 @@ class ToyModelsDataGeneratorUnitTests(unittest.TestCase):
             self.assertTrue(abs(p_act - df.condition.to_list().count('AC')/n) <= thr*se)
             self.assertTrue(abs((1-p_act) - df.condition.to_list().count('PL')/n) <= thr*se)
 
-            se = sqrt((1-p_se)*(p_se)/n)
-            self.assertTrue(abs(p_se - df.guess.to_list().count('AC')/n) <= thr*se)
-            self.assertTrue(abs((1-p_se) - df.guess.to_list().count('PL')/n) <= thr*se)
+            se = sqrt((1-p_unb)*(p_unb)/n)
+            n_unblind = sum(
+                [guess==condition for condition, guess in zip(df.condition.to_list(), df.guess.to_list())])
+            self.assertTrue(abs(p_unb - n_unblind/n) <= thr*se)
 
 
-""" Heritage code below """
 class IntegrationTests(unittest.TestCase):
 
-    @unittest.skip('wip')
     def test_get_toymodel_data_case1(self):
-
         toy_models.Controllers.run_toymodels_cgrc(
-            model_family_name='default_models',
-            n_trials=1,
-            n_patients=50,
-            postfix='test',
-            cgrc_param_set=1,
-            save_figs=False,
+            analysis_name = 'test',
+            models = model_defs.test,
+            cgrc_param_set = 'cgrA_low',
+            n_patients = 50,
+            n_trials = 2
         )
