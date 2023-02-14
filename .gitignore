@@ -4,6 +4,7 @@
 *.pyc
 __pycache__/
 export figs/*
+tests/fixtures/tmp/*
 
 # These folders are too large for github, see run.py for access to all simulation data
 data/01_trial_data/*
