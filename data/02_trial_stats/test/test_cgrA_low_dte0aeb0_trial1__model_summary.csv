@@ -1,0 +1,3 @@
+trial,scale,model_type,df1,df2,f,adjr2,p,model_name,model_sim_id
+dte0aeb0,scale1,without_guess,1.0,48.0,0.5593319678588302,-0.009074837199837038,0.4581781624932575,dte0aeb0,1
+dte0aeb0,scale1,with_guess,3.0,46.0,0.18935245761355096,-0.05222340729587116,0.9031163663205958,dte0aeb0,1
