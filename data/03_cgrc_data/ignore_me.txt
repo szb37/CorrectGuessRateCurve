@@ -1,0 +1,4 @@
+this file exists to force git to track the folder structure within data/
+
+GitHub repo only contains source data, all simulation data and results used in the paper can be accessed from:
+https://drive.google.com/drive/folders/1sQe1GQ97DbkIiw3YeOcXwA1KZIsp79zT?usp=share_link

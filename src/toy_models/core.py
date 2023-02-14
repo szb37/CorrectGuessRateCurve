@@ -336,9 +336,9 @@ class ToyModelsAnalyis():
             row['avg_trt_p'] = round(miscs.get_estimate(
                 filtered_unadj_model_comps.p.tolist()), 3)
             row['sig_trt_prop'] = round(
-                sum([el <= 0.05 for el in filtered_unadj_model_comps.p.tolist()])/n_trials, 3)
+                sum([el <= 0.05 for el in filtered_unadj_model_comps.p.tolist()])/n_trials, 2)
             row['avg_trt_es'] = round(miscs.get_estimate(
-                filtered_unadj_model_comps.est.tolist()), 3)
+                filtered_unadj_model_comps.est.tolist()), 2)
 
             filtered_cgradj_model_comps = cgradj_model_comps.loc[
                 (cgradj_model_comps.model_name == model_name) &
@@ -360,8 +360,8 @@ class ToyModelsAnalyis():
 
             row['cgradj_avg_trt_p'] = round(miscs.get_estimate(trial_ps), 3)
             row['cgradj_sig_trt_prop'] = round(
-                sum([p <= 0.05 for p in trial_ps])/n_trials, 3)
-            row['cgradj_avg_trt_es'] = round(miscs.get_estimate(trial_efs), 3)
+                sum([p <= 0.05 for p in trial_ps])/n_trials, 2)
+            row['cgradj_avg_trt_es'] = round(miscs.get_estimate(trial_efs), 2)
 
             df = df.append(row, ignore_index=True)
 

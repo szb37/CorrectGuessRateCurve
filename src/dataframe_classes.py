@@ -264,10 +264,10 @@ class ToymodelsAnalysisDf(pd.DataFrame, CGRCDataFrame):
             'n_patients',
             'cgr',
             'avg_trt_p',
-            'sig_trt_rate',
+            'sig_trt_prop',
             'avg_trt_es',
             'cgradj_avg_trt_p',
-            'cgradj_sig_trt_rate',
+            'cgradj_sig_trt_prop',
             'cgradj_avg_trt_es',
         ])
 
@@ -275,17 +275,17 @@ class ToymodelsAnalysisDf(pd.DataFrame, CGRCDataFrame):
 
         self['model'] = self['model'].astype('str')
         self['n_trials'] = self['n_trials'].astype('int')
-        self['cgr'] = self['cgr'].astype('float')  # correct guess rate
+        self['cgr'] = self['cgr'].astype('float')  # correct guess prop
         self['avg_trt_p'] = self['avg_trt_p'].astype(
             'float')  # average treatment p
-        self['sig_trt_rate'] = self['sig_trt_rate'].astype(
+        self['sig_trt_prop'] = self['sig_trt_prop'].astype(
             'float')  # % of trials with significant treatment p
         self['avg_trt_es'] = self['avg_trt_es'].astype(
             'float')  # average treatment effect size
         if 'cgradj_avg_trt_p' in self.columns:
             self['cgradj_avg_trt_p'] = self['cgradj_avg_trt_p'].astype('float')
-        if 'cgradj_sig_trt_rate' in self.columns:
-            self['cgradj_sig_trt_rate'] = self['cgradj_sig_trt_rate'].astype(
+        if 'cgradj_sig_trt_prop' in self.columns:
+            self['cgradj_sig_trt_prop'] = self['cgradj_sig_trt_prop'].astype(
                 'float')
         if 'cgradj_avg_trt_es' in self.columns:
             self['cgradj_avg_trt_es'] = self['cgradj_avg_trt_es'].astype(

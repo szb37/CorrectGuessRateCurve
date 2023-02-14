@@ -2,12 +2,6 @@
 :Author: Balazs Szigeti {szb37 AT pm DOT me}
 :Copyright: 2022, DrugNerdsLab
 :License: MIT
-
-Functions that generate CGRC are not optimized, may take a while to run
-
-GitHub repo only contains source data, all simulation data (and results) used in the paper can be accessed from:
-https://drive.google.com/drive/folders/1sQe1GQ97DbkIiw3YeOcXwA1KZIsp79zT?usp=share_link
-(copy drive folder to codebase/data/)
 """
 
 import src.toy_models.model_defs as model_defs
