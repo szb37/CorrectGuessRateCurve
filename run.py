@@ -7,7 +7,7 @@ Functions that generate CGRC are not optimized, may take a while to run
 
 GitHub repo only contains source data, all simulation data (and results) used in the paper can be accessed from:
 https://drive.google.com/drive/folders/1sQe1GQ97DbkIiw3YeOcXwA1KZIsp79zT?usp=share_link
-(replace content of codebase/data/ with content of shared drive folder)
+(copy drive folder to codebase/data/)
 """
 
 import src.toy_models.model_defs as model_defs

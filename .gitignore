@@ -10,9 +10,9 @@ tests/fixtures/tmp/*
 data/01_trial_data/*.csv
 !data/01_trial_data/sbmd__trial_data.csv
 data/02_trial_stats/*.csv
-data/03_cgrc_data/*.csv
-data/04_cgrc_stats/*.csv
-data/05_summary_tables/*.csv
+data/03_cgrc_data/*
+data/04_cgrc_stats/*
+data/05_summary_tables/*
 
 tmp.py
 
