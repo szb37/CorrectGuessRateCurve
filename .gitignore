@@ -13,7 +13,7 @@ data/03_cgrc_data/**/*.csv
 data/04_cgrc_stats/**/*.csv
 data/05_summary_tables/**/*.csv
 
-tmp.py
+notes.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

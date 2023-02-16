@@ -105,13 +105,6 @@ class Controllers():
                     output_prefix=subanalysis_name,
                 )
 
-        # Get summary table
-        summary_df = ToyModelsAnalyis.get_model_family_summary(
-            analysis_name=analysis_name,
-            cgrc_param_set=cgrc_param_set,
-        )
-        print('\n', summary_df.to_string(index=False))
-
 
 class ToyModelsDataGenerator():
 
@@ -273,14 +266,13 @@ class ToyModelsDataGenerator():
 class ToyModelsAnalyis():
 
     @staticmethod
-    def get_model_family_summary(analysis_name, cgrc_param_set):
+    def get_toymodels_summary(analysis_name):
         ''' Construct summary table for model family
             Args:
                 analysis_name (str):
         '''
 
         assert isinstance(analysis_name, str)
-        assert isinstance(cgrc_param_set, str)
 
         df = df_class.ToymodelsAnalysisDf()
 
@@ -351,12 +343,15 @@ class ToyModelsAnalyis():
             trial_ps = []
             trial_efs = []
 
+            check_n_comps = []
             for model_sim_id in model_sim_ids:
                 tmp = filtered_cgradj_model_comps.loc[filtered_cgradj_model_comps.model_sim_id == model_sim_id]
-                assert tmp.shape[0] == config.cgrc_parameters[cgrc_param_set]['n_cgrc_trials']
+                check_n_comps.append(tmp.shape[0])
                 trial_ps.append(mean(tmp.p.tolist()))
                 trial_efs.append(mean(tmp.est.tolist()))
 
+            # all simulations should have same comp number
+            assert all([n_comp==check_n_comps[0] for n_comp in check_n_comps])
 
             row['cgradj_avg_trt_p'] = round(miscs.get_estimate(trial_ps), 3)
             row['cgradj_sig_trt_prop'] = round(
@@ -368,7 +363,7 @@ class ToyModelsAnalyis():
         df.__class__ = df_class.ToymodelsAnalysisDf
         df.set_column_types()
         df.to_csv(os.path.join(folders.summary_dir,
-            f'{analysis_name}_{cgrc_param_set}__summary_table.csv'), index=False)
+            f'{analysis_name}__summary_table.csv'), index=False)
 
         return df
 
