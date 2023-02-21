@@ -14,7 +14,7 @@ aeb: mean and std of the activated expectancy bias
 class ModelDefinition(dict):
     ''' A dictionary defining toy models '''
 
-    def __init__(self, name=None, p_act=0.5, p_unb=0.7, nhist=(10,2), dte=(10,2), aeb=(10,2)):
+    def __init__(self, name=None, p_act=0.5, p_unb=0.7, nhist=(10,3), dte=(3,6), aeb=(3,6)):
         super(ModelDefinition, self).__init__()
         self['name']=name
         self['p_act']=float(p_act)

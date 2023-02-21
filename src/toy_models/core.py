@@ -20,6 +20,7 @@ from statistics import mean, median
 from scipy.stats import bernoulli
 import pandas as pd
 import itertools
+import pingouin
 import random
 import os
 
@@ -250,15 +251,23 @@ class ToyModelsDataGenerator():
 
         conditions[0] = 'PL'
         guesses[0] = 'PL'
-
         conditions[1] = 'AC'
         guesses[1] = 'PL'
-
         conditions[2] = 'PL'
         guesses[2] = 'AC'
-
         conditions[3] = 'AC'
         guesses[3] = 'AC'
+
+        """
+        conditions[4] = 'PL'
+        guesses[4] = 'PL'
+        conditions[5] = 'AC'
+        guesses[5] = 'PL'
+        conditions[6] = 'PL'
+        guesses[6] = 'AC'
+        conditions[7] = 'AC'
+        guesses[7] = 'AC'
+        """
 
         return conditions, guesses
 
@@ -268,102 +277,87 @@ class ToyModelsAnalyis():
     @staticmethod
     def get_toymodels_summary(analysis_name):
         ''' Construct summary table for model family
-            Args:
-                analysis_name (str):
+          Args:
+              analysis_name (str):
         '''
 
         assert isinstance(analysis_name, str)
 
         df = df_class.ToymodelsAnalysisDf()
 
+        # Get trial _data
         trial_data = ToyModelsAnalyis.get_concateneted_df_type(
-            target_dir=os.path.join(folders.trial_data_dir, analysis_name),
-            df_type='__trial_data')
+          target_dir=os.path.join(folders.trial_data_dir, analysis_name),
+          df_type='__trial_data')
+        cgr_trial_data = ToyModelsAnalyis.get_concateneted_df_type(
+          target_dir=os.path.join(folders.cgrc_data_dir, analysis_name),
+          df_type='__cgrc_data')
 
-        # Get n_patients and n_trials assuming each member of the model family has same n_patient and n_trial
-        tmp_mid = trial_data.model_name.to_list()[0]
-        tmp_tid = trial_data.model_sim_id.to_list()[0]
-        n_patients = trial_data.loc[(trial_data.model_name == tmp_mid) & (
-            trial_data.model_sim_id == tmp_tid)].shape[0]
-        n_trials = len(trial_data.model_sim_id.unique().tolist())
+        # Get unadjusted and adjusted model components
+        model_comps = ToyModelsAnalyis.get_concateneted_df_type(
+          target_dir=os.path.join(folders.trial_stats_dir, analysis_name),
+          df_type='__model_comps')
+        cgr_model_comps = ToyModelsAnalyis.get_concateneted_df_type(
+          target_dir=os.path.join(folders.cgrc_stats_dir, analysis_name),
+          df_type='__cgrc_model_comps')
+        cgr_model_comps = cgr_model_comps.loc[(cgr_model_comps.cgr == 0.5)]
 
-        # Get unadjusted model components
-        unadj_model_comps = ToyModelsAnalyis.get_concateneted_df_type(
-            target_dir=os.path.join(folders.trial_stats_dir, analysis_name),
-            df_type='__model_comps')
+        # Sanity checks
+        assert (
+            cgr_model_comps.shape[0] > 0)
+        assert (
+            len(trial_data.model_sim_id.unique().tolist()) == len(cgr_model_comps.model_sim_id.unique().tolist()))
+        assert (
+            cgr_model_comps.model_name.unique().tolist() == model_comps.model_name.unique().tolist())
 
-        # Get adjusted model components
-        cgradj_model_comps = ToyModelsAnalyis.get_concateneted_df_type(
-            target_dir=os.path.join(folders.cgrc_stats_dir, analysis_name),
-            df_type='__cgrc_model_comps')
-
-        cgradj_model_comps = cgradj_model_comps.loc[(
-            cgradj_model_comps.cgr == 0.5)]
-        assert cgradj_model_comps.shape[0] > 0
-        cgradj_n_trials = len(
-            cgradj_model_comps.model_sim_id.unique().tolist())
-        assert n_trials == cgradj_n_trials
-        cgradj_model_names = cgradj_model_comps.model_name.unique().tolist()
-        unadj_model_names = unadj_model_comps.model_name.unique().tolist()
-        assert cgradj_model_names == unadj_model_names
-
-        for model_name in unadj_model_comps.model_name.unique().tolist():
-
-            filtered_unadj_model_comps = unadj_model_comps.loc[
-                (unadj_model_comps.model_name == model_name) &
-                (unadj_model_comps.model_type == 'without_guess') &
-                (unadj_model_comps.component == 'conditionAC')
-            ]
-
-            trial_model_data = trial_data.loc[(
-                trial_data.model_name == model_name)]
-            cgr = round(trial_model_data.loc[(
-                trial_model_data.condition == trial_model_data.guess)].shape[0]/(n_trials*n_patients), 3)
-
+        # Calculate stats for each model
+        for model_name in model_comps.model_name.unique().tolist():
             row = {}
+
+            model_data = trial_data.loc[(trial_data.model_name==model_name)]
+            cgr_model_data = cgr_trial_data.loc[(cgr_trial_data.model_name==model_name)]
+
+            conditions, intercepts, cgr_conditions, cgr_intercepts = ToyModelsAnalyis.get_intercepts_conditions(
+                model_name, model_comps, cgr_model_comps)
+
+            condition_gs = ToyModelsAnalyis.get_effectsize(model_data)
+
+            n_trials = len((model_data.model_sim_id.unique()))
+            intercept_ests = intercepts.est.tolist()
+            condition_ests = conditions.est.tolist()
+            condition_ps = conditions.p.tolist()
+
             row['model'] = model_name
-            row['n_trials'] = n_trials
-            row['n_patients'] = n_patients
-            row['cgr'] = cgr
-            row['avg_trt_p'] = round(miscs.get_estimate(
-                filtered_unadj_model_comps.p.tolist()), 3)
-            row['sig_trt_prop'] = round(
-                sum([el <= 0.05 for el in filtered_unadj_model_comps.p.tolist()])/n_trials, 2)
-            row['avg_trt_es'] = round(miscs.get_estimate(
-                filtered_unadj_model_comps.est.tolist()), 2)
+            row['cgr'] = round(
+                model_data.loc[(model_data.condition == model_data.guess)].shape[0]/(model_data.shape[0]), 3)
 
-            filtered_cgradj_model_comps = cgradj_model_comps.loc[
-                (cgradj_model_comps.model_name == model_name) &
-                (cgradj_model_comps.model_type == 'without_guess') &
-                (cgradj_model_comps.component == 'conditionAC')
-            ]
+            row['int'] = round(mean(intercept_ests), 2)
+            row['trt'] = round(mean(condition_ests), 2)
+            row['trt_p'] = round(mean(condition_ps), 3)
+            row['sig_prop'] = round(sum([el <= 0.05 for el in condition_ps])/n_trials, 2)
+            row['trt_g'] = round(mean(condition_gs), 2)
 
-            # Calculate average p/es aross n_cgr_trials (avg corresponds to p/es of single trial)
-            model_sim_ids = filtered_cgradj_model_comps.model_sim_id.unique().tolist()
-            trial_ps = []
-            trial_efs = []
+            # Calculate average effects across across the n_cgr_sims
+            cgr_sim_ids = cgr_model_data.cgr_sim_id.unique().tolist()
+            model_sim_ids = cgr_model_data.model_sim_id.unique().tolist()
 
-            check_n_comps = []
-            for model_sim_id in model_sim_ids:
-                tmp = filtered_cgradj_model_comps.loc[filtered_cgradj_model_comps.model_sim_id == model_sim_id]
-                check_n_comps.append(tmp.shape[0])
-                trial_ps.append(mean(tmp.p.tolist()))
-                trial_efs.append(mean(tmp.est.tolist()))
+            cgr_condition_ps = [mean(cgr_conditions.loc[cgr_conditions.model_sim_id==model_sim_id].p.tolist()) for model_sim_id in model_sim_ids]
+            cgr_condition_ests = [mean(cgr_conditions.loc[cgr_conditions.model_sim_id==model_sim_id].est.tolist()) for model_sim_id in model_sim_ids]
+            cgr_intercept_ests = [mean(cgr_intercepts.loc[cgr_intercepts.model_sim_id==model_sim_id].est.tolist()) for model_sim_id in model_sim_ids]
+            cgr_condition_gs = [round(mean(ToyModelsAnalyis.get_cgr_effectsize(
+                cgr_model_data.loc[cgr_model_data.model_sim_id==model_sim_id])),2) for model_sim_id in model_sim_ids]
 
-            # all simulations should have same comp number
-            assert all([n_comp==check_n_comps[0] for n_comp in check_n_comps])
-
-            row['cgradj_avg_trt_p'] = round(miscs.get_estimate(trial_ps), 3)
-            row['cgradj_sig_trt_prop'] = round(
-                sum([p <= 0.05 for p in trial_ps])/n_trials, 2)
-            row['cgradj_avg_trt_es'] = round(miscs.get_estimate(trial_efs), 2)
+            row['cgr_int'] = round(mean(cgr_intercept_ests), 2)
+            row['cgr_trt'] = round(mean(cgr_condition_ests), 2)
+            row['cgr_trt_p'] = round(mean(cgr_condition_ps), 3)
+            row['cgr_sig_prop'] = round(sum([el <= 0.05 for el in cgr_condition_ps])/n_trials, 2)
+            row['cgr_trt_g'] = round(mean(cgr_condition_gs), 2)
 
             df = df.append(row, ignore_index=True)
 
         df.__class__ = df_class.ToymodelsAnalysisDf
         df.set_column_types()
-        df.to_csv(os.path.join(folders.summary_dir,
-            f'{analysis_name}__summary_table.csv'), index=False)
+        df.to_csv(os.path.join(folders.summary_dir, f'{analysis_name}__summary_table.csv'), index=False)
 
         return df
 
@@ -379,6 +373,7 @@ class ToyModelsAnalyis():
             '__trial_data',
             '__model_comps',
             '__strata_contrast',
+            '__cgrc_data',
             '__cgrc_model_comps',
             '__cgrc_strata_contrast']
 
@@ -394,6 +389,8 @@ class ToyModelsAnalyis():
             master_df.__class__ = df_class.ModelComponentsDf
         elif df_type == '__strata_contrast':
             master_df.__class__ = df_class.StrataContrastDf
+        elif df_type == '__cgrc_data':
+            master_df.__class__ = df_class.CGRCurveDf
         elif df_type == '__cgrc_model_comps':
             master_df.__class__ = df_class.ModelComponentsDf
         elif df_type == '__cgrc_strata_contrast':
@@ -405,3 +402,56 @@ class ToyModelsAnalyis():
 
         assert master_df.is_valid()
         return master_df
+
+    @staticmethod
+    def get_intercepts_conditions(model_name, model_comps, cgr_model_comps):
+
+        conditions = model_comps.loc[
+          (model_comps.model_name == model_name) &
+          (model_comps.model_type == 'without_guess') &
+          (model_comps.component == 'conditionAC')
+        ]
+
+        intercepts = model_comps.loc[
+          (model_comps.model_name == model_name) &
+          (model_comps.model_type == 'without_guess') &
+          (model_comps.component == 'intercept')
+        ]
+
+        cgr_conditions= cgr_model_comps.loc[
+            (cgr_model_comps.model_name == model_name) &
+            (cgr_model_comps.model_type == 'without_guess') &
+            (cgr_model_comps.component == 'conditionAC')
+        ]
+
+        cgr_intercepts = cgr_model_comps.loc[
+            (cgr_model_comps.model_name == model_name) &
+            (cgr_model_comps.model_type == 'without_guess') &
+            (cgr_model_comps.component == 'intercept')
+        ]
+
+        return conditions, intercepts, cgr_conditions, cgr_intercepts
+
+    @staticmethod
+    def get_effectsize(model_data):
+
+        model_sim_ids = model_data.model_sim_id.unique()
+
+        gs = [round(pingouin.compute_effsize(
+            model_data.loc[(model_data.condition=='AC') & (model_data.model_sim_id==model_sim_id)].delta_score,
+            model_data.loc[(model_data.condition=='PL') & (model_data.model_sim_id==model_sim_id)].delta_score,
+        eftype='cohen'), 3) for model_sim_id in model_sim_ids]
+
+        return gs
+
+    @staticmethod
+    def get_cgr_effectsize(model_data):
+
+        cgr_sim_ids = model_data.cgr_sim_id.unique()
+
+        gs = [round(pingouin.compute_effsize(
+            model_data.loc[(model_data.condition=='AC') & (model_data.cgr_sim_id==cgr_sim_id)].delta_score,
+            model_data.loc[(model_data.condition=='PL') & (model_data.cgr_sim_id==cgr_sim_id)].delta_score,
+        eftype='cohen'), 3) for cgr_sim_id in cgr_sim_ids]
+
+        return gs

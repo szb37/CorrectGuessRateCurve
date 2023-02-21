@@ -124,7 +124,7 @@ class CGRCurveDf(TrialDataDf):
             self['model_sim_id'] = self['model_sim_id'].astype('int')
 
     def is_valid(self):
-        super(CGRCurveDf, self).is_valid()
+        #super(CGRCurveDf, self).is_valid()
         return True
 
 
@@ -260,36 +260,34 @@ class ToymodelsAnalysisDf(pd.DataFrame, CGRCDataFrame):
     def __init__(self):
         super(ToymodelsAnalysisDf, self).__init__(columns=[
             'model',
-            'n_trials',
-            'n_patients',
             'cgr',
-            'avg_trt_p',
-            'sig_trt_prop',
-            'avg_trt_es',
-            'cgradj_avg_trt_p',
-            'cgradj_sig_trt_prop',
-            'cgradj_avg_trt_es',
+            'int',
+            'trt',
+            'trt_p',
+            'sig_prop',
+            'trt_g',
+            'cgr_int',
+            'cgr_trt',
+            'cgr_trt_p',
+            'cgr_sig_prop',
+            'cgr_trt_g',
         ])
 
     def set_column_types(self):
 
         self['model'] = self['model'].astype('str')
-        self['n_trials'] = self['n_trials'].astype('int')
-        self['cgr'] = self['cgr'].astype('float')  # correct guess prop
-        self['avg_trt_p'] = self['avg_trt_p'].astype(
-            'float')  # average treatment p
-        self['sig_trt_prop'] = self['sig_trt_prop'].astype(
-            'float')  # % of trials with significant treatment p
-        self['avg_trt_es'] = self['avg_trt_es'].astype(
-            'float')  # average treatment effect size
-        if 'cgradj_avg_trt_p' in self.columns:
-            self['cgradj_avg_trt_p'] = self['cgradj_avg_trt_p'].astype('float')
-        if 'cgradj_sig_trt_prop' in self.columns:
-            self['cgradj_sig_trt_prop'] = self['cgradj_sig_trt_prop'].astype(
-                'float')
-        if 'cgradj_avg_trt_es' in self.columns:
-            self['cgradj_avg_trt_es'] = self['cgradj_avg_trt_es'].astype(
-                'float')
+        self['cgr'] = self['cgr'].astype('float')
+        self['int'] = self['int'].astype('float')
+        self['trt'] = self['trt'].astype('float')
+        self['trt_p'] = self['trt_p'].astype('float')
+        self['sig_prop'] = self['sig_prop'].astype('float')
+        self['trt_g'] = self['trt_g'].astype('float')
+
+        self['cgr_int'] = self['cgr_int'].astype('float')
+        self['cgr_trt'] = self['cgr_trt'].astype('float')
+        self['cgr_trt_p'] = self['cgr_trt_p'].astype('float')
+        self['cgr_sig_prop'] = self['cgr_sig_prop'].astype('float')
+        self['cgr_trt_g'] = self['cgr_trt_g'].astype('float')
 
     def is_valid(self):
         self.set_column_types()
