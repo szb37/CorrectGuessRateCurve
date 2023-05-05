@@ -6,7 +6,7 @@
 The self-blinding MD (SBMD) trial data is included in this repo (data/01_trial_data/).
 AEB model data, CGR curve data for either AEB or SBMD is not stored, only their relevant statistics.
 These can be found here for both the AEB models and SBMD:
-https://drive.google.com/drive/folders/1sQe1GQ97DbkIiw3YeOcXwA1KZIsp79zT?usp=share_link
+https://drive.google.com/drive/folders/1xCEni_cNc_Qjl8eRajIIdMJsx_sAe2S3?usp=share_link
 """
 
 import src.cgrc.core as cgrc
@@ -64,4 +64,3 @@ if False: # CGR adjustment for the AEB models (Table 1)
         analysis_name = analysis_name,
     )
     print('\n', summary_df.to_string(index=False))
-    summary_df.to_csv('agyfasz', index=False)

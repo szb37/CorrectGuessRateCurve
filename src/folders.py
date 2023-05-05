@@ -9,10 +9,8 @@ import os
 
 src = os.path.dirname(os.path.abspath(__file__))
 codebase = os.path.abspath(os.path.join(src, os.pardir))
-#data = 'C://Non-cloud save//CGRC MD simulation data'
-data = 'C://My Drive//Projects//cgrc md//resources//reference data folder'
 
-#data = os.path.abspath(os.path.join(codebase, 'data'))
+data = os.path.abspath(os.path.join(codebase, 'data'))
 trial_data_dir= os.path.abspath(os.path.join(data, '01_trial_data'))
 trial_stats_dir = os.path.abspath(os.path.join(data, '02_trial_stats'))
 cgrc_data_dir = os.path.abspath(os.path.join(data, '03_cgrc_data'))
