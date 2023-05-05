@@ -1,0 +1,11 @@
+trial,scale,cgr,cgr_sim_id,condition,guess,delta_score
+a,foo,0,0,PL,PL,0
+b,foo,0,0,MD,PL,1
+a,tadaa,0,0,PL,MD,2
+a,foo,0,0,MD,MD,3
+a,foo,0,0,PL,PL,4
+a,foo,1,0,MD,PL,5
+a,foo,0,1,PL,MD,6
+a,foo,1,1,PL,MD,7
+b,foo,0,0,MD,MD,8
+c,foo,0,0,PL,PL,9

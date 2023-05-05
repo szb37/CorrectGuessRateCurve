@@ -1,0 +1,12 @@
+collection_id,src_subject_id,asstyp,bdi_tot,relationship
+2145,1001,1,1,father
+2145,1002,1,2,mother
+2145,1003,1,3,child
+2145,1004,1,3,father
+2145,1004,1,4,mother
+2145,1004,1,5,child
+2145,1005,2,6,father
+2145,1005,2,7,mother
+2145,1005,2,8,child
+2145,1006,1,5,father
+2145,1006,1,7,mother

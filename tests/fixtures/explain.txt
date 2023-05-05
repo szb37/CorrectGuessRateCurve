@@ -1,0 +1,7 @@
+files that have:
+_input.csv OR
+_output.csv 
+are reference CSVs either to serve as input or manually checked solutions. 
+Many of these files are automatically extracted from the XLSX files, see corresponding folder.
+
+tmp/ is where generated files are saved. Folder content is deleted after tests
